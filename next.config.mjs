@@ -4,6 +4,9 @@ const nextConfig = {
     DATABASE_URL: process.env.DATABASE_URL,
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
   },
+  images: {
+    domains: ['hebbkx1anhila5yf.public.blob.vercel-storage.com'],
+  },
 };
 
 export default nextConfig;
