@@ -5,7 +5,14 @@ const nextConfig = {
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
   },
   images: {
-    domains: ['hebbkx1anhila5yf.public.blob.vercel-storage.com'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'hebbkx1anhila5yf.public.blob.vercel-storage.com',
+        port: '',
+        pathname: '/**',
+      },
+    ],
   },
 };
 

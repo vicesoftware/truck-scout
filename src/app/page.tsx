@@ -1,7 +1,5 @@
-import { BrokerDashboardComponent } from "@/components/broker-dashboard";
+import { BrokerDashboardComponent } from '@/components/broker-dashboard'
 
 export default function Home() {
-  return (
-    <BrokerDashboardComponent />
-  );
+  return <BrokerDashboardComponent />
 }
