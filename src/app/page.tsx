@@ -1,7 +1,18 @@
 import Image from "next/image";
 import Link from "next/link";
 
-export default function Home() {
+async function getCarriers() {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const res = await fetch(`${apiUrl}/api/carriers`, { cache: 'no-store' });
+  if (!res.ok) {
+    throw new Error('Failed to fetch carriers');
+  }
+  return res.json();
+}
+
+export default async function Home() {
+  const carriers = await getCarriers();
+
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
@@ -14,6 +25,16 @@ export default function Home() {
             Health Check
           </Link>
         </div>
+
+        <h2 className="text-2xl font-semibold mt-8">Carriers</h2>
+        <ul className="list-disc pl-5">
+          {carriers.map((carrier: Carrier) => (
+            <li key={carrier.id} className="mb-2">
+              {carrier.name} - MC: {carrier.mc_number}, DOT: {carrier.dot_number}, Phone: {carrier.phone}
+            </li>
+          ))}
+        </ul>
+
         <Image
           className="dark:invert"
           src="https://nextjs.org/icons/next.svg"
@@ -108,4 +129,12 @@ export default function Home() {
       </footer>
     </div>
   );
+}
+
+interface Carrier {
+  id: number;
+  name: string;
+  mc_number: string;
+  dot_number: string;
+  phone: string;
 }
