@@ -3,7 +3,6 @@
 import React from 'react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import {
@@ -24,6 +23,25 @@ export function BrokerDashboardComponent() {
     return "bg-teal-500" // Muted teal-green
   }
 
+  const unseenNegotiations = 2; // Updated to 2
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "Countered":
+        return "bg-amber-400 text-amber-900"; // Yellow for countered
+      case "Requires Attention":
+        return "bg-red-400 text-red-900"; // Red for requires attention
+      default:
+        return "bg-[#e0e8f0] text-[#335e88]"; // Light blue for awaiting response
+    }
+  };
+
+  const negotiations = [
+    { id: "N2468", carrier: "QuickShip Logistics", load: "L3579", status: "Awaiting Response" },
+    { id: "N1357", carrier: "EcoFreight Systems", load: "L2468", status: "Countered" },
+    { id: "N8024", carrier: "PrimeHaul Express", load: "L7913", status: "Requires Attention" },
+  ];
+
   return (
     <>
       <div className="mb-8 flex items-center justify-between">
@@ -40,7 +58,10 @@ export function BrokerDashboardComponent() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-[#335e88]">24</div>
-            <p className="text-xs text-[#335e88]">+2 from yesterday</p>
+            <p className="text-xs flex items-center">
+              <span className="text-teal-500 font-medium">+2</span>
+              <span className="text-gray-500 ml-1">from yesterday</span>
+            </p>
           </CardContent>
         </Card>
         <Card>
@@ -50,7 +71,10 @@ export function BrokerDashboardComponent() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-[#335e88]">7</div>
-            <p className="text-xs text-[#335e88]">3 require attention</p>
+            <p className="text-xs flex items-center">
+              <span className="text-red-400 font-medium">3</span>
+              <span className="text-gray-500 ml-1">require attention</span>
+            </p>
           </CardContent>
         </Card>
         <Card>
@@ -60,7 +84,10 @@ export function BrokerDashboardComponent() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-[#335e88]">98.5%</div>
-            <p className="text-xs text-[#335e88]">+0.5% from last month</p>
+            <p className="text-xs flex items-center">
+              <span className="text-teal-500 font-medium">+0.5%</span>
+              <span className="text-gray-500 ml-1">from last month</span>
+            </p>
           </CardContent>
         </Card>
         <Card>
@@ -70,16 +97,34 @@ export function BrokerDashboardComponent() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-[#335e88]">$52,429</div>
-            <p className="text-xs text-[#335e88]">+18% from last month</p>
+            <p className="text-xs flex items-center">
+              <span className="text-red-400 font-medium">-8%</span>
+              <span className="text-gray-500 ml-1">from last month</span>
+            </p>
           </CardContent>
         </Card>
       </div>
 
       {/* Active Loads and Pending Negotiations */}
       <Tabs defaultValue="active-loads" className="mb-8">
-        <TabsList>
-          <TabsTrigger value="active-loads" className="text-[#335e88]">Active Loads</TabsTrigger>
-          <TabsTrigger value="pending-negotiations" className="text-[#335e88]">Pending Negotiations</TabsTrigger>
+        <TabsList className="border-b border-gray-200">
+          <TabsTrigger 
+            value="active-loads" 
+            className="px-4 py-2 text-sm font-medium text-gray-500 hover:text-[#335e88] data-[state=active]:text-[#335e88] data-[state=active]:font-semibold"
+          >
+            Active Loads
+          </TabsTrigger>
+          <TabsTrigger 
+            value="pending-negotiations" 
+            className="px-4 py-2 text-sm font-medium text-gray-500 hover:text-[#335e88] data-[state=active]:text-[#335e88] data-[state=active]:font-semibold flex items-center"
+          >
+            Pending Negotiations
+            {unseenNegotiations > 0 && (
+              <Badge className="ml-2 bg-[#335e88] text-white text-xs px-1.5 py-0.5 rounded-full">
+                {unseenNegotiations}
+              </Badge>
+            )}
+          </TabsTrigger>
         </TabsList>
         <TabsContent value="active-loads">
           <Card>
@@ -124,18 +169,14 @@ export function BrokerDashboardComponent() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {[
-                  { id: "N2468", carrier: "QuickShip Logistics", load: "L3579", status: "Awaiting Response" },
-                  { id: "N1357", carrier: "EcoFreight Systems", load: "L2468", status: "Countered" },
-                  { id: "N8024", carrier: "PrimeHaul Express", load: "L7913", status: "Requires Attention" },
-                ].map((negotiation) => (
+                {negotiations.map((negotiation) => (
                   <div key={negotiation.id} className="flex items-center justify-between rounded-lg border p-4">
                     <div>
                       <h3 className="font-semibold text-[#335e88]">{negotiation.id}</h3>
                       <p className="text-sm text-[#335e88]">{negotiation.carrier}</p>
                       <p className="text-sm text-[#335e88]">Load: {negotiation.load}</p>
                     </div>
-                    <Badge variant={negotiation.status === "Requires Attention" ? "destructive" : "secondary"} className="bg-[#335e88] text-white">
+                    <Badge className={cn("px-2 py-1", getStatusColor(negotiation.status))}>
                       {negotiation.status}
                     </Badge>
                   </div>
