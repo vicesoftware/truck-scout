@@ -38,6 +38,7 @@ export default function CarriersPage() {
   const [editingCarrier, setEditingCarrier] = useState<Carrier | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [carriersPerPage] = useState(10);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     fetchCarriers();
@@ -97,10 +98,16 @@ export default function CarriersPage() {
     }
   };
 
-  // Get current carriers
+  const filteredCarriers = carriers.filter(carrier =>
+    carrier.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    carrier.mc_number.includes(searchTerm) ||
+    carrier.dot_number.includes(searchTerm)
+  );
+
+  // Get current carriers (update to use filteredCarriers)
   const indexOfLastCarrier = currentPage * carriersPerPage;
   const indexOfFirstCarrier = indexOfLastCarrier - carriersPerPage;
-  const currentCarriers = carriers.slice(indexOfFirstCarrier, indexOfLastCarrier);
+  const currentCarriers = filteredCarriers.slice(indexOfFirstCarrier, indexOfLastCarrier);
 
   // Change page
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
@@ -151,7 +158,12 @@ export default function CarriersPage() {
       <div className="flex justify-between items-center">
         <div className="relative w-64">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-500" />
-          <Input placeholder="Search carriers" className="pl-8" />
+          <Input 
+            placeholder="Search carriers" 
+            className="pl-8" 
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
         </div>
         <Button variant="outline" className="text-[#335e88] border-[#335e88] hover:bg-[#335e88] hover:text-white">
           <FileText className="mr-2 h-4 w-4" /> Export
@@ -216,7 +228,7 @@ export default function CarriersPage() {
       {/* Pagination */}
       <div className="flex justify-between items-center mt-4">
         <div>
-          Showing {indexOfFirstCarrier + 1} to {Math.min(indexOfLastCarrier, carriers.length)} of {carriers.length} entries
+          Showing {indexOfFirstCarrier + 1} to {Math.min(indexOfLastCarrier, filteredCarriers.length)} of {filteredCarriers.length} entries
         </div>
         <div className="flex space-x-2">
           <Button
@@ -226,7 +238,7 @@ export default function CarriersPage() {
           >
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          {Array.from({ length: Math.ceil(carriers.length / carriersPerPage) }, (_, i) => (
+          {Array.from({ length: Math.ceil(filteredCarriers.length / carriersPerPage) }, (_, i) => (
             <Button
               key={i}
               onClick={() => paginate(i + 1)}
@@ -238,7 +250,7 @@ export default function CarriersPage() {
           ))}
           <Button
             onClick={() => paginate(currentPage + 1)}
-            disabled={currentPage === Math.ceil(carriers.length / carriersPerPage)}
+            disabled={currentPage === Math.ceil(filteredCarriers.length / carriersPerPage)}
             variant="outline"
           >
             <ChevronRight className="h-4 w-4" />
