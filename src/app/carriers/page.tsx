@@ -1,5 +1,7 @@
-import React from 'react'
-import { Plus, Search, MoreHorizontal, Mail, DollarSign, FileText, Truck, Users, CheckCircle, Clock } from 'lucide-react'
+'use client'
+
+import React, { useState, useEffect } from 'react'
+import { Plus, Search, MoreHorizontal, Mail, DollarSign, FileText, Users, CheckCircle, Clock, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -13,18 +15,101 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
+interface Carrier {
+  id: number;
+  name: string;
+  mc_number: string;
+  dot_number: string;
+  phone: string;
+  status: string;
+  rating: number;
+}
+
 export default function CarriersPage() {
-  const carriers = [
-    { id: 1, name: 'FastTruck Inc.', mc: 'MC-123456', dot: 'DOT-7890123', status: 'Active', rating: 4.8 },
-    { id: 2, name: 'SpeedyHaul Co.', mc: 'MC-234567', dot: 'DOT-8901234', status: 'Pending', rating: 4.5 },
-    { id: 3, name: 'ReliableRoad Ltd.', mc: 'MC-345678', dot: 'DOT-9012345', status: 'Active', rating: 4.9 },
-  ]
+  const [carriers, setCarriers] = useState<Carrier[]>([]);
+  const [newCarrier, setNewCarrier] = useState<Omit<Carrier, 'id'>>({ 
+    name: '', 
+    mc_number: '', 
+    dot_number: '', 
+    phone: '',
+    status: 'Pending', 
+    rating: 0 
+  });
+  const [editingCarrier, setEditingCarrier] = useState<Carrier | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [carriersPerPage] = useState(10);
+
+  useEffect(() => {
+    fetchCarriers();
+  }, []);
+
+  const fetchCarriers = async () => {
+    const response = await fetch('/api/carriers');
+    const data = await response.json();
+    if (Array.isArray(data)) {
+      setCarriers(data);
+    } else {
+      console.error('Failed to fetch carriers:', data);
+      setCarriers([]);
+    }
+  };
+
+  const createCarrier = async () => {
+    const response = await fetch('/api/carriers', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newCarrier),
+    });
+    if (response.ok) {
+      setNewCarrier({ 
+        name: '', 
+        mc_number: '', 
+        dot_number: '', 
+        phone: '',
+        status: 'Pending', 
+        rating: 0 
+      });
+      fetchCarriers();
+    }
+  };
+
+  const updateCarrier = async () => {
+    if (!editingCarrier) return;
+    const response = await fetch('/api/carriers', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(editingCarrier),
+    });
+    if (response.ok) {
+      setEditingCarrier(null);
+      fetchCarriers();
+    }
+  };
+
+  const deleteCarrier = async (id: number) => {
+    const response = await fetch('/api/carriers', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id }),
+    });
+    if (response.ok) {
+      fetchCarriers();
+    }
+  };
+
+  // Get current carriers
+  const indexOfLastCarrier = currentPage * carriersPerPage;
+  const indexOfFirstCarrier = indexOfLastCarrier - carriersPerPage;
+  const currentCarriers = carriers.slice(indexOfFirstCarrier, indexOfLastCarrier);
+
+  // Change page
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold text-[#335e88]">Carriers</h1>
-        <Button className="bg-[#335e88] hover:bg-[#264a6b]">
+        <Button onClick={createCarrier} className="bg-[#335e88] hover:bg-[#264a6b]">
           <Plus className="mr-2 h-4 w-4" /> Add New Carrier
         </Button>
       </div>
@@ -36,7 +121,7 @@ export default function CarriersPage() {
             <Users className="h-4 w-4 text-[#335e88]" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-[#335e88]">247</div>
+            <div className="text-2xl font-bold text-[#335e88]">{carriers.length}</div>
           </CardContent>
         </Card>
         <Card>
@@ -45,7 +130,9 @@ export default function CarriersPage() {
             <CheckCircle className="h-4 w-4 text-green-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-[#335e88]">182</div>
+            <div className="text-2xl font-bold text-[#335e88]">
+              {Array.isArray(carriers) ? carriers.filter(carrier => carrier.status === 'Active').length : 0}
+            </div>
           </CardContent>
         </Card>
         <Card>
@@ -54,7 +141,9 @@ export default function CarriersPage() {
             <Clock className="h-4 w-4 text-yellow-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-[#335e88]">15</div>
+            <div className="text-2xl font-bold text-[#335e88]">
+              {Array.isArray(carriers) ? carriers.filter(carrier => carrier.status === 'Pending').length : 0}
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -81,11 +170,11 @@ export default function CarriersPage() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {carriers.map((carrier) => (
+          {currentCarriers.map((carrier) => (
             <TableRow key={carrier.id}>
               <TableCell className="font-medium">{carrier.name}</TableCell>
-              <TableCell>{carrier.mc}</TableCell>
-              <TableCell>{carrier.dot}</TableCell>
+              <TableCell>{carrier.mc_number}</TableCell>
+              <TableCell>{carrier.dot_number}</TableCell>
               <TableCell>
                 <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
                   carrier.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
@@ -104,6 +193,8 @@ export default function CarriersPage() {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                    <DropdownMenuItem onClick={() => setEditingCarrier(carrier)}>Edit Carrier</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => deleteCarrier(carrier.id)}>Delete Carrier</DropdownMenuItem>
                     <DropdownMenuItem>
                       <Mail className="mr-2 h-4 w-4" />
                       <span>Invite to Platform</span>
@@ -114,7 +205,6 @@ export default function CarriersPage() {
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem>View Details</DropdownMenuItem>
-                    <DropdownMenuItem>Edit Carrier</DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </TableCell>
@@ -122,6 +212,77 @@ export default function CarriersPage() {
           ))}
         </TableBody>
       </Table>
+
+      {/* Pagination */}
+      <div className="flex justify-between items-center mt-4">
+        <div>
+          Showing {indexOfFirstCarrier + 1} to {Math.min(indexOfLastCarrier, carriers.length)} of {carriers.length} entries
+        </div>
+        <div className="flex space-x-2">
+          <Button
+            onClick={() => paginate(currentPage - 1)}
+            disabled={currentPage === 1}
+            variant="outline"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+          {Array.from({ length: Math.ceil(carriers.length / carriersPerPage) }, (_, i) => (
+            <Button
+              key={i}
+              onClick={() => paginate(i + 1)}
+              variant={currentPage === i + 1 ? "default" : "outline"}
+              className={currentPage === i + 1 ? "bg-[#335e88] text-white" : "text-[#335e88]"}
+            >
+              {i + 1}
+            </Button>
+          ))}
+          <Button
+            onClick={() => paginate(currentPage + 1)}
+            disabled={currentPage === Math.ceil(carriers.length / carriersPerPage)}
+            variant="outline"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+
+      {/* Add a modal or form for editing carriers */}
+      {editingCarrier && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg">
+            <h2 className="text-xl font-bold mb-4">Edit Carrier</h2>
+            <Input
+              value={editingCarrier.name}
+              onChange={(e) => setEditingCarrier({ ...editingCarrier, name: e.target.value })}
+              placeholder="Name"
+              className="mb-2"
+            />
+            <Input
+              value={editingCarrier.mc_number}
+              onChange={(e) => setEditingCarrier({ ...editingCarrier, mc_number: e.target.value })}
+              placeholder="MC Number"
+              className="mb-2"
+            />
+            <Input
+              value={editingCarrier.dot_number}
+              onChange={(e) => setEditingCarrier({ ...editingCarrier, dot_number: e.target.value })}
+              placeholder="DOT Number"
+              className="mb-2"
+            />
+            <Input
+              value={editingCarrier.phone}
+              onChange={(e) => setEditingCarrier({ ...editingCarrier, phone: e.target.value })}
+              placeholder="Phone"
+              className="mb-2"
+            />
+            {/* Add inputs for status and rating if needed */}
+            <div className="flex justify-end mt-4">
+              <Button onClick={() => setEditingCarrier(null)} variant="outline" className="mr-2">Cancel</Button>
+              <Button onClick={updateCarrier} className="bg-[#335e88] hover:bg-[#264a6b]">Save Changes</Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
