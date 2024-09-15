@@ -14,6 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { saveAs } from 'file-saver';
 
 interface Carrier {
   id: number;
@@ -112,6 +113,21 @@ export default function CarriersPage() {
   // Change page
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
+  const exportToCSV = () => {
+    const headers = ['Name', 'MC Number', 'DOT Number', 'Phone', 'Status', 'Rating'];
+    const csvData = filteredCarriers.map(carrier => 
+      [carrier.name, carrier.mc_number, carrier.dot_number, carrier.phone, carrier.status, carrier.rating.toString()]
+    );
+    
+    const csvContent = [
+      headers.join(','),
+      ...csvData.map(row => row.join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    saveAs(blob, 'carriers_export.csv');
+  };
+
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
@@ -165,7 +181,11 @@ export default function CarriersPage() {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        <Button variant="outline" className="text-[#335e88] border-[#335e88] hover:bg-[#335e88] hover:text-white">
+        <Button 
+          variant="outline" 
+          className="text-[#335e88] border-[#335e88] hover:bg-[#335e88] hover:text-white"
+          onClick={exportToCSV}
+        >
           <FileText className="mr-2 h-4 w-4" /> Export
         </Button>
       </div>
