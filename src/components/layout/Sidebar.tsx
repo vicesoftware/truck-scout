@@ -69,7 +69,7 @@ export function Sidebar({ isOpen, onToggle }: { isOpen: boolean; onToggle: () =>
   return (
     <aside
       className={cn(
-        "bg-white transition-all duration-300 ease-in-out shadow-md flex flex-col",
+        "bg-white transition-all duration-300 ease-in-out flex flex-col",
         isOpen ? "w-64" : "w-20"
       )}
     >
