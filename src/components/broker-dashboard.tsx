@@ -45,7 +45,7 @@ export function BrokerDashboardComponent() {
   return (
     <>
       <div className="mb-8 flex items-center justify-between">
-        <h2 className="text-3xl font-bold text-[#335e88]">Welcome back, Sarah</h2>
+        <h2 className="text-3xl font-bold text-[#335e88]">Welcome back, Michael</h2>
         <Button className="bg-[#335e88] hover:bg-[#264a6d]">Create New Load</Button>
       </div>
 
