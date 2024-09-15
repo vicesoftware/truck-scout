@@ -15,8 +15,15 @@ import {
   CalendarDays,
   Loader2
 } from "lucide-react"
+import { cn } from "@/lib/utils"
 
 export function BrokerDashboardComponent() {
+  const getProgressColor = (progress: number) => {
+    if (progress < 33) return "bg-red-400" // Subdued coral-red
+    if (progress < 66) return "bg-amber-400" // Soft amber
+    return "bg-teal-500" // Muted teal-green
+  }
+
   return (
     <>
       <div className="mb-8 flex items-center justify-between">
@@ -96,7 +103,12 @@ export function BrokerDashboardComponent() {
                       <p className="text-sm text-[#335e88]">{load.carrier}</p>
                     </div>
                     <div className="w-1/3">
-                      <Progress value={load.progress} className="h-2 w-full bg-[#e0e8f0]" />
+                      <div className="h-2 w-full bg-[#e0e8f0] rounded-full overflow-hidden">
+                        <div
+                          className={cn("h-full", getProgressColor(load.progress))}
+                          style={{ width: `${load.progress}%` }}
+                        ></div>
+                      </div>
                       <p className="mt-1 text-right text-xs text-[#335e88]">{load.progress}% Complete</p>
                     </div>
                   </div>
