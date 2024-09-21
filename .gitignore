@@ -37,3 +37,4 @@ next-env.d.ts
 
 # local dev postgress database with docker-compose flow
 pgdata/
+cypress/

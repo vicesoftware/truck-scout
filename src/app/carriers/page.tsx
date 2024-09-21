@@ -196,8 +196,8 @@ export default function CarriersPage() {
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-[#335e88]">Carriers</h1>
-        <Button onClick={() => setIsDialogOpen(true)} className="bg-[#335e88] hover:bg-[#264a6b]">
+        <h1 className="text-3xl font-bold text-[#335e88]" data-test-id="carriers-title">Carriers</h1>
+        <Button onClick={() => setIsDialogOpen(true)} className="bg-[#335e88] hover:bg-[#264a6b]" data-test-id="add-carrier-button">
           <Plus className="mr-2 h-4 w-4" /> Add New Carrier
         </Button>
       </div>
@@ -209,7 +209,7 @@ export default function CarriersPage() {
             <Users className="h-4 w-4 text-[#335e88]" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-[#335e88]">{carriers.length}</div>
+            <div className="text-2xl font-bold text-[#335e88]" data-test-id="total-carriers">{carriers.length}</div>
           </CardContent>
         </Card>
         <Card>
@@ -244,12 +244,14 @@ export default function CarriersPage() {
             className="pl-8" 
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
+            data-test-id="search-carriers"
           />
         </div>
         <Button 
           variant="outline" 
           className="text-[#335e88] border-[#335e88] hover:bg-[#335e88] hover:text-white"
           onClick={exportToCSV}
+          data-test-id="export-button"
         >
           <FileText className="mr-2 h-4 w-4" /> Export
         </Button>
@@ -268,14 +270,14 @@ export default function CarriersPage() {
         </TableHeader>
         <TableBody>
           {currentCarriers.map((carrier) => (
-            <TableRow key={carrier.id}>
+            <TableRow key={carrier.id} data-test-id={`carrier-row-${carrier.id}`}>
               <TableCell className="font-medium">{carrier.name}</TableCell>
               <TableCell>{carrier.mc_number}</TableCell>
               <TableCell>{carrier.dot_number}</TableCell>
               <TableCell>
                 <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
                   carrier.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-                }`}>
+                }`} data-test-id={`carrier-status-${carrier.id}`}>
                   {carrier.status}
                 </span>
               </TableCell>
@@ -283,15 +285,15 @@ export default function CarriersPage() {
               <TableCell>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="h-8 w-8 p-0 text-[#335e88] hover:bg-[#335e88] hover:text-white">
+                    <Button variant="ghost" className="h-8 w-8 p-0 text-[#335e88] hover:bg-[#335e88] hover:text-white" data-test-id={`carrier-actions-${carrier.id}`}>
                       <span className="sr-only">Open menu</span>
                       <MoreHorizontal className="h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                    <DropdownMenuItem onClick={() => openEditDialog(carrier)}>Edit Carrier</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => deleteCarrier(carrier.id)}>Delete Carrier</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => openEditDialog(carrier)} data-test-id={`edit-carrier-${carrier.id}`}>Edit Carrier</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => deleteCarrier(carrier.id)} data-test-id={`delete-carrier-${carrier.id}`}>Delete Carrier</DropdownMenuItem>
                     <DropdownMenuItem>
                       <Mail className="mr-2 h-4 w-4" />
                       <span>Invite to Platform</span>
@@ -346,12 +348,12 @@ export default function CarriersPage() {
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>{editingCarrier ? 'Edit Carrier' : 'Add New Carrier'}</DialogTitle>
+            <DialogTitle data-test-id="carrier-dialog-title">{editingCarrier ? 'Edit Carrier' : 'Add New Carrier'}</DialogTitle>
             <DialogDescription>
               Enter the details of the carrier here. All fields are required.
             </DialogDescription>
           </DialogHeader>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} data-test-id="carrier-form">
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="name" className="text-right">
@@ -366,6 +368,7 @@ export default function CarriersPage() {
                   required
                   aria-invalid={!!errors.name}
                   aria-describedby={errors.name ? "name-error" : undefined}
+                  data-test-id="carrier-name-input"
                 />
                 {errors.name && <p id="name-error" className="text-sm text-red-500 col-start-2 col-span-3">{errors.name}</p>}
               </div>
@@ -382,6 +385,7 @@ export default function CarriersPage() {
                   required
                   aria-invalid={!!errors.mc_number}
                   aria-describedby={errors.mc_number ? "mc_number-error" : undefined}
+                  data-test-id="carrier-mc-number-input"
                 />
                 {errors.mc_number && <p id="mc_number-error" className="text-sm text-red-500 col-start-2 col-span-3">{errors.mc_number}</p>}
               </div>
@@ -398,6 +402,7 @@ export default function CarriersPage() {
                   required
                   aria-invalid={!!errors.dot_number}
                   aria-describedby={errors.dot_number ? "dot_number-error" : undefined}
+                  data-test-id="carrier-dot-number-input"
                 />
                 {errors.dot_number && <p id="dot_number-error" className="text-sm text-red-500 col-start-2 col-span-3">{errors.dot_number}</p>}
               </div>
@@ -414,6 +419,7 @@ export default function CarriersPage() {
                   required
                   aria-invalid={!!errors.phone}
                   aria-describedby={errors.phone ? "phone-error" : undefined}
+                  data-test-id="carrier-phone-input"
                 />
                 {errors.phone && <p id="phone-error" className="text-sm text-red-500 col-start-2 col-span-3">{errors.phone}</p>}
               </div>
@@ -422,7 +428,7 @@ export default function CarriersPage() {
                   Status
                 </Label>
                 <Select value={formData.status} onValueChange={handleStatusChange} required>
-                  <SelectTrigger id="status" className="col-span-3">
+                  <SelectTrigger id="status" className="col-span-3" data-test-id="carrier-status-select">
                     <SelectValue placeholder="Select status" />
                   </SelectTrigger>
                   <SelectContent>
@@ -434,7 +440,7 @@ export default function CarriersPage() {
               </div>
             </div>
             <DialogFooter>
-              <Button type="submit">{editingCarrier ? 'Update Carrier' : 'Save Carrier'}</Button>
+              <Button type="submit" data-test-id="save-carrier-button">{editingCarrier ? 'Update Carrier' : 'Save Carrier'}</Button>
             </DialogFooter>
           </form>
         </DialogContent>
