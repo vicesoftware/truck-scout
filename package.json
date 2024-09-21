@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.1",
@@ -22,7 +24,7 @@
     "clsx": "^2.1.1",
     "file-saver": "^2.0.5",
     "lucide-react": "^0.441.0",
-    "next": "14.2.11",
+    "next": "^14.2.13",
     "pg": "^8.12.0",
     "react": "^18",
     "react-dom": "^18",
@@ -36,6 +38,7 @@
     "@types/pg": "^8.11.10",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "cypress": "^13.14.2",
     "eslint": "^8",
     "eslint-config-next": "14.2.11",
     "postcss": "^8",

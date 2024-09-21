@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "name": "Sample Carrier 1",
+    "mc_number": "MC123456",
+    "dot_number": "DOT987654",
+    "phone": "123-456-7890",
+    "status": "Active",
+    "rating": 4
+  },
+  {
+    "id": 2,
+    "name": "Sample Carrier 2",
+    "mc_number": "MC654321",
+    "dot_number": "DOT123456",
+    "phone": "987-654-3210",
+    "status": "Pending",
+    "rating": 3
+  }
+]
