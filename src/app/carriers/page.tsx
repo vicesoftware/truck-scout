@@ -15,6 +15,9 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { saveAs } from 'file-saver';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 interface Carrier {
   id: number;
@@ -41,6 +44,17 @@ export default function CarriersPage() {
   const [carriersPerPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState('');
 
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [formData, setFormData] = useState<Omit<Carrier, 'id'>>({
+    name: '',
+    mc_number: '',
+    dot_number: '',
+    phone: '',
+    status: 'Pending',
+    rating: 0
+  });
+  const [errors, setErrors] = useState<Partial<Omit<Carrier, 'id'>>>({});
+
   useEffect(() => {
     fetchCarriers();
   }, []);
@@ -56,35 +70,30 @@ export default function CarriersPage() {
     }
   };
 
-  const createCarrier = async () => {
+  const createCarrier = async (carrierData: Omit<Carrier, 'id'>) => {
     const response = await fetch('/api/carriers', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(newCarrier),
+      body: JSON.stringify(carrierData),
     });
     if (response.ok) {
-      setNewCarrier({ 
-        name: '', 
-        mc_number: '', 
-        dot_number: '', 
-        phone: '',
-        status: 'Pending', 
-        rating: 0 
-      });
       fetchCarriers();
+    } else {
+      console.error('Failed to create carrier');
     }
   };
 
-  const updateCarrier = async () => {
-    if (!editingCarrier) return;
+  const updateCarrier = async (carrierData: Carrier) => {
     const response = await fetch('/api/carriers', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(editingCarrier),
+      body: JSON.stringify(carrierData),
     });
     if (response.ok) {
       setEditingCarrier(null);
       fetchCarriers();
+    } else {
+      console.error('Failed to update carrier');
     }
   };
 
@@ -128,11 +137,67 @@ export default function CarriersPage() {
     saveAs(blob, 'carriers_export.csv');
   };
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: '' }));
+  };
+
+  const handleStatusChange = (value: string) => {
+    setFormData((prev) => ({ ...prev, status: value }));
+    setErrors((prev) => ({ ...prev, status: '' }));
+  };
+
+  const validateForm = (): boolean => {
+    const newErrors: Partial<Omit<Carrier, 'id'>> = {};
+    if (!formData.name.trim()) newErrors.name = 'Name is required';
+    if (!formData.mc_number.trim()) newErrors.mc_number = 'MC Number is required';
+    if (!formData.dot_number.trim()) newErrors.dot_number = 'DOT Number is required';
+    if (!formData.phone.trim()) newErrors.phone = 'Phone is required';
+    if (!formData.status) newErrors.status = 'Status is required';
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (validateForm()) {
+      if (editingCarrier) {
+        await updateCarrier({ ...formData, id: editingCarrier.id });
+      } else {
+        await createCarrier(formData);
+      }
+      setIsDialogOpen(false);
+      setFormData({
+        name: '',
+        mc_number: '',
+        dot_number: '',
+        phone: '',
+        status: 'Pending',
+        rating: 0
+      });
+      setEditingCarrier(null);
+    }
+  };
+
+  const openEditDialog = (carrier: Carrier) => {
+    setEditingCarrier(carrier);
+    setFormData({
+      name: carrier.name,
+      mc_number: carrier.mc_number,
+      dot_number: carrier.dot_number,
+      phone: carrier.phone,
+      status: carrier.status,
+      rating: carrier.rating
+    });
+    setIsDialogOpen(true);
+  };
+
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold text-[#335e88]">Carriers</h1>
-        <Button onClick={createCarrier} className="bg-[#335e88] hover:bg-[#264a6b]">
+        <Button onClick={() => setIsDialogOpen(true)} className="bg-[#335e88] hover:bg-[#264a6b]">
           <Plus className="mr-2 h-4 w-4" /> Add New Carrier
         </Button>
       </div>
@@ -225,7 +290,7 @@ export default function CarriersPage() {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                    <DropdownMenuItem onClick={() => setEditingCarrier(carrier)}>Edit Carrier</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => openEditDialog(carrier)}>Edit Carrier</DropdownMenuItem>
                     <DropdownMenuItem onClick={() => deleteCarrier(carrier.id)}>Delete Carrier</DropdownMenuItem>
                     <DropdownMenuItem>
                       <Mail className="mr-2 h-4 w-4" />
@@ -278,43 +343,102 @@ export default function CarriersPage() {
         </div>
       </div>
 
-      {/* Add a modal or form for editing carriers */}
-      {editingCarrier && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg">
-            <h2 className="text-xl font-bold mb-4">Edit Carrier</h2>
-            <Input
-              value={editingCarrier.name}
-              onChange={(e) => setEditingCarrier({ ...editingCarrier, name: e.target.value })}
-              placeholder="Name"
-              className="mb-2"
-            />
-            <Input
-              value={editingCarrier.mc_number}
-              onChange={(e) => setEditingCarrier({ ...editingCarrier, mc_number: e.target.value })}
-              placeholder="MC Number"
-              className="mb-2"
-            />
-            <Input
-              value={editingCarrier.dot_number}
-              onChange={(e) => setEditingCarrier({ ...editingCarrier, dot_number: e.target.value })}
-              placeholder="DOT Number"
-              className="mb-2"
-            />
-            <Input
-              value={editingCarrier.phone}
-              onChange={(e) => setEditingCarrier({ ...editingCarrier, phone: e.target.value })}
-              placeholder="Phone"
-              className="mb-2"
-            />
-            {/* Add inputs for status and rating if needed */}
-            <div className="flex justify-end mt-4">
-              <Button onClick={() => setEditingCarrier(null)} variant="outline" className="mr-2">Cancel</Button>
-              <Button onClick={updateCarrier} className="bg-[#335e88] hover:bg-[#264a6b]">Save Changes</Button>
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>{editingCarrier ? 'Edit Carrier' : 'Add New Carrier'}</DialogTitle>
+            <DialogDescription>
+              Enter the details of the carrier here. All fields are required.
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleSubmit}>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="name" className="text-right">
+                  Name
+                </Label>
+                <Input
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  className="col-span-3"
+                  required
+                  aria-invalid={!!errors.name}
+                  aria-describedby={errors.name ? "name-error" : undefined}
+                />
+                {errors.name && <p id="name-error" className="text-sm text-red-500 col-start-2 col-span-3">{errors.name}</p>}
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="mc_number" className="text-right">
+                  MC Number
+                </Label>
+                <Input
+                  id="mc_number"
+                  name="mc_number"
+                  value={formData.mc_number}
+                  onChange={handleChange}
+                  className="col-span-3"
+                  required
+                  aria-invalid={!!errors.mc_number}
+                  aria-describedby={errors.mc_number ? "mc_number-error" : undefined}
+                />
+                {errors.mc_number && <p id="mc_number-error" className="text-sm text-red-500 col-start-2 col-span-3">{errors.mc_number}</p>}
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="dot_number" className="text-right">
+                  DOT Number
+                </Label>
+                <Input
+                  id="dot_number"
+                  name="dot_number"
+                  value={formData.dot_number}
+                  onChange={handleChange}
+                  className="col-span-3"
+                  required
+                  aria-invalid={!!errors.dot_number}
+                  aria-describedby={errors.dot_number ? "dot_number-error" : undefined}
+                />
+                {errors.dot_number && <p id="dot_number-error" className="text-sm text-red-500 col-start-2 col-span-3">{errors.dot_number}</p>}
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="phone" className="text-right">
+                  Phone
+                </Label>
+                <Input
+                  id="phone"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  className="col-span-3"
+                  required
+                  aria-invalid={!!errors.phone}
+                  aria-describedby={errors.phone ? "phone-error" : undefined}
+                />
+                {errors.phone && <p id="phone-error" className="text-sm text-red-500 col-start-2 col-span-3">{errors.phone}</p>}
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="status" className="text-right">
+                  Status
+                </Label>
+                <Select value={formData.status} onValueChange={handleStatusChange} required>
+                  <SelectTrigger id="status" className="col-span-3">
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Active">Active</SelectItem>
+                    <SelectItem value="Pending">Pending</SelectItem>
+                  </SelectContent>
+                </Select>
+                {errors.status && <p id="status-error" className="text-sm text-red-500 col-start-2 col-span-3">{errors.status}</p>}
+              </div>
             </div>
-          </div>
-        </div>
-      )}
+            <DialogFooter>
+              <Button type="submit">{editingCarrier ? 'Update Carrier' : 'Save Carrier'}</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
