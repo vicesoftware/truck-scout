@@ -54,6 +54,7 @@ export default function CarriersPage() {
   const fetchCarriers = async () => {
     const response = await fetch('/api/carriers');
     const data = await response.json();
+    console.log(JSON.stringify(data));
     if (Array.isArray(data)) {
       setCarriers(data);
     } else {
@@ -263,17 +264,17 @@ export default function CarriersPage() {
         <TableBody>
           {currentCarriers.map((carrier) => (
             <TableRow key={carrier.id} data-testid={`carrier-row-${carrier.id}`}>
-              <TableCell className="font-medium">{carrier.name}</TableCell>
-              <TableCell>{carrier.mc_number}</TableCell>
-              <TableCell>{carrier.dot_number}</TableCell>
-              <TableCell>
+              <TableCell className="font-medium" data-testid="carrier-name">{carrier.name}</TableCell>
+              <TableCell data-testid="carrier-mc-number">{carrier.mc_number}</TableCell>
+              <TableCell data-testid="carrier-dot-number">{carrier.dot_number}</TableCell>
+              <TableCell data-testid="carrier-status">
                 <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
                   carrier.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-                }`} data-testid={`carrier-status-${carrier.id}`}>
+                }`}>
                   {carrier.status}
                 </span>
               </TableCell>
-              <TableCell>{carrier.rating}</TableCell>
+              <TableCell data-testid="carrier-rating">{carrier.rating}</TableCell>
               <TableCell>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
