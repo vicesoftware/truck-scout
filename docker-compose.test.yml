@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: tms_test_db
+      POSTGRES_USER: tms_test_user
+      POSTGRES_PASSWORD: test_password
+    volumes:
+      - ./test_pgdata:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5433:5432"
+
+  nextjs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_URL: postgresql://tms_test_user:test_password@postgres:5432/tms_test_db
+      NODE_ENV: development
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+    command: ["npm", "run", "dev"]
+
+  test-setup:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    environment:
+      API_URL: http://nextjs:3000
+      DATABASE_URL: postgresql://tms_test_user:test_password@postgres:5432/tms_test_db
+    volumes:
+      - .:/app
+    depends_on:
+      - nextjs
+      - postgres
+    command: ["npm", "install"]
+
+  test-watch:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    environment:
+      API_URL: http://nextjs:3000
+      DATABASE_URL: postgresql://tms_test_user:test_password@postgres:5432/tms_test_db
+    volumes:
+      - .:/app
+    depends_on:
+      - test-setup
+    command: ["npm", "run", "test:integration:watch"]
+    tty: true
+    stdin_open: true
+
+volumes:
+  test_pgdata:
