@@ -31,14 +31,6 @@ interface Carrier {
 
 export default function CarriersPage() {
   const [carriers, setCarriers] = useState<Carrier[]>([]);
-  const [newCarrier, setNewCarrier] = useState<Omit<Carrier, 'id'>>({ 
-    name: '', 
-    mc_number: '', 
-    dot_number: '', 
-    phone: '',
-    status: 'Pending', 
-    rating: 0 
-  });
   const [editingCarrier, setEditingCarrier] = useState<Carrier | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [carriersPerPage] = useState(10);
@@ -239,9 +231,10 @@ export default function CarriersPage() {
       <div className="flex justify-between items-center">
         <div className="relative w-64">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-500" />
-          <Input 
-            placeholder="Search carriers" 
-            className="pl-8" 
+          <Input
+            data-testid="carrier-search"
+            placeholder="Search carriers"
+            className="pl-8"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             data-test-id="search-carriers"
@@ -360,6 +353,7 @@ export default function CarriersPage() {
                   Name
                 </Label>
                 <Input
+                  data-testid="carrier-name"
                   id="name"
                   name="name"
                   value={formData.name}
@@ -377,6 +371,7 @@ export default function CarriersPage() {
                   MC Number
                 </Label>
                 <Input
+                  data-testid="carrier-mc-number"
                   id="mc_number"
                   name="mc_number"
                   value={formData.mc_number}
@@ -394,6 +389,7 @@ export default function CarriersPage() {
                   DOT Number
                 </Label>
                 <Input
+                  data-testid="carrier-dot-number"
                   id="dot_number"
                   name="dot_number"
                   value={formData.dot_number}
@@ -411,6 +407,7 @@ export default function CarriersPage() {
                   Phone
                 </Label>
                 <Input
+                  data-testid="carrier-phone"
                   id="phone"
                   name="phone"
                   value={formData.phone}
