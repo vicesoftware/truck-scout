@@ -28,6 +28,11 @@ describe('Input Component', () => {
     cy.get('[data-testid="test-input"]').should('exist')
   })
 
+  it('allows setting value from data-testid', () => {
+    mount(<Input data-testid="test-input" />)
+    cy.get('[data-testid="test-input"]').type('Hello, World!').should('have.value', 'Hello, World!')
+  })
+
   it('handles disabled state', () => {
     mount(<Input disabled />)
     cy.get('input').should('be.disabled')
