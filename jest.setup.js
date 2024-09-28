@@ -1,3 +1,4 @@
-const axios = require('axios');
+// Remove the axios configuration as it's causing issues
+jest.setTimeout(30000); // Increase timeout for all tests
 
-axios.defaults.adapter = require('axios/lib/adapters/http');
+// If you need any global test setup, you can add it here

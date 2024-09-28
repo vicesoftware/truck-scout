@@ -8,10 +8,15 @@ services:
       POSTGRES_USER: tms_test_user
       POSTGRES_PASSWORD: test_password
     volumes:
-      - ./test_pgdata:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tms_test_user -d tms_test_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   nextjs:
     build:
@@ -23,8 +28,15 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - postgres
-    command: ["npm", "run", "dev"]
+      postgres:
+        condition: service_healthy
+    command: npm run dev
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
 
   test-setup:
     build:
@@ -36,9 +48,15 @@ services:
     volumes:
       - .:/app
     depends_on:
-      - nextjs
-      - postgres
-    command: ["npm", "install"]
+      nextjs:
+        condition: service_healthy
+    command: >
+      sh -c "
+        echo 'Waiting for API to be ready...' &&
+        wget --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 10 http://nextjs:3000/api/health &&
+        echo 'API is ready!' &&
+        npm install
+      "
 
   test-watch:
     build:
@@ -50,10 +68,11 @@ services:
     volumes:
       - .:/app
     depends_on:
-      - test-setup
+      test-setup:
+        condition: service_completed_successfully
     command: ["npm", "run", "test:integration:watch"]
     tty: true
     stdin_open: true
 
 volumes:
-  test_pgdata:
+  postgres_data:

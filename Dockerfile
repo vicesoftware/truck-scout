@@ -1,13 +1,18 @@
-FROM node:18-alpine
+FROM node:18
 
 WORKDIR /app
 
+# Copy package.json and package-lock.json
 COPY package*.json ./
+
+# Install dependencies
 RUN npm install
 
+# Copy the rest of the application
 COPY . .
 
-# Remove the build step for now
-# RUN npm run build
+# Expose the port the app runs on
+EXPOSE 3000
 
-CMD ["npm", "start"]
+# Command to run the application
+CMD ["npm", "run", "dev"]
