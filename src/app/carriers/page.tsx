@@ -77,7 +77,7 @@ export default function CarriersPage() {
   };
 
   const updateCarrier = async (carrierData: Carrier) => {
-    const response = await fetch('/api/carriers', {
+    const response = await fetch(`/api/carriers/${carrierData.id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(carrierData),
@@ -91,13 +91,13 @@ export default function CarriersPage() {
   };
 
   const deleteCarrier = async (id: number) => {
-    const response = await fetch('/api/carriers', {
+    const response = await fetch(`/api/carriers/${id}`, {
       method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id }),
     });
     if (response.ok) {
       fetchCarriers();
+    } else {
+      console.error('Failed to delete carrier');
     }
   };
 

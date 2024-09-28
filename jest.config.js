@@ -1,9 +1,19 @@
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  testMatch: ['**/tests/**/*.test.ts'],
-  transform: {
-    '^.+\\.tsx?$': 'ts-jest',
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+  globals: {
+    'ts-jest': {
+      tsconfig: 'tsconfig.json'  // Changed from tsconfig.jest.json to tsconfig.json
+    }
   },
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.api.js'],
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/src/$1'
+  },
+  testMatch: ['**/tests/**/*.test.ts'],
+  verbose: true,
+  forceExit: true,
+  clearMocks: true,
+  resetMocks: true,
+  restoreMocks: true,
 };
