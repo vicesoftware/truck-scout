@@ -47,6 +47,7 @@ Cypress.Commands.add('mount', (component, options = {}) => {
 
   return mount(component, {
     ...options,
+    // @ts-expect-error this is just for testing
     root: '#root',
   })
 })
