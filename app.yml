@@ -3,14 +3,13 @@ services:
   - name: web
     git:
       branch: main
-      repo_clone_url: https://github.com/your-username/your-repo.git
-    build_command: npm run build
+      repo_clone_url: https://github.com/vicesoftware/truck-scout.git
     run_command: npm start
     environment_slug: node-js
     envs:
       - key: NODE_ENV
         value: production
       - key: DATABASE_URL
-        value: ${DATABASE_URL}
+        value: ${DATABASE_URL}?sslmode=no-verify
       - key: NEXT_PUBLIC_API_URL
         value: ${NEXT_PUBLIC_API_URL}
