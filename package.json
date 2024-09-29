@@ -10,7 +10,8 @@
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "test:integration": "jest --config jest.config.js --detectOpenHandles --runInBand",
-    "test:integration:watch": "jest --config jest.config.js --detectOpenHandles --runInBand --watchAll"
+    "test:integration:watch": "jest --config jest.config.js --detectOpenHandles --runInBand --watchAll",
+    "export": "next export"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.1",
@@ -63,7 +64,7 @@
     "webpack-cli": "^5.1.4"
   },
   "engines": {
-    "node": "20.11.1",
+    "node": "20.x",
     "npm": "10.8.3"
   }
 }

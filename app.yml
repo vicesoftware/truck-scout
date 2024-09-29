@@ -4,7 +4,7 @@ services:
     git:
       branch: develop
       repo_clone_url: https://github.com/vicesoftware/truck-scout.git
-    build_command: npm ci && npm run build
+    build_command: npm ci && npm run build && npm run export
     run_command: npm start
     environment_slug: node-js
     envs:
