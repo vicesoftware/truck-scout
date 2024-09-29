@@ -14,6 +14,7 @@ const nextConfig = {
         pathname: '/**',
       },
     ],
+    unoptimized: true,
   },
   typescript: {
     ignoreBuildErrors: true,
@@ -22,6 +23,7 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  assetPrefix: '.',
 };
 
 export default nextConfig;

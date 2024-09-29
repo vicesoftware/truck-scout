@@ -6,13 +6,14 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "node .next/standalone/server.js",
     "lint": "next lint",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "test:integration": "jest --config jest.config.js --detectOpenHandles --runInBand",
     "test:integration:watch": "jest --config jest.config.js --detectOpenHandles --runInBand --watchAll",
-    "export": "next export"
+    "export": "next export",
+    "postbuild": "cp -r .next/static .next/standalone/.next/static && cp -r public .next/standalone/"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.1",

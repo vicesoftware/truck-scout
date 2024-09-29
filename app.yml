@@ -5,7 +5,7 @@ services:
       branch: develop
       repo_clone_url: https://github.com/vicesoftware/truck-scout.git
     build_command: npm ci && npm run build
-    run_command: node .next/standalone/server.js
+    run_command: npm start
     environment_slug: node-js
     envs:
       - key: NODE_ENV
