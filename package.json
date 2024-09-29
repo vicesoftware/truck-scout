@@ -61,5 +61,9 @@
     "webpack-cli": "^5.1.4",
     "@types/pg": "^8.11.10",
     "@jest/globals": "^29.7.0"
+  },
+  "engines": {
+    "node": "20.11.1",
+    "npm": "10.2.4"
   }
 }
