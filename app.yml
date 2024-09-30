@@ -14,5 +14,5 @@ services:
       - key: NEXT_PUBLIC_API_URL
         value: ${NEXT_PUBLIC_API_URL}
     http_port: 3000
-  routes:
-  - path: /
+    routes:
+    - path: /
