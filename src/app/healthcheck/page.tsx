@@ -1,5 +1,6 @@
 import { Pool } from 'pg';
 
+// Move this function outside of the component
 async function checkDatabaseConnection() {
   if (!process.env.DATABASE_URL) {
     console.error('DATABASE_URL is not defined in the environment variables');
@@ -22,6 +23,9 @@ async function checkDatabaseConnection() {
     await pool.end();
   }
 }
+
+// Add this export to make the page dynamically rendered
+export const dynamic = 'force-dynamic';
 
 export default async function HealthCheck() {
   const isConnected = await checkDatabaseConnection();
