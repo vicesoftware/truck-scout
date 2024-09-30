@@ -4,9 +4,8 @@ services:
     git:
       branch: develop
       repo_clone_url: https://github.com/vicesoftware/truck-scout.git
-    build_command: npm ci && npm run build
+    build_command: npm run build
     run_command: npm start
-    environment_slug: node-js
     envs:
       - key: NODE_ENV
         value: production
@@ -14,3 +13,6 @@ services:
         value: ${DATABASE_URL}
       - key: NEXT_PUBLIC_API_URL
         value: ${NEXT_PUBLIC_API_URL}
+    http_port: 3000
+  routes:
+  - path: /

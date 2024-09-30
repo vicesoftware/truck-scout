@@ -6,14 +6,12 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "node .next/standalone/server.js",
+    "start": "next start",
     "lint": "next lint",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "test:integration": "jest --config jest.config.js --detectOpenHandles --runInBand",
-    "test:integration:watch": "jest --config jest.config.js --detectOpenHandles --runInBand --watchAll",
-    "export": "next export",
-    "postbuild": "cp -r .next/static .next/standalone/.next/static && cp -r public .next/standalone/"
+    "test:integration:watch": "jest --config jest.config.js --detectOpenHandles --runInBand --watchAll"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.1",
@@ -25,6 +23,7 @@
     "@radix-ui/react-slot": "^1.0.0",
     "@radix-ui/react-tabs": "^1.1.0",
     "@types/file-saver": "^2.0.7",
+    "@types/pg": "^8.11.10",
     "@types/node": "^20.16.10",
     "@types/react": "^18",
     "@types/react-dom": "^18",
@@ -37,6 +36,7 @@
     "react": "^18",
     "react-dom": "^18",
     "shadcn": "^2.0.6",
+    "tailwindcss": "^3.4.1",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^5",
@@ -49,7 +49,6 @@
     "@babel/preset-typescript": "^7.24.7",
     "@jest/globals": "^29.7.0",
     "@types/jest": "^29.5.13",
-    "@types/pg": "^8.11.10",
     "axios": "^1.7.7",
     "babel-loader": "^9.2.1",
     "css-loader": "^7.1.2",
@@ -60,7 +59,6 @@
     "jest-environment-node": "^29.7.0",
     "postcss": "^8",
     "style-loader": "^4.0.0",
-    "tailwindcss": "^3.4.1",
     "ts-jest": "^29.1.2",
     "webpack": "^5.95.0",
     "webpack-cli": "^5.1.4"
