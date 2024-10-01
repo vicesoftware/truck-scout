@@ -1,10 +1,13 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import { Pool } from 'pg';
 
-// Move this function outside of the component
-async function checkDatabaseConnection() {
+// Move this function outside of the component and make it non-async
+function checkDatabaseConnection(): Promise<boolean> {
   if (!process.env.DATABASE_URL) {
     console.error('DATABASE_URL is not defined in the environment variables');
-    return false;
+    return Promise.resolve(false);
   } else {
     console.log('DATABASE_URL is defined in the environment variables');
   }
@@ -13,24 +16,25 @@ async function checkDatabaseConnection() {
     connectionString: process.env.DATABASE_URL,
   });
 
-  try {
-    const client = await pool.connect();
-    await client.query('SELECT 1');
-    client.release();
-    return true;
-  } catch (error) {
-    console.error('Database connection error:', error);
-    return false;
-  } finally {
-    await pool.end();
-  }
+  return pool.connect().then((client) => {
+    return client.query('SELECT 1').then(() => {
+      client.release();
+      return true;
+    }).catch((error) => {
+      console.error('Database connection error:', error);
+      return false;
+    }).finally(() => {
+      return pool.end();
+    });
+  });
 }
 
-// Add this export to make the page dynamically rendered
-export const dynamic = 'force-dynamic';
+export default function HealthCheck() {
+  const [isConnected, setIsConnected] = useState<boolean | null>(null);
 
-export default async function HealthCheck() {
-  const isConnected = await checkDatabaseConnection();
+  useEffect(() => {
+    checkDatabaseConnection().then(setIsConnected);
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-8">
