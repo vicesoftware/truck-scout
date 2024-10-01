@@ -5,6 +5,8 @@ async function checkDatabaseConnection() {
   if (!process.env.DATABASE_URL) {
     console.error('DATABASE_URL is not defined in the environment variables');
     return false;
+  } else {
+    console.log('DATABASE_URL is defined in the environment variables');
   }
 
   const pool = new Pool({
