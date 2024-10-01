@@ -1,48 +1,37 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Pool } from 'pg';
 
-// Move this function outside of the component and make it non-async
-function checkDatabaseConnection(): Promise<boolean> {
-  if (!process.env.DATABASE_URL) {
-    console.error('DATABASE_URL is not defined in the environment variables');
-    return Promise.resolve(false);
-  } else {
-    console.log('DATABASE_URL is defined in the environment variables');
-  }
-
-  const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-  });
-
-  return pool.connect().then((client) => {
-    return client.query('SELECT 1').then(() => {
-      client.release();
-      return true;
-    }).catch((error) => {
-      console.error('Database connection error:', error);
-      return false;
-    }).finally(() => {
-      return pool.end();
-    });
-  });
+interface HealthCheckResponse {
+  status: string;
+  database: 'Connected' | 'Not Connected';
 }
 
 export default function HealthCheck() {
-  const [isConnected, setIsConnected] = useState<boolean | null>(null);
+  const [health, setHealth] = useState<HealthCheckResponse | null>(null);
 
   useEffect(() => {
-    checkDatabaseConnection().then(setIsConnected);
+    fetch('/api/healthcheck')
+      .then(response => response.json())
+      .then(data => setHealth(data))
+      .catch(error => {
+        console.error('Error fetching health check:', error);
+        setHealth({ status: 'Error', database: 'Not Connected' });
+      });
   }, []);
+
+  const isConnected = health?.database === 'Connected';
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-8">
       <h1 className="text-4xl font-bold mb-4">Health Check</h1>
-      <p className="text-lg mb-8">
-        Database Status: {isConnected ? 'Connected' : 'Not Connected'}
+      <p className="text-lg mb-4">
+        API Status: {health ? health.status : 'Checking...'}
       </p>
-      <div className={`w-16 h-16 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`}></div>
+      <p className="text-lg mb-8">
+        Database Status: {health ? health.database : 'Checking...'}
+      </p>
+      <div className={`w-16 h-16 rounded-full ${health === null ? 'bg-gray-500' : (isConnected ? 'bg-green-500' : 'bg-red-500')}`}></div>
     </div>
   );
 }
