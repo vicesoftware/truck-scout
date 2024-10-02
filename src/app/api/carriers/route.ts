@@ -1,15 +1,11 @@
 import { NextResponse } from 'next/server';
 import { Pool } from 'pg';
-import getConfig from 'next/config';
-import fs from 'fs';
-
-const { serverRuntimeConfig } = getConfig();
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
-    rejectUnauthorized: true,
-    ca: fs.readFileSync(serverRuntimeConfig.dbCertPath).toString(),
+    rejectUnauthorized: false,
+    ca: process.env.CA_CERT ? Buffer.from(process.env.CA_CERT, 'base64').toString('ascii') : undefined,
   },
 });
 
