@@ -12,6 +12,8 @@ const nextConfig = {
     }
     return config;
   },
+  // Add this line to disable static exports for API routes
+  output: 'standalone',
 };
 
 module.exports = nextConfig;

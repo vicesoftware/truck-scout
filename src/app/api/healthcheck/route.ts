@@ -24,6 +24,8 @@ async function checkDatabaseConnection() {
   }
 }
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   const dbConnected = await checkDatabaseConnection();
   return NextResponse.json({
