@@ -7,12 +7,15 @@ async function checkDatabaseConnection() {
     return false;
   }
 
-  const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: {
-      rejectUnauthorized: false // Allow self-signed certificates
-    }
-  });
+  // Modify the connection string to disable SSL verification
+  let connectionString = process.env.DATABASE_URL;
+  if (!connectionString.includes('sslmode=')) {
+    connectionString += (connectionString.includes('?') ? '&' : '?') + 'sslmode=no-verify';
+  } else {
+    connectionString = connectionString.replace(/sslmode=\w+/, 'sslmode=no-verify');
+  }
+
+  const pool = new Pool({ connectionString });
 
   try {
     const client = await pool.connect();
