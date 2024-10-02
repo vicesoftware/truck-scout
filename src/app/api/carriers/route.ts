@@ -2,11 +2,7 @@ import { NextResponse } from 'next/server';
 import { Pool } from 'pg';
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false,
-    ca: process.env.CA_CERT ? Buffer.from(process.env.CA_CERT, 'base64').toString('ascii') : undefined,
-  },
+  connectionString: process.env.DATABASE_URL
 });
 
 export async function GET() {
