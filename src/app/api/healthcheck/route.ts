@@ -9,6 +9,9 @@ async function checkDatabaseConnection() {
 
   const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
+    ssl: {
+      rejectUnauthorized: true // This ensures that the connection is secure
+    }
   });
 
   try {
