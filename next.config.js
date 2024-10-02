@@ -14,6 +14,10 @@ const nextConfig = {
   },
   // Add this line to disable static exports for API routes
   output: 'standalone',
+  serverRuntimeConfig: {
+    // Will only be available on the server side
+    dbCertPath: '/app/cert/ca-certificate.crt',
+  },
 };
 
 module.exports = nextConfig;

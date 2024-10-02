@@ -1,19 +1,25 @@
 import { NextResponse } from 'next/server';
 import { Pool } from 'pg';
+import getConfig from 'next/config';
+import fs from 'fs';
+
+const { serverRuntimeConfig } = getConfig();
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: true,
+    ca: fs.readFileSync(serverRuntimeConfig.dbCertPath).toString(),
+  },
 });
 
 export async function GET() {
   try {
-    const client = await pool.connect();
-    const result = await client.query('SELECT * FROM carriers');
-    client.release();
+    const result = await pool.query('SELECT * FROM carriers');
     return NextResponse.json(result.rows);
   } catch (error) {
-    console.error('Error fetching carriers:', error);
-    return NextResponse.json({ error: 'Failed to fetch carriers' }, { status: 500 });
+    console.error('Database query error:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 
