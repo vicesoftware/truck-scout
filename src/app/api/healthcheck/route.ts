@@ -7,7 +7,13 @@ async function checkDatabaseConnection() {
     return false;
   }
 
-  const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+  const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+      ca: process.env.CA_CERT,
+      rejectUnauthorized: true,
+    },
+  });
 
   try {
     const client = await pool.connect();
