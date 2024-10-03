@@ -4,7 +4,7 @@ import { Pool } from 'pg';
 async function checkDatabaseConnection() {
   if (!process.env.DATABASE_URL) {
     console.error('DATABASE_URL is not defined in the environment variables');
-    return false;
+    return {connected: false, error: 'DATABASE_URL is not defined in the environment variables'};
   }
 
   let pool = null;
@@ -21,23 +21,24 @@ async function checkDatabaseConnection() {
     const client = await pool.connect();
     await client.query('SELECT 1');
     client.release();
-    return true;
+    return {connected: true};
   } catch (error) {
     const errorMessage = error instanceof Error ? 
         error.message : 'An unknown error occurred';
 
     if (error instanceof Error) {
-        const response = { 
+        const errorResponse = { 
+            connected: false,
             error: errorMessage,
             variables: {
                 DATABASE_URL: process.env.DATABASE_URL,
                 CA_CERT: process.env.CA_CERT
             }
         };
-        console.error('Database connection error:', response);
-        return response;
+        console.error('Database connection error:', errorResponse);
+        return errorResponse;
     }
-    return { error: 'An unknown error occurred' };
+    return { connected: false, error: 'An unknown error occurred' };
   } finally {
     if (pool) {
       await pool.end();
@@ -48,9 +49,9 @@ async function checkDatabaseConnection() {
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
-  const dbConnected = await checkDatabaseConnection();
+  const response = await checkDatabaseConnection();
   return NextResponse.json({
     status: 'OK',
-    database: dbConnected ? 'Connected' : 'Not Connected'
-  }, { status: dbConnected ? 200 : 503 });
+    database: response.connected ? 'Connected' : 'Not Connected'
+  }, { status: response.connected ? 200 : 503 });
 }
