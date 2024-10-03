@@ -3,15 +3,20 @@ import { Pool } from 'pg';
 import fs from 'fs';
 import path from 'path';
 
-const CA_CERT_PATH = path.join(process.cwd(), 'ca-certificate.crt');
+let certPath: string | null = null;
 
 function writeCACertToFile() {
-  if (process.env.CA_CERT) {
-    fs.writeFileSync(CA_CERT_PATH, process.env.CA_CERT, 'utf8');
-    console.log('CA certificate written to file', process.env.CA_CERT);
-  } else {
-    console.error('CA_CERT environment variable is not set');
-  }
+    const caCertBase64 = process.env.CA_CERT;
+    if (caCertBase64) {
+        const caCert = Buffer.from(caCertBase64, 'base64').toString('utf8');
+        certPath = path.join(__dirname, 'ca-certificate.crt');
+        
+        fs.writeFileSync(certPath, caCert, 'utf8');
+        console.log('CA certificate written to file' + certPath);
+    } else {
+        throw new Error('CA_CERT environment variable is not set');
+    }
+
 }
 
 // Write the CA certificate to a file when the module is first imported
@@ -29,8 +34,8 @@ async function checkDatabaseConnection() {
     pool = new Pool({
         connectionString: process.env.DATABASE_URL,
         ssl: {
-          ca: fs.readFileSync(CA_CERT_PATH).toString(),
-          rejectUnauthorized: true,
+            rejectUnauthorized: true,
+            ca: certPath ? fs.readFileSync(certPath).toString() : undefined
         },
       });
     
