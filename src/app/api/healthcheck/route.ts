@@ -11,7 +11,10 @@ async function checkDatabaseConnection() {
 
     try {
         pool = new Pool({
-            connectionString: process.env.DATABASE_URL
+            connectionString: process.env.DATABASE_URL,
+            ssl: {
+                rejectUnauthorized: false // This allows self-signed certificates
+            }
         });
         
         const client = await pool.connect();
