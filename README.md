@@ -6,6 +6,11 @@
 - [Database Setup](#database-setup)
 - [Payload CMS Setup](#payload-cms-setup)
 - [Running the Application](#running-the-application)
+- [Git Flow](#git-flow)
+  - [Git Flow Overview](#git-flow-overview)
+  - [Working with Features](#working-with-features)
+  - [Releases and Hotfixes](#releases-and-hotfixes)
+  - [Best Practices](#best-practices)
 - [Learn More](#learn-more)
 - [Deploy on Vercel](#deploy-on-vercel)
 
@@ -65,8 +70,6 @@ Truck Scout TMS is a [Next.js](https://nextjs.org/) project integrated with [Pay
      - Username: (the value of POSTGRES_USER from docker-compose.yml)
      - Password: (the value of POSTGRES_PASSWORD from docker-compose.yml)
 
-[The rest of the README remains the same...]
-
 ## Payload CMS Setup
 
 1. Ensure the `payload.config.js` file is properly configured with your collections and settings.
@@ -85,6 +88,134 @@ Truck Scout TMS is a [Next.js](https://nextjs.org/) project integrated with [Pay
 3. Access the Payload CMS admin panel at [http://localhost:3000/admin](http://localhost:3000/admin)
 
 4. On first run, you'll be prompted to create an admin user for Payload CMS.
+
+## Git Flow
+
+We use Git Flow for managing our development workflow. Git Flow provides a structured branching model that helps streamline the process of feature development, releases, and hotfixes.
+
+### Git Flow Overview
+
+Git Flow defines a strict branching model designed around the project release. It assigns very specific roles to different branches and defines how and when they should interact. For a comprehensive overview of the Git Flow model, refer to [A successful Git branching model](https://nvie.com/posts/a-successful-git-branching-model/).
+
+![Git Flow Model](https://nvie.com/img/git-model@2x.png)
+
+### Working with Features
+
+To start working on a new feature:
+
+1. Create a new feature branch:
+   ```bash
+   git flow feature start feature_name
+   ```
+   <details>
+   <summary>💡 Equivalent Git commands</summary>
+
+   The `git flow feature start` command is a convenience wrapper that executes the following Git commands under the hood:
+
+   ```bash
+   git checkout develop
+   git checkout -b feature/feature_name
+   ```
+
+   This creates a new branch off of the develop branch with the prefix "feature/".
+   </details>
+
+2. Work on your feature, committing changes as usual.
+
+3. When the feature is complete, finish it:
+   ```bash
+   git flow feature finish feature_name
+   ```
+   <details>
+   <summary>💡 Equivalent Git commands</summary>
+
+   ```bash
+   git checkout develop
+   git merge --no-ff feature/feature_name
+   git branch -d feature/feature_name
+   ```
+   </details>
+
+This will merge the feature branch into `develop` and delete the feature branch.
+
+### Releases and Hotfixes
+
+For creating releases and hotfixes, refer to the [Git Flow Command Cheatsheet](https://gist.github.com/JamesMGreene/cdd0ac49f90c987e45ac). This resource provides a side-by-side comparison of Git Flow commands and their equivalent raw Git commands, which is particularly helpful for developers familiar with Git but new to Git Flow.
+
+Here are some common Git Flow commands for releases and hotfixes, along with their Git equivalents:
+
+#### Creating a Release
+
+```bash
+git flow release start 1.0.0
+```
+<details>
+<summary>💡 Equivalent Git commands</summary>
+
+```bash
+git checkout develop
+git checkout -b release/1.0.0
+```
+</details>
+
+#### Finishing a Release
+
+```bash
+git flow release finish 1.0.0
+```
+<details>
+<summary>💡 Equivalent Git commands</summary>
+
+```bash
+git checkout main
+git merge --no-ff release/1.0.0
+git tag -a 1.0.0 -m "Version 1.0.0"
+git checkout develop
+git merge --no-ff release/1.0.0
+git branch -d release/1.0.0
+```
+</details>
+
+#### Starting a Hotfix
+
+```bash
+git flow hotfix start 1.0.1
+```
+<details>
+<summary>💡 Equivalent Git commands</summary>
+
+```bash
+git checkout main
+git checkout -b hotfix/1.0.1
+```
+</details>
+
+#### Finishing a Hotfix
+
+```bash
+git flow hotfix finish 1.0.1
+```
+<details>
+<summary>💡 Equivalent Git commands</summary>
+
+```bash
+git checkout main
+git merge --no-ff hotfix/1.0.1
+git tag -a 1.0.1 -m "Version 1.0.1"
+git checkout develop
+git merge --no-ff hotfix/1.0.1
+git branch -d hotfix/1.0.1
+```
+</details>
+
+### Best Practices
+
+- Always create feature branches from the `develop` branch.
+- Keep feature branches short-lived and focused on a single feature or task.
+- Regularly pull changes from `develop` into your feature branch to stay up-to-date.
+- Use meaningful and descriptive names for your feature branches.
+
+For more detailed information on Git Flow commands and their usage, refer to the [Git Flow Command Cheatsheet](https://gist.github.com/JamesMGreene/cdd0ac49f90c987e45ac).
 
 ## Learn More
 
