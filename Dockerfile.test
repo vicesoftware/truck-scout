@@ -1,21 +1,17 @@
-FROM node:20
-
+FROM node:20-alpine AS deps
 WORKDIR /app
 
 # Copy package.json and package-lock.json
-COPY package*.json ./
-
-# Install dependencies
+COPY package.json package-lock.json ./
 RUN npm ci
 
-# Install additional dependencies for testing
-RUN npm install -D pg @types/pg
-
-# Copy the rest of the application code
+FROM node:20-alpine AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+RUN npm run build
 
-# Install wget for the healthcheck in the test service
-RUN apt-get update && apt-get install -y wget && rm -rf /var/lib/apt/lists/*
-
-# Set the default command to run tests
-CMD ["npm", "run", "test:integration"]
+FROM node:20-alpine AS runner
+WORKDIR /app
+COPY --from=builder /app .
+CMD ["npm", "run", "test"]
