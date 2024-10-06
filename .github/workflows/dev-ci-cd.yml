@@ -33,7 +33,9 @@ jobs:
           docker compose version
 
       - name: Run Jest API tests
-        run: TEST_MODE=single docker compose -f docker-compose.test.yml up --abort-on-container-exit --exit-code-from test
+        run: |
+          docker compose -f docker-compose.test.yml build
+          TEST_MODE=single docker compose -f docker-compose.test.yml up --abort-on-container-exit --exit-code-from test
         env:
           TEST_MODE: single
 
