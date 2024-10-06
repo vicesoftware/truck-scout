@@ -33,33 +33,10 @@ services:
     command: npm run dev
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/api/healthcheck"]
-      interval: 10s
+      interval: 5s
       timeout: 5s
-      retries: 3
-      start_period: 40s
-
-  test-setup:
-    build:
-      context: .
-      dockerfile: Dockerfile.test
-    environment:
-      API_URL: http://nextjs:3000
-      DATABASE_URL: postgresql://tms_test_user:test_password@postgres:5432/tms_test_db
-    volumes:
-      - ./src:/app/src
-      - ./test:/app/test
-      - ./package.json:/app/package.json
-      - ./package-lock.json:/app/package-lock.json
-    depends_on:
-      nextjs:
-        condition: service_healthy
-    command: >
-      sh -c "
-        echo 'Waiting for API to be ready...' &&
-        wget --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 10 -O /dev/null http://nextjs:3000/api/health &&
-        echo 'API is ready!' &&
-        npm install
-      "
+      retries: 5
+      start_period: 20s
 
   test:
     build:
@@ -75,10 +52,13 @@ services:
       - ./package.json:/app/package.json
       - ./package-lock.json:/app/package-lock.json
     depends_on:
-      test-setup:
-        condition: service_completed_successfully
+      nextjs:
+        condition: service_healthy
     command: >
       sh -c "
+        echo 'Waiting for API to be ready...' &&
+        wget --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 10 -O /dev/null http://nextjs:3000/api/healthcheck &&
+        echo 'API is ready!' &&
         if [ "$${TEST_MODE}" = "watch" ]; then
           npm run test:integration:watch
         else

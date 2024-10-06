@@ -2,10 +2,20 @@ FROM node:20
 
 WORKDIR /app
 
+# Copy package.json and package-lock.json
 COPY package*.json ./
-RUN npm install
-RUN npm install pg @types/pg
 
+# Install dependencies
+RUN npm ci
+
+# Install additional dependencies for testing
+RUN npm install -D pg @types/pg
+
+# Copy the rest of the application code
 COPY . .
 
-CMD ["npm", "run", "test:integration:watch"]
+# Install wget for the healthcheck in the test service
+RUN apt-get update && apt-get install -y wget && rm -rf /var/lib/apt/lists/*
+
+# Set the default command to run tests
+CMD ["npm", "run", "test:integration"]
