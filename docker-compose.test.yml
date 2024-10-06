@@ -58,19 +58,27 @@ services:
         npm install
       "
 
-  test-watch:
+  test:
     build:
       context: .
       dockerfile: Dockerfile.test
     environment:
       API_URL: http://nextjs:3000
       DATABASE_URL: postgresql://tms_test_user:test_password@postgres:5432/tms_test_db
+      TEST_MODE: ${TEST_MODE:-watch}
     volumes:
       - .:/app
     depends_on:
       test-setup:
         condition: service_completed_successfully
-    command: ["npm", "run", "test:integration:watch"]
+    command: >
+      sh -c "
+        if [ "$${TEST_MODE}" = "watch" ]; then
+          npm run test:integration:watch
+        else
+          npm run test:integration
+        fi
+      "
     tty: true
     stdin_open: true
 

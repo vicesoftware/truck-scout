@@ -10,7 +10,7 @@
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "test:integration": "jest --config jest.config.js --detectOpenHandles --runInBand",
-    "test:integration:watch": "jest --config jest.config.js --detectOpenHandles --runInBand --watchAll"
+    "test:integration:watch": "jest --config jest.config.js --detectOpenHandles --runInBand --watch"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.1",

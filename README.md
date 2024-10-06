@@ -230,3 +230,31 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
 Note: When deploying, ensure you set up the necessary environment variables in your deployment platform.
+
+## Running Tests
+
+Our project uses Docker Compose for running integration tests. There are two modes available: watch mode for development and single-run mode for CI/CD pipelines.
+
+### Watch Mode (for development)
+
+To run tests in watch mode, which is useful during development as it re-runs tests when files change:
+
+```bash
+docker-compose -f docker-compose.test.yml up test
+```
+
+This command starts the test environment and runs tests in watch mode, which will automatically re-run tests when files are changed.
+
+### Single-Run Mode (for CI/CD)
+
+To run tests once and exit, which is suitable for CI/CD pipelines:
+
+```bash
+TEST_MODE=single docker-compose -f docker-compose.test.yml up --exit-code-from test test
+```
+
+This command sets the `TEST_MODE` environment variable to "single", which triggers a one-time test run. The `--exit-code-from test` flag ensures that the Docker Compose command exits with the same code as the test service, which is useful for CI/CD pipelines.
+
+### Note
+
+Make sure you have Docker and Docker Compose installed on your system before running these commands. The `docker-compose.test.yml` file should be present in your project root directory.
