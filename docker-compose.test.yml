@@ -32,11 +32,11 @@ services:
         condition: service_healthy
     command: npm run dev
     healthcheck:
-      test: ["CMD-SHELL", "curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/api/health | grep 200"]
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/healthcheck"]
       interval: 10s
       timeout: 5s
       retries: 3
-      start_period: 30s
+      start_period: 40s
 
   test-setup:
     build:
