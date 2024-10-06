@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   postgres:
-    image: postgres:15
+    image: postgres:15-alpine
     environment:
       POSTGRES_DB: tms_test_db
       POSTGRES_USER: tms_test_user
@@ -46,7 +46,10 @@ services:
       API_URL: http://nextjs:3000
       DATABASE_URL: postgresql://tms_test_user:test_password@postgres:5432/tms_test_db
     volumes:
-      - .:/app
+      - ./src:/app/src
+      - ./test:/app/test
+      - ./package.json:/app/package.json
+      - ./package-lock.json:/app/package-lock.json
     depends_on:
       nextjs:
         condition: service_healthy
@@ -67,7 +70,10 @@ services:
       DATABASE_URL: postgresql://tms_test_user:test_password@postgres:5432/tms_test_db
       TEST_MODE: ${TEST_MODE:-watch}
     volumes:
-      - .:/app
+      - ./src:/app/src
+      - ./test:/app/test
+      - ./package.json:/app/package.json
+      - ./package-lock.json:/app/package-lock.json
     depends_on:
       test-setup:
         condition: service_completed_successfully
