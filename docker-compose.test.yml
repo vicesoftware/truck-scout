@@ -56,9 +56,6 @@ services:
         condition: service_healthy
     command: >
       sh -c "
-        echo 'Waiting for API to be ready...' &&
-        wget --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 10 -O /dev/null http://nextjs:3000/api/healthcheck &&
-        echo 'API is ready!' &&
         if [ "$${TEST_MODE}" = "watch" ]; then
           npm run test:integration:watch
         else
