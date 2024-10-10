@@ -56,9 +56,9 @@ services:
     command: >
       sh -c "
         if [ "$${TEST_MODE}" = "watch" ]; then
-          npm run test:integration:watch
+          npm run test:api:watch
         else
-          npm run test:integration
+          npm run test:api:ci
         fi
       "
     tty: true
