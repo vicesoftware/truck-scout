@@ -10,6 +10,7 @@
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "test:api": "jest --config jest.config.js --detectOpenHandles --runInBand",
+    "test:api:ci": "jest --config jest.config.js --detectOpenHandles --runInBand",
     "test:api:watch": "jest --config jest.config.js --detectOpenHandles --runInBand --watch"
   },
   "dependencies": {
