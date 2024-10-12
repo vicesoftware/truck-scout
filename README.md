@@ -7,6 +7,7 @@
 - [Payload CMS Setup](#payload-cms-setup)
 - [Running the Application](#running-the-application)
 - [Git Flow](#git-flow)
+  - [Installing Git Flow](#installing-git-flow)
   - [Git Flow Overview](#git-flow-overview)
   - [Working with Features](#working-with-features)
   - [Releases and Hotfixes](#releases-and-hotfixes)
@@ -92,6 +93,40 @@ Truck Scout TMS is a [Next.js](https://nextjs.org/) project integrated with [Pay
 ## Git Flow
 
 We use Git Flow for managing our development workflow. Git Flow provides a structured branching model that helps streamline the process of feature development, releases, and hotfixes.
+
+### Installing Git Flow
+
+Before using Git Flow, you need to install it. Here are instructions for different operating systems:
+
+#### macOS
+Using Homebrew:
+```bash
+brew install git-flow
+```
+
+#### Linux
+For Ubuntu or Debian-based distributions:
+```bash
+sudo apt-get install git-flow
+```
+
+For Fedora:
+```bash
+sudo dnf install gitflow
+```
+
+#### Windows
+Using Chocolatey:
+```bash
+choco install gitflow-avh
+```
+
+Alternatively, you can download and install Git Flow as part of the [Git for Windows](https://gitforwindows.org/) package.
+
+After installation, you can verify that Git Flow is installed by running:
+```bash
+git flow version
+```
 
 ### Git Flow Overview
 
