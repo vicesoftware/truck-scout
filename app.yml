@@ -1,4 +1,4 @@
-name: your-nextjs-app
+name: truck-scout-tms-dev
 services:
   - name: web
     git:

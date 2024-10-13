@@ -8,12 +8,21 @@
 - [Running the Application](#running-the-application)
 - [Git Flow](#git-flow)
   - [Installing Git Flow](#installing-git-flow)
+    - [macOS](#macos)
+    - [Linux](#linux)
+    - [Windows](#windows)
   - [Git Flow Overview](#git-flow-overview)
   - [Working with Features](#working-with-features)
   - [Releases and Hotfixes](#releases-and-hotfixes)
+    - [Creating a Release](#creating-a-release)
+    - [Finishing a Release](#finishing-a-release)
+    - [Starting a Hotfix](#starting-a-hotfix)
+    - [Finishing a Hotfix](#finishing-a-hotfix)
   - [Best Practices](#best-practices)
-- [Learn More](#learn-more)
-- [Deploy on Vercel](#deploy-on-vercel)
+- [Running Tests](#running-tests)
+  - [Watch Mode (for development)](#watch-mode-for-development)
+  - [Single-Run Mode (for CI/CD)](#single-run-mode-for-cicd)
+  - [Note](#note)
 
 ## Overview
 
@@ -251,20 +260,6 @@ git branch -d hotfix/1.0.1
 - Use meaningful and descriptive names for your feature branches.
 
 For more detailed information on Git Flow commands and their usage, refer to the [Git Flow Command Cheatsheet](https://gist.github.com/JamesMGreene/cdd0ac49f90c987e45ac).
-
-## Learn More
-
-- [Next.js Documentation](https://nextjs.org/docs)
-- [Payload CMS Documentation](https://payloadcms.com/docs)
-- [PostgreSQL Documentation](https://www.postgresql.org/docs/)
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
-
-Note: When deploying, ensure you set up the necessary environment variables in your deployment platform.
 
 ## Running Tests
 
