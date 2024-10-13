@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: tms_test_db
+      POSTGRES_USER: tms_test_user
+      POSTGRES_PASSWORD: test_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tms_test_user -d tms_test_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  nextjs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_URL: postgresql://tms_test_user:test_password@postgres:5432/tms_test_db
+      NODE_ENV: development
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: npm run dev
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/healthcheck"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+      target: runner
+    environment:
+      API_URL: http://nextjs:3000
+      DATABASE_URL: postgresql://tms_test_user:test_password@postgres:5432/tms_test_db
+      TEST_MODE: ${TEST_MODE:-watch}
+    volumes:
+      - ./src:/app/src
+      - ./test:/app/test
+    depends_on:
+      nextjs:
+        condition: service_healthy
+    command: >
+      sh -c "
+        if [ "$${TEST_MODE}" = "watch" ]; then
+          npm run test:api:watch
+        else
+          npm run test:api:ci
+        fi
+      "
+    tty: true
+    stdin_open: true
+
+volumes:
+  postgres_data:
