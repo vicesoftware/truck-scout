@@ -9,9 +9,9 @@
     "lint": "next lint",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
-    "test:api": "jest --config jest.config.js --detectOpenHandles --runInBand",
-    "test:api:ci": "jest --config jest.config.js --detectOpenHandles --runInBand",
-    "test:api:watch": "jest --config jest.config.js --detectOpenHandles --runInBand --watch",
+    "test:api": "dotenv -e .env.test -- jest --config jest.config.js --detectOpenHandles --runInBand",
+    "test:api:ci": "dotenv -e .env.test -- jest --config jest.config.js --detectOpenHandles --runInBand",
+    "test:api:watch": "dotenv -e .env.test -- jest --config jest.config.js --detectOpenHandles --runInBand --watch",
     "test:start-db": "docker compose -f docker-compose.test.yml up -d postgres"
   },
   "dependencies": {
@@ -62,7 +62,8 @@
     "style-loader": "^4.0.0",
     "ts-jest": "^29.1.2",
     "webpack": "^5.95.0",
-    "webpack-cli": "^5.1.4"
+    "webpack-cli": "^5.1.4",
+    "dotenv-cli": "^7.4.1"
   },
   "engines": {
     "node": "20.x",
