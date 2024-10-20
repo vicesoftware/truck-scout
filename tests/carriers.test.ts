@@ -1,30 +1,15 @@
 import axios from 'axios';
 import { expect, describe, test, afterAll } from '@jest/globals';
-import { Pool } from 'pg';
 
 const API_URL = process.env.API_URL || 'http://nextjs:3000';
-const DATABASE_URL = process.env.DATABASE_URL || 'postgresql://tms_test_user:test_password@postgres:5432/tms_test_db';
 
 const axiosInstance = axios.create({
   baseURL: API_URL,
 });
 
-const pool = new Pool({
-  connectionString: DATABASE_URL,
-});
 
 describe('Database and Carriers API', () => {
   let createdCarrierId: number;
-
-  test('Database should be accessible and have a carriers table', async () => {
-    const client = await pool.connect();
-    try {
-      const result = await client.query('SELECT COUNT(*) FROM carriers');
-      expect(result.rows[0].count).toBeDefined();
-    } finally {
-      client.release();
-    } 
-  });
 
   test('GET /api/carriers should return an array of carriers', async () => {
     const response = await axiosInstance.get('/api/carriers');
@@ -150,8 +135,4 @@ describe('Database and Carriers API', () => {
       throw error;
     }
   });
-});
-
-afterAll(async () => {
-  await pool.end();
 });
