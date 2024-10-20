@@ -73,44 +73,25 @@ describe('Database and Carriers API', () => {
       const createResponse = await axiosInstance.post('/api/carriers', newCarrier);
       expect(createResponse.status).toBe(201);
       carrierToDeleteId = createResponse.data.id;
-      console.log(`Created carrier with ID: ${carrierToDeleteId}`);
-
       // Verify the carrier exists
       const getResponse = await axiosInstance.get(`/api/carriers/${carrierToDeleteId}`);
       expect(getResponse.status).toBe(200);
-      console.log('Carrier exists before deletion');
 
       // Now attempt to delete the carrier
       const deleteResponse = await axiosInstance.delete(`/api/carriers/${carrierToDeleteId}`);
       expect(deleteResponse.status).toBe(200);
       expect(deleteResponse.data.message).toBe('Carrier deleted successfully');
 
-      console.log('Carrier deleted successfully');
-
       // Verify the carrier no longer exists
       try {
         await axiosInstance.get(`/api/carriers/${carrierToDeleteId}`);
         throw new Error('Carrier still exists after deletion');
       } catch (error) {
-        if (axios.isAxiosError(error) && error.response?.status === 404) {
-          console.log('Carrier successfully deleted and not found');
-        } else {
+        if (!(axios.isAxiosError(error) && error.response?.status === 404)) {
           throw error;
         }
       }
     } catch (error) {
-      console.error('Error in DELETE test:');
-      
-      if (axios.isAxiosError(error)) {
-        console.error('Response status:', error.response?.status);
-        console.error('Response data:', error.response?.data);
-        console.error('Error message:', error.message);
-      } else if (error instanceof Error) {
-        console.error('Error message:', error.message);
-      } else {
-        console.error('Unknown error:', error);
-      }
-
       // If the error is in the delete operation, try to get the carrier to see if it still exists
       if (carrierToDeleteId) {
         try {
