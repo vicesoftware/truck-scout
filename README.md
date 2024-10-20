@@ -38,7 +38,7 @@ Truck Scout TMS is a [Next.js](https://nextjs.org/) project integrated with [Pay
 2. Set up environment variables:
    Create a `.env` file in the project root with the following content:
    ```
-   DATABASE_URI=postgres://tms_user:secure_password_here@localhost:5432/tms_db
+   DATABASE_URI=postgres://tms_user:secure_password_here@localhost:5432/tms_test_db
    PAYLOAD_SECRET=your_long_random_string_here
    ```
    Replace the values with your desired settings. Note that the database credentials in the `DATABASE_URI` should match those defined in your `docker-compose.yml` file.
