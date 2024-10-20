@@ -11,7 +11,8 @@
     "cypress:run": "cypress run",
     "test:api": "jest --config jest.config.js --detectOpenHandles --runInBand",
     "test:api:ci": "jest --config jest.config.js --detectOpenHandles --runInBand",
-    "test:api:watch": "jest --config jest.config.js --detectOpenHandles --runInBand --watch"
+    "test:api:watch": "jest --config jest.config.js --detectOpenHandles --runInBand --watch",
+    "test:start-db": "docker compose -f docker-compose.test.yml up -d postgres"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.1",
