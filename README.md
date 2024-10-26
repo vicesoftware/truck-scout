@@ -280,10 +280,22 @@ git branch -d hotfix/1.0.1
 
 For more detailed information on Git Flow commands and their usage, refer to the [Git Flow Command Cheatsheet](https://gist.github.com/JamesMGreene/cdd0ac49f90c987e45ac).
 
-### Running Tests
+## Running Tests
 
-#### Quick Local Development (Recommended)
-This method requires three terminal windows for full visibility and control:
+### Docker Environment (Recommended for CI/CD)
+```bash
+# Run tests once (CI mode)
+npm run test:api:ci
+
+# Run tests in watch mode
+npm run test:api:watch
+
+# Clean up test containers when done
+npm run test:api:clean
+```
+
+### Local Development Environment
+For quick local development, you'll need three terminal windows:
 
 1. Start the test database:
 ```bash
@@ -310,11 +322,4 @@ The test environment uses `.env.test.local` for configuration. Make sure this fi
 DATABASE_URL=postgresql://tms_test_user:test_password@localhost:5433/tms_test_db
 NEXT_PUBLIC_API_URL=http://localhost:3000
 TEST_ENV=local
-```
-
-#### Full Docker Environment
-For CI or final verification:
-```bash
-docker compose -f docker-compose.test.yml up --exit-code-from test test
-docker compose -f docker-compose.test.yml down
 ```
