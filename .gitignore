@@ -40,7 +40,5 @@ pgdata/
 cypress/videos
 cypress/screenshots
 test_pgdata/
-
-# aider
 .aider*
-
+.env*
