@@ -280,78 +280,33 @@ git branch -d hotfix/1.0.1
 
 For more detailed information on Git Flow commands and their usage, refer to the [Git Flow Command Cheatsheet](https://gist.github.com/JamesMGreene/cdd0ac49f90c987e45ac).
 
-## Running Tests
+### Running Tests
 
-Our project uses Docker Compose for running integration tests. There are two modes available: watch mode for development and single-run mode for CI/CD pipelines.
+We provide two ways to run the API tests:
 
-### Watch Mode (for development)
-
-To run tests in watch mode, which is useful during development as it re-runs tests when files change:
-
-```bash
-docker-compose -f docker-compose.test.yml up test
-```
-
-This command starts the test environment and runs tests in watch mode, which will automatically re-run tests when files are changed.
-
-### Single-Run Mode (for CI/CD)
-
-To run tests once and exit, which is suitable for CI/CD pipelines:
+#### Quick Local Development (Recommended)
+This method runs only the test database in Docker while running tests directly on your machine, providing the fastest feedback loop during development:
 
 ```bash
-TEST_MODE=single docker-compose -f docker-compose.test.yml up --exit-code-from test test
+# Start the test database
+npm run test:db:up
+
+# Run tests
+npm run test:api:local
+
+# Clean up when done
+npm run test:db:down
 ```
 
-This command sets the `TEST_MODE` environment variable to "single", which triggers a one-time test run. The `--exit-code-from test` flag ensures that the Docker Compose command exits with the same code as the test service, which is useful for CI/CD pipelines.
+#### Full Docker Environment
+This method runs everything in Docker containers, matching the CI environment exactly:
 
-### Running Tests Locally with Docker
+```bash
+# Run full test suite in Docker
+docker compose -f docker-compose.test.yml up --exit-code-from test test
 
-There are two ways to run tests locally with a Docker-managed PostgreSQL database:
+# Clean up when done
+docker compose -f docker-compose.test.yml down
+```
 
-#### 1. Using Docker Compose for PostgreSQL Only (Recommended for Development)
-
-This method runs only the PostgreSQL container while running the tests directly on your machine:
-
-1. Start the test database:
-   ```bash
-   npm run test:db:up
-   ```
-
-2. Start the Next.js development server in test mode:
-   ```bash
-   npm run dev:test
-   ```
-
-3. Run the tests:
-   ```bash
-   # Run tests once
-   npm run test:api:local
-   
-   # Or run tests in watch mode
-   npm run test:api:local:watch
-   ```
-
-4. When finished, clean up:
-   ```bash
-   npm run test:db:down
-   ```
-
-#### 2. Using Full Docker Compose Test Environment
-
-This method runs everything in Docker containers, similar to the CI environment:
-
-1. Run the entire test suite once:
-   ```bash
-   docker compose -f docker-compose.test.yml up --exit-code-from test test
-   ```
-
-2. Clean up when finished:
-   ```bash
-   docker compose -f docker-compose.test.yml down
-   ```
-
-Choose the first method during development for faster feedback cycles and better debugging capabilities. Use the second method to verify everything works in a containerized environment before pushing changes.
-
-### Note
-
-Make sure you have Docker and Docker Compose installed on your system before running these commands. The `docker-compose.test.yml` file should be present in your project root directory.
+Choose the Quick Local method during development for faster feedback cycles. Use the Full Docker method before pushing changes to verify everything works in the CI environment.
