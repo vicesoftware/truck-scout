@@ -40,3 +40,5 @@ pgdata/
 cypress/videos
 cypress/screenshots
 test_pgdata/
+.aider*
+.env*
