@@ -9,11 +9,8 @@
     "lint": "next lint",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
-    "test:api": "jest --config jest.config.js --detectOpenHandles --runInBand",
-    "test:api:ci": "jest --config jest.config.js --detectOpenHandles --runInBand",
-    "test:api:watch": "jest --config jest.config.js --detectOpenHandles --runInBand --watch",
+    "dev:test": "NODE_ENV=test next dev",
     "test:api:local": "TEST_ENV=local jest --config jest.config.js --detectOpenHandles --runInBand",
-    "test:api:local:watch": "TEST_ENV=local jest --config jest.config.js --detectOpenHandles --runInBand --watch",
     "test:db:up": "docker compose -f docker-compose.test.local.yml up -d",
     "test:db:down": "docker compose -f docker-compose.test.local.yml down"
   },
