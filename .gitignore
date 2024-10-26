@@ -42,3 +42,4 @@ cypress/screenshots
 test_pgdata/
 .aider*
 .env*
+.env
