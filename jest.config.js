@@ -4,7 +4,7 @@ module.exports = {
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   globals: {
     'ts-jest': {
-      tsconfig: 'tsconfig.json'  // Changed from tsconfig.jest.json to tsconfig.json
+      tsconfig: 'tsconfig.json'
     }
   },
   moduleNameMapper: {
@@ -16,4 +16,9 @@ module.exports = {
   clearMocks: true,
   resetMocks: true,
   restoreMocks: true,
+  testEnvironment: 'node',
+  testEnvironmentOptions: {
+    NODE_ENV: 'test',
+    API_URL: 'http://localhost:3000'
+  },
 };

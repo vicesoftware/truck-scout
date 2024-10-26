@@ -46,8 +46,10 @@ export const dynamic = 'force-dynamic';
 
 export async function GET() {
     const response = await checkDatabaseConnection();
+    const statusCode = response.connected ? 200 : 503;
     return NextResponse.json({
-        status: 'OK',
-        database: response.connected ? 'Connected' : 'Not Connected'
-    }, { status: response.connected ? 200 : 503 });
+        status: response.connected ? 'OK' : 'Error',
+        database: response.connected ? 'Connected' : 'Not Connected',
+        error: response.error
+    }, { status: statusCode });
 }

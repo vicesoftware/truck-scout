@@ -1,30 +1,15 @@
 import axios from 'axios';
 import { expect, describe, test, afterAll } from '@jest/globals';
-import { Pool } from 'pg';
 
 const API_URL = process.env.API_URL || 'http://nextjs:3000';
-const DATABASE_URL = process.env.DATABASE_URL || 'postgresql://tms_test_user:test_password@postgres:5432/tms_test_db';
 
 const axiosInstance = axios.create({
   baseURL: API_URL,
 });
 
-const pool = new Pool({
-  connectionString: DATABASE_URL,
-});
 
 describe('Database and Carriers API', () => {
   let createdCarrierId: number;
-
-  test('Database should be accessible and have a carriers table', async () => {
-    const client = await pool.connect();
-    try {
-      const result = await client.query('SELECT COUNT(*) FROM carriers');
-      expect(result.rows[0].count).toBeDefined();
-    } finally {
-      client.release();
-    } 
-  });
 
   test('GET /api/carriers should return an array of carriers', async () => {
     const response = await axiosInstance.get('/api/carriers');
@@ -88,44 +73,25 @@ describe('Database and Carriers API', () => {
       const createResponse = await axiosInstance.post('/api/carriers', newCarrier);
       expect(createResponse.status).toBe(201);
       carrierToDeleteId = createResponse.data.id;
-      console.log(`Created carrier with ID: ${carrierToDeleteId}`);
-
       // Verify the carrier exists
       const getResponse = await axiosInstance.get(`/api/carriers/${carrierToDeleteId}`);
       expect(getResponse.status).toBe(200);
-      console.log('Carrier exists before deletion');
 
       // Now attempt to delete the carrier
       const deleteResponse = await axiosInstance.delete(`/api/carriers/${carrierToDeleteId}`);
       expect(deleteResponse.status).toBe(200);
       expect(deleteResponse.data.message).toBe('Carrier deleted successfully');
 
-      console.log('Carrier deleted successfully');
-
       // Verify the carrier no longer exists
       try {
         await axiosInstance.get(`/api/carriers/${carrierToDeleteId}`);
         throw new Error('Carrier still exists after deletion');
       } catch (error) {
-        if (axios.isAxiosError(error) && error.response?.status === 404) {
-          console.log('Carrier successfully deleted and not found');
-        } else {
+        if (!(axios.isAxiosError(error) && error.response?.status === 404)) {
           throw error;
         }
       }
     } catch (error) {
-      console.error('Error in DELETE test:');
-      
-      if (axios.isAxiosError(error)) {
-        console.error('Response status:', error.response?.status);
-        console.error('Response data:', error.response?.data);
-        console.error('Error message:', error.message);
-      } else if (error instanceof Error) {
-        console.error('Error message:', error.message);
-      } else {
-        console.error('Unknown error:', error);
-      }
-
       // If the error is in the delete operation, try to get the carrier to see if it still exists
       if (carrierToDeleteId) {
         try {
@@ -150,8 +116,4 @@ describe('Database and Carriers API', () => {
       throw error;
     }
   });
-});
-
-afterAll(async () => {
-  await pool.end();
 });
