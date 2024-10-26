@@ -11,7 +11,11 @@
     "cypress:run": "cypress run",
     "test:api": "jest --config jest.config.js --detectOpenHandles --runInBand",
     "test:api:ci": "jest --config jest.config.js --detectOpenHandles --runInBand",
-    "test:api:watch": "jest --config jest.config.js --detectOpenHandles --runInBand --watch"
+    "test:api:watch": "jest --config jest.config.js --detectOpenHandles --runInBand --watch",
+    "test:api:local": "TEST_ENV=local jest --config jest.config.js --detectOpenHandles --runInBand",
+    "test:api:local:watch": "TEST_ENV=local jest --config jest.config.js --detectOpenHandles --runInBand --watch",
+    "test:db:up": "docker compose -f docker-compose.test.local.yml up -d",
+    "test:db:down": "docker compose -f docker-compose.test.local.yml down"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.1",
