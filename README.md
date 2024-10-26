@@ -285,6 +285,54 @@ TEST_MODE=single docker-compose -f docker-compose.test.yml up --exit-code-from t
 
 This command sets the `TEST_MODE` environment variable to "single", which triggers a one-time test run. The `--exit-code-from test` flag ensures that the Docker Compose command exits with the same code as the test service, which is useful for CI/CD pipelines.
 
+### Running Tests Locally with Docker
+
+There are two ways to run tests locally with a Docker-managed PostgreSQL database:
+
+#### 1. Using Docker Compose for PostgreSQL Only (Recommended for Development)
+
+This method runs only the PostgreSQL container while running the tests directly on your machine:
+
+1. Start the test database:
+   ```bash
+   npm run test:db:up
+   ```
+
+2. Start the Next.js development server in test mode:
+   ```bash
+   npm run dev:test
+   ```
+
+3. Run the tests:
+   ```bash
+   # Run tests once
+   npm run test:api:local
+   
+   # Or run tests in watch mode
+   npm run test:api:local:watch
+   ```
+
+4. When finished, clean up:
+   ```bash
+   npm run test:db:down
+   ```
+
+#### 2. Using Full Docker Compose Test Environment
+
+This method runs everything in Docker containers, similar to the CI environment:
+
+1. Run the entire test suite once:
+   ```bash
+   docker compose -f docker-compose.test.yml up --exit-code-from test test
+   ```
+
+2. Clean up when finished:
+   ```bash
+   docker compose -f docker-compose.test.yml down
+   ```
+
+Choose the first method during development for faster feedback cycles and better debugging capabilities. Use the second method to verify everything works in a containerized environment before pushing changes.
+
 ### Note
 
 Make sure you have Docker and Docker Compose installed on your system before running these commands. The `docker-compose.test.yml` file should be present in your project root directory.
