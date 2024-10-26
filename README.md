@@ -282,31 +282,39 @@ For more detailed information on Git Flow commands and their usage, refer to the
 
 ### Running Tests
 
-We provide two ways to run the API tests:
-
 #### Quick Local Development (Recommended)
-This method runs only the test database in Docker while running tests directly on your machine, providing the fastest feedback loop during development:
+This method requires three terminal windows for full visibility and control:
 
+1. Start the test database:
 ```bash
-# Start the test database
 npm run test:db:up
+```
 
-# Run tests
+2. Start the Next.js dev server in test mode:
+```bash
+npm run dev:test
+```
+
+3. Run the tests:
+```bash
 npm run test:api:local
+```
 
-# Clean up when done
+4. When finished, clean up:
+```bash
 npm run test:db:down
 ```
 
-#### Full Docker Environment
-This method runs everything in Docker containers, matching the CI environment exactly:
-
-```bash
-# Run full test suite in Docker
-docker compose -f docker-compose.test.yml up --exit-code-from test test
-
-# Clean up when done
-docker compose -f docker-compose.test.yml down
+The test environment uses `.env.test.local` for configuration. Make sure this file contains:
+```env
+DATABASE_URL=postgresql://tms_test_user:test_password@localhost:5433/tms_test_db
+NEXT_PUBLIC_API_URL=http://localhost:3000
+TEST_ENV=local
 ```
 
-Choose the Quick Local method during development for faster feedback cycles. Use the Full Docker method before pushing changes to verify everything works in the CI environment.
+#### Full Docker Environment
+For CI or final verification:
+```bash
+docker compose -f docker-compose.test.yml up --exit-code-from test test
+docker compose -f docker-compose.test.yml down
+```
