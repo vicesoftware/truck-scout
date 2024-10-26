@@ -166,21 +166,40 @@ To start working on a new feature:
 
 2. Work on your feature, committing changes as usual.
 
-3. When the feature is complete, finish it:
+3. Publish your feature branch to the remote repository:
    ```bash
-   git flow feature finish feature_name
+   git flow feature publish feature_name
    ```
    <details>
    <summary>💡 Equivalent Git commands</summary>
 
    ```bash
-   git checkout develop
-   git merge --no-ff feature/feature_name
-   git branch -d feature/feature_name
+   git push -u origin feature/feature_name
    ```
+
+   This pushes your feature branch to the remote repository and sets up tracking.
    </details>
 
-This will merge the feature branch into `develop` and delete the feature branch.
+4. Open a Pull Request:
+   - Go to your repository on GitHub/GitLab
+   - Create a new Pull Request from your feature branch into `develop`
+   - Add a descriptive title and description
+   - Request reviews from team members
+   - Once approved and all checks pass, merge using the platform's UI
+
+When the feature is complete and the PR is merged, clean up locally:
+```bash
+git flow feature finish feature_name
+```
+<details>
+<summary>💡 Equivalent Git commands</summary>
+
+```bash
+git checkout develop
+git merge --no-ff feature/feature_name
+git branch -d feature/feature_name
+```
+</details>
 
 ### Releases and Hotfixes
 
