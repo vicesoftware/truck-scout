@@ -14,8 +14,8 @@ export default function RootLayout({
   const [queryClient] = useState(() => new QueryClient())
 
   return (
-    <html lang="en">
-      <body>
+    <html lang="en" suppressHydrationWarning>
+      <body suppressHydrationWarning>
         <QueryClientProvider client={queryClient}>
           <Layout>{children}</Layout>
           <ReactQueryDevtools initialIsOpen={false} />
