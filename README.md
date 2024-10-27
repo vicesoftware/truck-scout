@@ -261,6 +261,28 @@ git branch -d hotfix/1.0.1
 
 For more detailed information on Git Flow commands and their usage, refer to the [Git Flow Command Cheatsheet](https://gist.github.com/JamesMGreene/cdd0ac49f90c987e45ac).
 
+## AI-Assisted Development
+
+This project uses OpenAI-powered development tools to enhance productivity. To get started:
+
+1. Install aider:
+   ```bash
+   pip install aider-chat
+   ```
+
+2. Create an aider.conf.yml file in the project root:
+   ```yaml
+   model: gpt-4
+   api_key: your_openai_api_key_here
+   ```
+
+3. Start an AI-assisted coding session:
+   ```bash
+   aider .
+   ```
+
+Note: Keep your API key secure and never commit it to version control.
+
 ## Running Tests
 
 ### Docker Environment (Recommended for CI/CD)

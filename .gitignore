@@ -41,3 +41,5 @@ cypress/videos
 cypress/screenshots
 test_pgdata/
 .aider*
+# AI development configuration
+aider.conf.yml
