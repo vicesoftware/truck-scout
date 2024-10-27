@@ -292,13 +292,46 @@ This project leverages Anthropic's Claude AI for development assistance through 
    aider --sonnet --architect --editor-model claude-3-5-sonnet-20241022
    ```
 
-2. Begin chatting with Claude about your code. You can:
-   - Ask questions about the codebase
-   - Request code changes or improvements
-   - Get help with debugging
-   - Generate new features or tests
+2. Common Aider Commands:
+   ```
+   /ask    - Ask questions about the code without making changes
+             Example: /ask How does the carrier type interface work?
 
-3. Review the proposed changes before accepting them. The configured test command will run automatically after changes.
+   /add    - Add files to the chat context for Claude to analyze
+             Example: /add src/components/carriers/CarrierList.tsx
+
+   /reset  - Clear the chat context and start fresh
+             Example: /reset
+
+   /git    - Run git commands or check status
+             Example: /git status
+             Example: /git commit -m "Update carrier interface"
+
+   /test   - Run the configured test suite
+             Example: /test
+   ```
+
+3. Workflow Examples:
+   - Code Analysis:
+     ```
+     /add src/components/CarrierForm.tsx
+     /ask Can you explain how form validation works in this component?
+     ```
+   
+   - Making Changes:
+     ```
+     /add src/types/carrier.ts
+     I need to add a new field called 'insurance_expiry' to the carrier type
+     ```
+   
+   - Testing Changes:
+     ```
+     /test
+     /git status
+     /git commit -m "Add insurance expiry field to carrier type"
+     ```
+
+4. Review all proposed changes before accepting them. The configured test command will run automatically after changes.
 
 ### Best Practices
 
