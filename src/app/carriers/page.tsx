@@ -19,15 +19,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
-interface Carrier {
-  id: number;
-  name: string;
-  mc_number: string;
-  dot_number: string;
-  phone: string;
-  status: string;
-  rating: number;
-}
+import { Carrier } from '@/types/carrier';
 
 export default function CarriersPage() {
   const [carriers, setCarriers] = useState<Carrier[]>([]);
