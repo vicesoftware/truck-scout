@@ -267,7 +267,7 @@ For more detailed information on Git Flow commands and their usage, refer to the
 
 ## AI-Assisted Development
 
-This project leverages OpenAI-powered development tools to enhance productivity and code quality. The primary tool we use is Aider, an AI-powered coding assistant that integrates with your terminal.
+This project leverages Anthropic's Claude AI for development assistance through the Aider tool, enhancing productivity and code quality.
 
 ### Setup
 
@@ -278,27 +278,27 @@ This project leverages OpenAI-powered development tools to enhance productivity 
 
 2. Create an `aider.conf.yml` file in the project root:
    ```yaml
-   model: gpt-4
-   api_key: your_openai_api_key_here
-   edit_format: simple
+   anthropic_api_key: your_anthropic_api_key_here
+   auto-test: true
+   test-cmd: npm run test:local:all
    ```
 
-3. Add your OpenAI API key to the configuration file. You can get an API key from the [OpenAI platform](https://platform.openai.com/api-keys).
+3. Add your Anthropic API key to the configuration file or set it as an environment variable `ANTHROPIC_API_KEY`. You can get an API key from the [Anthropic Console](https://console.anthropic.com/).
 
 ### Usage
 
 1. Start an AI-assisted coding session:
    ```bash
-   aider .
+   aider --sonnet --architect --editor-model claude-3-5-sonnet-20241022
    ```
 
-2. Begin chatting with the AI assistant about your code. You can:
+2. Begin chatting with Claude about your code. You can:
    - Ask questions about the codebase
    - Request code changes or improvements
    - Get help with debugging
    - Generate new features or tests
 
-3. Review the proposed changes before accepting them.
+3. Review the proposed changes before accepting them. The configured test command will run automatically after changes.
 
 ### Best Practices
 
