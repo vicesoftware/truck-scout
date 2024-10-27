@@ -55,14 +55,7 @@ services:
     depends_on:
       nextjs:
         condition: service_healthy
-    command: >
-      sh -c "
-        if [ "$${TEST_MODE}" = "watch" ]; then
-          npm run test:api:watch
-        else
-          npm run test:api:ci
-        fi
-      "
+    command: npm run test:api:${TEST_MODE:-watch}
 
 volumes:
   postgres_data:
