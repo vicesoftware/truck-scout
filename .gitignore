@@ -43,3 +43,6 @@ test_pgdata/
 .aider*
 # AI development configuration
 aider.conf.yml
+
+# temp download directory
+cypress/downloads/carriers_export.csv
