@@ -263,25 +263,50 @@ For more detailed information on Git Flow commands and their usage, refer to the
 
 ## AI-Assisted Development
 
-This project uses OpenAI-powered development tools to enhance productivity. To get started:
+This project leverages OpenAI-powered development tools to enhance productivity and code quality. The primary tool we use is Aider, an AI-powered coding assistant that integrates with your terminal.
 
-1. Install aider:
+### Setup
+
+1. Install Aider using pip:
    ```bash
    pip install aider-chat
    ```
 
-2. Create an aider.conf.yml file in the project root:
+2. Create an `aider.conf.yml` file in the project root:
    ```yaml
    model: gpt-4
    api_key: your_openai_api_key_here
+   edit_format: simple
    ```
 
-3. Start an AI-assisted coding session:
+3. Add your OpenAI API key to the configuration file. You can get an API key from the [OpenAI platform](https://platform.openai.com/api-keys).
+
+### Usage
+
+1. Start an AI-assisted coding session:
    ```bash
    aider .
    ```
 
-Note: Keep your API key secure and never commit it to version control.
+2. Begin chatting with the AI assistant about your code. You can:
+   - Ask questions about the codebase
+   - Request code changes or improvements
+   - Get help with debugging
+   - Generate new features or tests
+
+3. Review the proposed changes before accepting them.
+
+### Best Practices
+
+- Keep your API key secure and never commit it to version control
+- Use specific, clear prompts for best results
+- Review all AI-suggested changes carefully
+- Commit changes regularly
+- Use version control to track AI-assisted modifications
+
+### Note
+
+The `.gitignore` file is already configured to exclude the `aider.conf.yml` file to prevent accidentally committing your API key.
 
 ## Running Tests
 
