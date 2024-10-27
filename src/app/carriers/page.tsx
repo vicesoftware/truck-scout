@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Plus, Search, MoreHorizontal, Mail, DollarSign, FileText, Users, CheckCircle, Clock, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -18,16 +18,17 @@ import { saveAs } from 'file-saver';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-
-import { Carrier } from '@/types/carrier';
+import { useCarriers, useCarrierMutations } from './queries'
+import { Carrier } from '@/types/carrier'
 
 export default function CarriersPage() {
-  const [carriers, setCarriers] = useState<Carrier[]>([]);
+  const { data: carriers = [], isLoading } = useCarriers();
+  const { createCarrier: createCarrierMutation, updateCarrier: updateCarrierMutation, deleteCarrier: deleteCarrierMutation } = useCarrierMutations();
+  
   const [editingCarrier, setEditingCarrier] = useState<Carrier | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [carriersPerPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState('');
-
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [formData, setFormData] = useState<Omit<Carrier, 'id'>>({
     name: '',
@@ -39,57 +40,15 @@ export default function CarriersPage() {
   });
   const [errors, setErrors] = useState<Partial<Omit<Carrier, 'id'>>>({});
 
-  useEffect(() => {
-    fetchCarriers();
-  }, []);
-
-  const fetchCarriers = async () => {
-    const response = await fetch('/api/carriers');
-    const data = await response.json();
-    console.log(JSON.stringify(data));
-    if (Array.isArray(data)) {
-      setCarriers(data);
-    } else {
-      console.error('Failed to fetch carriers:', data);
-      setCarriers([]);
-    }
-  };
-
-  const createCarrier = async (carrierData: Omit<Carrier, 'id'>) => {
-    const response = await fetch('/api/carriers', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(carrierData),
-    });
-    if (response.ok) {
-      fetchCarriers();
-    } else {
-      console.error('Failed to create carrier');
-    }
-  };
-
-  const updateCarrier = async (carrierData: Carrier) => {
-    const response = await fetch(`/api/carriers/${carrierData.id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(carrierData),
-    });
-    if (response.ok) {
-      setEditingCarrier(null);
-      fetchCarriers();
-    } else {
-      console.error('Failed to update carrier');
-    }
-  };
+  if (isLoading) {
+    return <div className="p-6">Loading carriers...</div>;
+  }
 
   const deleteCarrier = async (id: number) => {
-    const response = await fetch(`/api/carriers/${id}`, {
-      method: 'DELETE',
-    });
-    if (response.ok) {
-      fetchCarriers();
-    } else {
-      console.error('Failed to delete carrier');
+    try {
+      await deleteCarrierMutation.mutateAsync(id);
+    } catch (error) {
+      console.error('Failed to delete carrier:', error);
     }
   };
 
@@ -147,21 +106,25 @@ export default function CarriersPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (validateForm()) {
-      if (editingCarrier) {
-        await updateCarrier({ ...formData, id: editingCarrier.id });
-      } else {
-        await createCarrier(formData);
+      try {
+        if (editingCarrier) {
+          await updateCarrierMutation.mutateAsync({ ...formData, id: editingCarrier.id });
+        } else {
+          await createCarrierMutation.mutateAsync(formData);
+        }
+        setIsDialogOpen(false);
+        setFormData({
+          name: '',
+          mc_number: '',
+          dot_number: '',
+          phone: '',
+          status: 'Pending',
+          rating: 0
+        });
+        setEditingCarrier(null);
+      } catch (error) {
+        console.error('Failed to save carrier:', error);
       }
-      setIsDialogOpen(false);
-      setFormData({
-        name: '',
-        mc_number: '',
-        dot_number: '',
-        phone: '',
-        status: 'Pending',
-        rating: 0
-      });
-      setEditingCarrier(null);
     }
   };
 
