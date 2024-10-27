@@ -4,7 +4,7 @@ module.exports = {
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   globals: {
     'ts-jest': {
-      tsconfig: 'tsconfig.json'  // Changed from tsconfig.jest.json to tsconfig.json
+      tsconfig: 'tsconfig.json'
     }
   },
   moduleNameMapper: {
@@ -16,4 +16,7 @@ module.exports = {
   clearMocks: true,
   resetMocks: true,
   restoreMocks: true,
+  maxWorkers: process.env.JEST_WORKERS || '50%',
+  workerIdleMemoryLimit: '512MB',
+  random: true,
 };
