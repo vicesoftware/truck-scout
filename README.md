@@ -19,10 +19,14 @@
     - [Starting a Hotfix](#starting-a-hotfix)
     - [Finishing a Hotfix](#finishing-a-hotfix)
   - [Best Practices](#best-practices)
-- [Running Tests](#running-tests)
-  - [Watch Mode (for development)](#watch-mode-for-development)
-  - [Single-Run Mode (for CI/CD)](#single-run-mode-for-cicd)
+- [AI-Assisted Development](#ai-assisted-development)
+  - [Setup](#setup)
+  - [Usage](#usage)
+  - [Best Practices](#best-practices-1)
   - [Note](#note)
+- [Running Tests](#running-tests)
+  - [Docker Environment (Recommended for CI/CD)](#docker-environment-recommended-for-cicd)
+  - [Local Development Environment](#local-development-environment)
 
 ## Overview
 
