@@ -14,7 +14,7 @@
   - [Usage](#usage)
   - [Best Practices](#best-practices)
   - [Note](#note)
-- [Git Flow](#git-flow)
+- [Process for Git Flow](#process-for-git-flow)
   - [Installing Git Flow](#installing-git-flow)
     - [macOS](#macos)
     - [Linux](#linux)
@@ -229,7 +229,7 @@ This project leverages Anthropic's Claude AI for development assistance through 
 
 The `.gitignore` file is already configured to exclude the `aider.conf.yml` file to prevent accidentally committing your API key.
 
-## Git Flow
+## Process for Git Flow
 
 We use Git Flow for managing our development workflow. Git Flow provides a structured branching model that helps streamline the process of feature development, releases, and hotfixes.
 
