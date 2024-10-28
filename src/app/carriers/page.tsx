@@ -22,7 +22,6 @@ import { useCarriers, useCarrierMutations } from './queries'
 import { Carrier } from '@/types/carrier'
 
 export default function CarriersPage() {
-  console.log("Rendering CarriersPage:");
   const { data: carriers = [], isLoading } = useCarriers();
   const { createCarrier: createCarrierMutation, updateCarrier: updateCarrierMutation, deleteCarrier: deleteCarrierMutation } = useCarrierMutations();
   
