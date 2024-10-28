@@ -35,8 +35,6 @@ import { Carrier } from '@/types/carrier'
 
 export default function CarriersPage() {
   const { data: carriers = [], isLoading } = useCarriers();
-  console.log('Component render - isLoading:', isLoading);
-  console.log('Component render - carriers:', carriers);
   const { createCarrier: createCarrierMutation, updateCarrier: updateCarrierMutation, deleteCarrier: deleteCarrierMutation } = useCarrierMutations();
   
   const [editingCarrier, setEditingCarrier] = useState<Carrier | null>(null);
@@ -55,10 +53,8 @@ export default function CarriersPage() {
   const [errors, setErrors] = useState<Partial<Omit<Carrier, 'id'>>>({});
 
   if (isLoading) {
-    console.log('Rendering loading state...');
     return <div className="p-6">Loading carriers...</div>;
   }
-  console.log('Rendering carriers table...');
 
   const deleteCarrier = async (id: number) => {
     try {
