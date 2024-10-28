@@ -7,11 +7,14 @@ export function useCarriers() {
   return useQuery({
     queryKey: CARRIERS_QUERY_KEY,
     queryFn: async (): Promise<Carrier[]> => {
+      console.log('Starting carrier fetch');
       const response = await fetch('/api/carriers');
+      console.log('Got response:', response.status);
       if (!response.ok) {
         throw new Error('Failed to fetch carriers');
       }
       const data = await response.json();
+      console.log('Parsed data:', data);
       return data;
     }
   });
