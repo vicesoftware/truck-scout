@@ -12,7 +12,8 @@ import {
   CheckCircle, 
   Clock, 
   ChevronLeft, 
-  ChevronRight 
+  ChevronRight,
+  X 
 } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -206,6 +207,15 @@ export default function CarriersPage() {
             onChange={(e) => setSearchTerm(e.target.value)}
             data-testid="search-carriers"
           />
+          {searchTerm && (
+            <button
+              onClick={() => setSearchTerm('')}
+              className="absolute right-2 top-2.5 h-4 w-4 rounded-full bg-gray-200 hover:bg-[#335e88] hover:text-white flex items-center justify-center"
+              data-testid="clear-search"
+            >
+              <X className="h-3 w-3" />
+            </button>
+          )}
         </div>
         <Button 
           variant="outline" 
