@@ -15,8 +15,7 @@ export function useCarriers() {
       }
       const data = await response.json();
       console.log('Parsed data:', data);
-      // return data;
-      return []; // breaking code to test cypres test
+      return data;
     }
   });
 }
