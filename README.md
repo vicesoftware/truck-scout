@@ -6,7 +6,15 @@
 - [Database Setup](#database-setup)
 - [Payload CMS Setup](#payload-cms-setup)
 - [Running the Application](#running-the-application)
-- [Git Flow](#git-flow)
+- [Running Tests](#running-tests)
+  - [Docker Environment (Recommended for CI/CD)](#docker-environment-recommended-for-cicd)
+  - [Local Development Environment](#local-development-environment)
+- [AI-Assisted Development](#ai-assisted-development)
+  - [Setup](#setup)
+  - [Usage](#usage)
+  - [Best Practices](#best-practices)
+  - [Note](#note)
+- [Process for Git Flow](#process-for-git-flow)
   - [Installing Git Flow](#installing-git-flow)
     - [macOS](#macos)
     - [Linux](#linux)
@@ -18,19 +26,13 @@
     - [Finishing a Release](#finishing-a-release)
     - [Starting a Hotfix](#starting-a-hotfix)
     - [Finishing a Hotfix](#finishing-a-hotfix)
-  - [Best Practices](#best-practices)
-- [AI-Assisted Development](#ai-assisted-development)
-  - [Setup](#setup)
-  - [Usage](#usage)
   - [Best Practices](#best-practices-1)
-  - [Note](#note)
-- [Running Tests](#running-tests)
-  - [Docker Environment (Recommended for CI/CD)](#docker-environment-recommended-for-cicd)
-  - [Local Development Environment](#local-development-environment)
 
 ## Overview
 
 Truck Scout TMS is a [Next.js](https://nextjs.org/) project integrated with [Payload CMS](https://payloadcms.com/) and PostgreSQL. It uses Docker for database management.
+
+> 🤖 **Note:** This project is optomized for [AI-Assisted Development](#ai-assisted-development) so take a look at that section for more information before getting too far into your coding.
 
 ## Getting Started
 
@@ -103,7 +105,131 @@ Truck Scout TMS is a [Next.js](https://nextjs.org/) project integrated with [Pay
 
 4. On first run, you'll be prompted to create an admin user for Payload CMS.
 
-## Git Flow
+## Running Tests
+
+### Docker Environment (Recommended for CI/CD)
+```bash
+# Run tests once (CI mode)
+npm run test:api:ci
+
+# Run tests in watch mode
+npm run test:api:watch
+
+# Clean up test containers when done
+npm run test:api:clean
+```
+
+### Local Development Environment
+For quick local development, you'll need three terminal windows:
+
+1. Start the test database:
+```bash
+npm run test:db:up
+```
+
+2. Start the Next.js dev server in test mode:
+```bash
+npm run dev:test
+```
+
+3. Run the tests:
+```bash
+npm run test:api:local
+```
+
+4. When finished, clean up:
+```bash
+npm run test:db:down
+```
+
+The test environment uses `.env.test.local` for configuration. Make sure this file contains:
+```env
+DATABASE_URL=postgresql://tms_test_user:test_password@localhost:5433/tms_test_db
+NEXT_PUBLIC_API_URL=http://localhost:3000
+TEST_ENV=local
+```
+
+## AI-Assisted Development
+
+This project leverages Anthropic's Claude AI for development assistance through the Aider tool, enhancing productivity and code quality.
+
+### Setup
+
+1. Install Aider using pip:
+   ```bash
+   pip install aider-chat
+   ```
+
+2. Create an `aider.conf.yml` file in the project root:
+   ```yaml
+   anthropic_api_key: your_anthropic_api_key_here
+   auto-test: true
+   test-cmd: npm run test:local:all
+   ```
+
+3. Add your Anthropic API key to the configuration file or set it as an environment variable `ANTHROPIC_API_KEY`. You can get an API key from the [Anthropic Console](https://console.anthropic.com/).
+
+### Usage
+
+1. Start an AI-assisted coding session:
+   ```bash
+   aider --sonnet --architect --editor-model claude-3-5-sonnet-20241022
+   ```
+
+2. Common Aider Commands:
+   ```
+   /ask    - Ask questions about the code without making changes
+             Example: /ask How does the carrier type interface work?
+
+   /add    - Add files to the chat context for Claude to analyze
+             Example: /add src/components/carriers/CarrierList.tsx
+
+   /reset  - Clear the chat context and start fresh
+             Example: /reset
+
+   /git    - Run git commands or check status
+             Example: /git status
+             Example: /git commit -m "Update carrier interface"
+
+   /test   - Run the configured test suite
+             Example: /test
+   ```
+
+3. Workflow Examples:
+   - Code Analysis:
+     ```
+     /add src/components/CarrierForm.tsx
+     /ask Can you explain how form validation works in this component?
+     ```
+   
+   - Making Changes:
+     ```
+     /add src/types/carrier.ts
+     I need to add a new field called 'insurance_expiry' to the carrier type
+     ```
+   
+   - Testing Changes:
+     ```
+     /test
+     /git status
+     /git commit -m "Add insurance expiry field to carrier type"
+     ```
+
+4. Review all proposed changes before accepting them. The configured test command will run automatically after changes.
+
+### Best Practices
+
+- Keep your API key secure and never commit it to version control
+- Use specific, clear prompts for best results
+- Review all AI-suggested changes carefully
+- Commit changes regularly
+- Use version control to track AI-assisted modifications
+
+### Note
+
+The `.gitignore` file is already configured to exclude the `aider.conf.yml` file to prevent accidentally committing your API key.
+
+## Process for Git Flow
 
 We use Git Flow for managing our development workflow. Git Flow provides a structured branching model that helps streamline the process of feature development, releases, and hotfixes.
 
@@ -264,127 +390,3 @@ git branch -d hotfix/1.0.1
 - Use meaningful and descriptive names for your feature branches.
 
 For more detailed information on Git Flow commands and their usage, refer to the [Git Flow Command Cheatsheet](https://gist.github.com/JamesMGreene/cdd0ac49f90c987e45ac).
-
-## AI-Assisted Development
-
-This project leverages Anthropic's Claude AI for development assistance through the Aider tool, enhancing productivity and code quality.
-
-### Setup
-
-1. Install Aider using pip:
-   ```bash
-   pip install aider-chat
-   ```
-
-2. Create an `aider.conf.yml` file in the project root:
-   ```yaml
-   anthropic_api_key: your_anthropic_api_key_here
-   auto-test: true
-   test-cmd: npm run test:local:all
-   ```
-
-3. Add your Anthropic API key to the configuration file or set it as an environment variable `ANTHROPIC_API_KEY`. You can get an API key from the [Anthropic Console](https://console.anthropic.com/).
-
-### Usage
-
-1. Start an AI-assisted coding session:
-   ```bash
-   aider --sonnet --architect --editor-model claude-3-5-sonnet-20241022
-   ```
-
-2. Common Aider Commands:
-   ```
-   /ask    - Ask questions about the code without making changes
-             Example: /ask How does the carrier type interface work?
-
-   /add    - Add files to the chat context for Claude to analyze
-             Example: /add src/components/carriers/CarrierList.tsx
-
-   /reset  - Clear the chat context and start fresh
-             Example: /reset
-
-   /git    - Run git commands or check status
-             Example: /git status
-             Example: /git commit -m "Update carrier interface"
-
-   /test   - Run the configured test suite
-             Example: /test
-   ```
-
-3. Workflow Examples:
-   - Code Analysis:
-     ```
-     /add src/components/CarrierForm.tsx
-     /ask Can you explain how form validation works in this component?
-     ```
-   
-   - Making Changes:
-     ```
-     /add src/types/carrier.ts
-     I need to add a new field called 'insurance_expiry' to the carrier type
-     ```
-   
-   - Testing Changes:
-     ```
-     /test
-     /git status
-     /git commit -m "Add insurance expiry field to carrier type"
-     ```
-
-4. Review all proposed changes before accepting them. The configured test command will run automatically after changes.
-
-### Best Practices
-
-- Keep your API key secure and never commit it to version control
-- Use specific, clear prompts for best results
-- Review all AI-suggested changes carefully
-- Commit changes regularly
-- Use version control to track AI-assisted modifications
-
-### Note
-
-The `.gitignore` file is already configured to exclude the `aider.conf.yml` file to prevent accidentally committing your API key.
-
-## Running Tests
-
-### Docker Environment (Recommended for CI/CD)
-```bash
-# Run tests once (CI mode)
-npm run test:api:ci
-
-# Run tests in watch mode
-npm run test:api:watch
-
-# Clean up test containers when done
-npm run test:api:clean
-```
-
-### Local Development Environment
-For quick local development, you'll need three terminal windows:
-
-1. Start the test database:
-```bash
-npm run test:db:up
-```
-
-2. Start the Next.js dev server in test mode:
-```bash
-npm run dev:test
-```
-
-3. Run the tests:
-```bash
-npm run test:api:local
-```
-
-4. When finished, clean up:
-```bash
-npm run test:db:down
-```
-
-The test environment uses `.env.test.local` for configuration. Make sure this file contains:
-```env
-DATABASE_URL=postgresql://tms_test_user:test_password@localhost:5433/tms_test_db
-NEXT_PUBLIC_API_URL=http://localhost:3000
-TEST_ENV=local
-```
