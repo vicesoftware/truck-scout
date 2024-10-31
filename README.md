@@ -296,21 +296,10 @@ To start working on a new feature:
 
 2. Work on your feature, committing changes as usual.
 
-3. When the feature is complete, finish it:
-   ```bash
-   git flow feature finish feature_name
-   ```
-   <details>
-   <summary>💡 Equivalent Git commands</summary>
-
-   ```bash
-   git checkout develop
-   git merge --no-ff feature/feature_name
-   git branch -d feature/feature_name
-   ```
-   </details>
-
-This will merge the feature branch into `develop` and delete the feature branch.
+3. When the feature is complete, push it to the remote repository and create a pull request.
+4. After you merge your pull request, delete the feature branch from the remote repository in github.
+5. Pull the latest changes from the `develop` branch to your local machine.
+6. Delete the feature branch from your local machine using `git branch -d feature_name`.
 
 ### Releases and Hotfixes
 
