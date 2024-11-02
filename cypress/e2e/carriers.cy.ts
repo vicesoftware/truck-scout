@@ -106,6 +106,21 @@ describe('Carriers Page', () => {
     cy.get('[data-testid^="carrier-row-"]').should('have.length', 3);
   })
 
+  it('allows clearing the search with the clear button', () => {
+    setupCarriersTest([
+      { id: 1, name: 'Carrier 1' },
+      { id: 2, name: 'Test Carrier' },
+      { id: 3, name: 'Carrier 3' },
+    ]);
+
+    cy.get('[data-testid="search-carriers"]').type('Test');
+    cy.get('[data-testid^="carrier-row-"]').should('have.length', 1);
+    
+    cy.get('[data-testid="clear-search"]').should('be.visible').click();
+    cy.get('[data-testid="search-carriers"]').should('have.value', '');
+    cy.get('[data-testid^="carrier-row-"]').should('have.length', 3);
+  })
+
   it('opens the add carrier dialog when clicking the add button', () => {
     setupCarriersTest();
     cy.get('[data-testid="add-carrier-button"]').as('addCarrierButton')
