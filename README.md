@@ -46,6 +46,8 @@ For detailed information about the project's architecture, including:
 
 Please refer to the [ARCHITECTURE.md](ARCHITECTURE.md) file.
 
+> 💡 **Note:** The architecture documentation is kept separate to allow it to be added to the context of AI-assisted development prompts like Aider or Cursor composer. This allows the AI to understand the project architecture and make better recommendations.
+
 ## Getting Started
 
 1. Install dependencies:
