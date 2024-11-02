@@ -1,6 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { carriersApi } from './api';
-import { Carrier, CarrierFormData } from './types';
 
 export const CARRIERS_QUERY_KEY = ['carriers'];
 
