@@ -31,8 +31,8 @@ import { saveAs } from 'file-saver'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { useCarriers, useCarrierMutations } from './queries'
-import { Carrier } from '@/types/carrier'
+import { useCarriers, useCarrierMutations } from '@/domains/carriers/hooks'
+import { Carrier } from '@/domains/carriers/types'
 
 export default function CarriersPage() {
   const { data: carriers = [], isLoading } = useCarriers();
