@@ -32,7 +32,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useCarriers, useCarrierMutations } from '@/domains/carriers/hooks'
-import { Carrier } from '@/domains/carriers/types'
+import { Carrier, CarrierFormData } from '@/domains/carriers/types'
 
 export default function CarriersPage() {
   const { data: carriers = [], isLoading } = useCarriers();
