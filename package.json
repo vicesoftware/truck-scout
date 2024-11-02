@@ -19,7 +19,10 @@
     "test:api:watch": "TEST_MODE=watch docker compose -f docker-compose.test.yml up --exit-code-from test test",
     "test:api:ci": "jest --config jest.config.js --detectOpenHandles",
     "test:api:clean": "docker compose -f docker-compose.test.yml down",
-    "test:local:all": "start-server-and-test dev http://localhost:3000 'npm run test:api:local && npm run cypress:run --headless'"
+    "pretest:local:all": "npm run type-check && npm run lint",
+    "test:local:all": "start-server-and-test dev http://localhost:3000 'npm run test:api:local && npm run cypress:run --headless'",
+    "posttest:local:all": "npm run test:db:down",
+    "test:local:quick": "start-server-and-test dev http://localhost:3000 'npm run test:api:local && npm run cypress:run --headless'"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.2",
