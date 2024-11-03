@@ -95,32 +95,3 @@ describe('Environment Configuration', () => {
     }
   });
 });
-import { describe, test, expect } from '@jest/globals';
-
-describe('Environment Configuration', () => {
-  const requiredEnvVars = [
-    'DATABASE_URL',
-    'NEXT_PUBLIC_API_URL',
-    'NODE_ENV'
-  ];
-
-  test.each(requiredEnvVars)('should have %s defined', (envVar) => {
-    expect(process.env[envVar]).toBeDefined();
-    expect(process.env[envVar]).not.toBe('');
-  });
-
-  test('DATABASE_URL should have correct format', () => {
-    const dbUrl = process.env.DATABASE_URL;
-    expect(dbUrl).toMatch(/^postgresql:\/\/.+:.+@.+:\d+\/.+$/);
-  });
-
-  test('NODE_ENV should be valid', () => {
-    const validEnvs = ['development', 'test', 'production'];
-    expect(validEnvs).toContain(process.env.NODE_ENV);
-  });
-
-  test('NEXT_PUBLIC_API_URL should be valid URL', () => {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-    expect(() => new URL(apiUrl!)).not.toThrow();
-  });
-});
