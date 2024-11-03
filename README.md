@@ -48,6 +48,19 @@ Please refer to the [ARCHITECTURE.md](ARCHITECTURE.md) file.
 
 > 💡 **Note:** The architecture documentation is kept separate to allow it to be added to the context of AI-assisted development prompts like Aider or Cursor composer. This allows the AI to understand the project architecture and make better recommendations.
 
+## Deployment Documentation
+
+For detailed information about the project's deployment configuration, including:
+- Build Pipeline
+- Digital Ocean App Platform Setup
+- Environment Management
+- Database Configuration
+- Monitoring and Troubleshooting
+
+Please refer to the [DEPLOYMENT.md](DEPLOYMENT.md) file.
+
+> 💡 **Note:** The deployment documentation is kept separate to allow it to be added to the context of AI-assisted development prompts like Aider or Cursor composer. This allows the AI to understand the project's deployment architecture and make better recommendations.
+
 ## Getting Started
 
 1. Install dependencies:
