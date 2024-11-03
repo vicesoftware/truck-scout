@@ -1,4 +1,4 @@
-import { describe, expect, test } from '@jest/globals';
+import { describe, expect, test, beforeAll } from '@jest/globals';
 
 // Required environment variables for the application
 const REQUIRED_ENV_VARS = [
@@ -15,10 +15,19 @@ const ENV_FORMATS = {
 };
 
 describe('Environment Configuration', () => {
+  beforeAll(() => {
+    // Ensure we're in test environment
+    if (!process.env.TEST_ENV) {
+      process.env.TEST_ENV = 'local';
+    }
+  });
+
   test('all required environment variables are present', () => {
     REQUIRED_ENV_VARS.forEach(envVar => {
-      expect(process.env[envVar]).toBeDefined();
-      expect(process.env[envVar]).not.toBe('');
+      const value = process.env[envVar];
+      expect(value).toBeDefined();
+      expect(value).not.toBe('');
+      console.log(`${envVar}: ${value}`); // Add debugging output
     });
   });
 

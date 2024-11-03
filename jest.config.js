@@ -1,7 +1,7 @@
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+  setupFiles: ['<rootDir>/jest.setup.js'],
   globals: {
     'ts-jest': {
       tsconfig: 'tsconfig.json'
@@ -17,6 +17,5 @@ module.exports = {
   resetMocks: true,
   restoreMocks: true,
   maxWorkers: process.env.JEST_WORKERS || '50%',
-  workerIdleMemoryLimit: '512MB',
-  random: true,
+  workerIdleMemoryLimit: '512MB'
 };
