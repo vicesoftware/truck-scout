@@ -51,6 +51,12 @@ jobs:
   jest-tests:
     needs: install-and-build
     runs-on: ubuntu-latest
+    env:
+      NODE_ENV: test
+      ENVIRONMENT: test
+      DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
+      NEXT_PUBLIC_API_URL: ${{ secrets.TEST_API_URL }}
+      BRANCH_NAME: ${{ github.ref_name }}
     steps:
       - uses: actions/checkout@v3
 
@@ -75,6 +81,12 @@ jobs:
           tags: app-test:latest
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+          build-args: |
+            NODE_ENV=test
+            ENVIRONMENT=test
+            DATABASE_URL=${{ secrets.TEST_DATABASE_URL }}
+            NEXT_PUBLIC_API_URL=${{ secrets.TEST_API_URL }}
+            BRANCH_NAME=${{ github.ref_name }}
 
       - name: Move cache
         run: |
