@@ -19,7 +19,7 @@
     "test:api:watch": "TEST_MODE=watch docker compose -f docker-compose.test.yml up --exit-code-from test test",
     "test:api:ci": "jest --config jest.config.js --detectOpenHandles",
     "test:api:clean": "docker compose -f docker-compose.test.yml down",
-    "pretest:local:all": "npm run type-check && npm run lint",
+    "pretest:local:all": "npm run type-check && npm run lint && npm run test:db:up",
     "test:local:all": "start-server-and-test dev http://localhost:3000 'npm run test:api:local && npm run cypress:run --headless'",
     "posttest:local:all": "npm run test:db:down",
     "test:local:quick": "start-server-and-test dev http://localhost:3000 'npm run test:api:local && npm run cypress:run --headless'",
