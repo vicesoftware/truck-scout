@@ -2,7 +2,8 @@
 # Truck Scout TMS
 
 - [Overview](#overview)
-- [Architecture Documentation](#architecture-documentation)
+  - [Architecture Documentation](#architecture-documentation)
+  - [Deployment Documentation](#deployment-documentation)
 - [Getting Started](#getting-started)
 - [Database Setup](#database-setup)
 - [Payload CMS Setup](#payload-cms-setup)
@@ -35,7 +36,10 @@ Truck Scout TMS is a [Next.js](https://nextjs.org/) project integrated with [Pay
 
 > 🤖 **Note:** This project is optomized for [AI-Assisted Development](#ai-assisted-development) so take a look at that section for more information before getting too far into your coding.
 
-## Architecture Documentation
+> 🤖 **Note:** The [Architecture Documentation](Architecture-Documentation) and [Deployment Documentation](Deployment-Documentation) below are kept in separate files to allow it to be added to the context of AI-assisted development prompts like Aider or Cursor composer. This allows the AI to understand the project's architecture and deployment architecture and make better recommendations.
+
+
+### Architecture Documentation
 
 For detailed information about the project's architecture, including:
 - Project Structure
@@ -45,10 +49,9 @@ For detailed information about the project's architecture, including:
 - Best Practices
 
 Please refer to the [ARCHITECTURE.md](ARCHITECTURE.md) file.
+> 🤖 **Note:** Add this to the context of AI-assisted development prompts like Aider or Cursor composer to allow the AI to understand the project architecture and make better recommendations when adding new features or making changes to the codebase.
 
-> 💡 **Note:** The architecture documentation is kept separate to allow it to be added to the context of AI-assisted development prompts like Aider or Cursor composer. This allows the AI to understand the project architecture and make better recommendations.
-
-## Deployment Documentation
+### Deployment Documentation
 
 For detailed information about the project's deployment configuration, including:
 - Build Pipeline
@@ -58,8 +61,7 @@ For detailed information about the project's deployment configuration, including
 - Monitoring and Troubleshooting
 
 Please refer to the [DEPLOYMENT.md](DEPLOYMENT.md) file.
-
-> 💡 **Note:** The deployment documentation is kept separate to allow it to be added to the context of AI-assisted development prompts like Aider or Cursor composer. This allows the AI to understand the project's deployment architecture and make better recommendations.
+> 🤖 **Note:** Add this to the context of AI-assisted development prompts like Aider or Cursor composer to allow the AI to understand the project's deployment architecture and make better recommendations when making changes to deployment configuration.
 
 ## Getting Started
 
