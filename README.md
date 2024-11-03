@@ -2,6 +2,7 @@
 # Truck Scout TMS
 
 - [Overview](#overview)
+- [Architecture Documentation](#architecture-documentation)
 - [Getting Started](#getting-started)
 - [Database Setup](#database-setup)
 - [Payload CMS Setup](#payload-cms-setup)
@@ -33,6 +34,19 @@
 Truck Scout TMS is a [Next.js](https://nextjs.org/) project integrated with [Payload CMS](https://payloadcms.com/) and PostgreSQL. It uses Docker for database management.
 
 > 🤖 **Note:** This project is optomized for [AI-Assisted Development](#ai-assisted-development) so take a look at that section for more information before getting too far into your coding.
+
+## Architecture Documentation
+
+For detailed information about the project's architecture, including:
+- Project Structure
+- Domain-Driven Architecture
+- Key Technologies
+- Data Flow
+- Best Practices
+
+Please refer to the [ARCHITECTURE.md](ARCHITECTURE.md) file.
+
+> 💡 **Note:** The architecture documentation is kept separate to allow it to be added to the context of AI-assisted development prompts like Aider or Cursor composer. This allows the AI to understand the project architecture and make better recommendations.
 
 ## Getting Started
 
