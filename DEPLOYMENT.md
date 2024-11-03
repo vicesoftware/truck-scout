@@ -89,9 +89,10 @@ The application uses Digital Ocean's App Platform for deployment, configured via
 - `NODE_ENV`: Production environment indicator
 - `DATABASE_URL`: PostgreSQL connection string
 - `NEXT_PUBLIC_API_URL`: API endpoint configuration
-- `ENVIRONMENT`: Deployment environment identifier
+- `ENVIRONMENT`: Deployment environment identifier (local|development|staging|production)
 - `BRANCH_NAME`: Source control branch reference
-- `INSTANCE_SIZE`: Resource allocation specification
+
+Note: Instance size configuration (basic/professional/professional-l/professional-xl) will be added in a future phase when we implement automated scaling rules. See Future Improvements section for details.
 
 ### Build Process
 
@@ -177,6 +178,7 @@ Common deployment issues and solutions:
    - Advanced metrics collection
    - Automated scaling rules
    - Comprehensive alerting
+   - Instance size configuration (basic/professional/professional-l/professional-xl) for different environments
 
 3. **Security Enhancements**
    - Secret rotation

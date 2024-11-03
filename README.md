@@ -165,7 +165,8 @@ The test environment uses `.env.test.local` for configuration. Make sure this fi
 ```env
 DATABASE_URL=postgresql://tms_test_user:test_password@localhost:5433/tms_test_db
 NEXT_PUBLIC_API_URL=http://localhost:3000
-TEST_ENV=local
+ENVIRONMENT=local
+BRANCH_NAME=main
 ```
 
 ## AI-Assisted Development

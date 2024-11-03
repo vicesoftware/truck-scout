@@ -2,7 +2,7 @@ import axios from 'axios';
 import { expect, describe, test, afterAll } from '@jest/globals';
 import { Pool } from 'pg';
 
-const isLocalDev = process.env.TEST_ENV === 'local';
+const isLocalDev = process.env.ENVIRONMENT === 'local';
 const API_URL = isLocalDev 
   ? 'http://localhost:3000'
   : (process.env.API_URL || 'http://nextjs:3000');

@@ -12,17 +12,10 @@ async function checkEnvironmentVariables() {
   const missing = REQUIRED_ENV_VARS.filter(varName => !process.env[varName]);
   const environment = process.env.NODE_ENV || 'unknown';
   
-  if (missing.length > 0) {
-    return {
-      valid: false,
-      environment,
-      missing
-    };
-  }
-  
   return {
-    valid: true,
-    environment
+    valid: missing.length === 0,
+    environment,
+    missing
   };
 }
 
@@ -67,7 +60,7 @@ export async function GET() {
         database: dbCheck.connected ? 'Connected' : 'Not Connected',
         environmentVariables: {
             valid: envCheck.valid,
-            missing: envCheck.missing
+            missing: envCheck.missing || []
         },
         error: dbCheck.error || (envCheck.valid ? undefined : `Missing environment variables: ${envCheck.missing?.join(', ')}`)
     };
