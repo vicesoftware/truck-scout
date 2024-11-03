@@ -23,14 +23,44 @@ Our deployment infrastructure consists of several key components working togethe
    - Connection string management
    - Migration handling
 
+## Build Pipeline Details
+
+### Code Flow
+1. Local Development
+   - Developer works in feature branch
+   - Local testing via `npm run test:local:all`
+   - Changes committed and pushed
+
+2. Continuous Integration
+   - GitHub Actions triggered on PR
+   - Runs `npm run ci:check`
+   - Type checking and linting
+   - Test suite execution
+
+3. Build Process
+   - Triggered on merge to main branches
+   - Uses Node 20.x (specified in package.json)
+   - Leverages build caching via cacheDirectories
+   - Build steps:
+     1. `npm install`
+     2. `npm run build`
+     3. Asset optimization
+     4. Environment configuration
+
+4. Deployment
+   - Digital Ocean App Platform configuration via app.yml
+   - Environment-specific variable injection
+   - Health check verification
+   - Zero-downtime deployment
+
 ### Current Implementation Phases
 
-1. Application Configuration Optimization
+1. Application Configuration Optimization ✅
    - Optimized package.json scripts
    - Build caching configuration
    - Node/npm version specifications
 
-2. Environment Variable Standardization
+2. Environment Variable Standardization ✅
    - Standardized env vars in app.yml
    - Production vs Development configurations
    - Secure credential management
