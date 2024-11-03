@@ -7,16 +7,23 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "lint:fix": "next lint --fix",
+    "type-check": "tsc --noEmit",
+    "ci:check": "npm run type-check && npm run lint",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "dev:test": "NODE_ENV=test next dev",
-    "test:api:local": "TEST_ENV=local jest --config jest.config.js --detectOpenHandles --runInBand",
+    "test:api:local": "dotenv -e .env.test.local -- jest --config jest.config.js --detectOpenHandles --runInBand",
     "test:db:up": "docker compose -f docker-compose.test.local.yml up -d",
     "test:db:down": "docker compose -f docker-compose.test.local.yml down",
     "test:api:watch": "TEST_MODE=watch docker compose -f docker-compose.test.yml up --exit-code-from test test",
     "test:api:ci": "jest --config jest.config.js --detectOpenHandles",
     "test:api:clean": "docker compose -f docker-compose.test.yml down",
-    "test:local:all": "start-server-and-test dev http://localhost:3000 'npm run test:api:local && npm run cypress:run --headless'"
+    "pretest:local:all": "npm run type-check && npm run lint && npm run test:db:up",
+    "test:local:all": "start-server-and-test dev http://localhost:3000 'npm run test:api:local && npm run cypress:run --headless'",
+    "posttest:local:all": "npm run test:db:down",
+    "test:local:quick": "start-server-and-test dev http://localhost:3000 'npm run test:api:local && npm run cypress:run --headless'",
+    "postinstall": "npm run build"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.2",
@@ -64,15 +71,21 @@
     "eslint-config-next": "14.2.11",
     "jest": "^29.7.0",
     "jest-environment-node": "^29.7.0",
+    "node-fetch": "^2.6.7",
     "postcss": "^8",
     "start-server-and-test": "^2.0.8",
     "style-loader": "^4.0.0",
     "ts-jest": "^29.1.2",
     "webpack": "^5.95.0",
-    "webpack-cli": "^5.1.4"
+    "webpack-cli": "^5.1.4",
+    "dotenv-cli": "^7.4.1"
   },
   "engines": {
     "node": "20.x",
     "npm": "10.8.3"
-  }
+  },
+  "cacheDirectories": [
+    ".next/cache",
+    "node_modules"
+  ]
 }

@@ -2,6 +2,8 @@
 # Truck Scout TMS
 
 - [Overview](#overview)
+  - [Architecture Documentation](#architecture-documentation)
+  - [Deployment Documentation](#deployment-documentation)
 - [Getting Started](#getting-started)
 - [Database Setup](#database-setup)
 - [Payload CMS Setup](#payload-cms-setup)
@@ -30,9 +32,36 @@
 
 ## Overview
 
-Truck Scout TMS is a [Next.js](https://nextjs.org/) project integrated with [Payload CMS](https://payloadcms.com/) and PostgreSQL. It uses Docker for database management.
+Truck Scout TMS is a [Next.js](https://nextjs.org/) project with PostgreSQL. It uses Docker for database management.
 
 > 🤖 **Note:** This project is optomized for [AI-Assisted Development](#ai-assisted-development) so take a look at that section for more information before getting too far into your coding.
+
+> 🤖 **Note:** The [Architecture Documentation](Architecture-Documentation) and [Deployment Documentation](Deployment-Documentation) below are kept in separate files to allow it to be added to the context of AI-assisted development prompts like Aider or Cursor composer. This allows the AI to understand the project's architecture and deployment architecture and make better recommendations.
+
+
+### Architecture Documentation
+
+For detailed information about the project's architecture, including:
+- Project Structure
+- Domain-Driven Architecture
+- Key Technologies
+- Data Flow
+- Best Practices
+
+Please refer to the [ARCHITECTURE.md](ARCHITECTURE.md) file.
+> 🤖 **Note:** Add this to the context of AI-assisted development prompts like Aider or Cursor composer to allow the AI to understand the project architecture and make better recommendations when adding new features or making changes to the codebase.
+
+### Deployment Documentation
+
+For detailed information about the project's deployment configuration, including:
+- Build Pipeline
+- Digital Ocean App Platform Setup
+- Environment Management
+- Database Configuration
+- Monitoring and Troubleshooting
+
+Please refer to the [DEPLOYMENT.md](DEPLOYMENT.md) file.
+> 🤖 **Note:** Add this to the context of AI-assisted development prompts like Aider or Cursor composer to allow the AI to understand the project's deployment architecture and make better recommendations when making changes to deployment configuration.
 
 ## Getting Started
 
@@ -44,10 +73,9 @@ Truck Scout TMS is a [Next.js](https://nextjs.org/) project integrated with [Pay
 2. Set up environment variables:
    Create a `.env` file in the project root with the following content:
    ```
-   DATABASE_URI=postgres://tms_user:secure_password_here@localhost:5432/tms_db
-   PAYLOAD_SECRET=your_long_random_string_here
+   DATABASE_URL=postgres://tms_user:secure_password_here@localhost:5432/tms_db
    ```
-   Replace the values with your desired settings. Note that the database credentials in the `DATABASE_URI` should match those defined in your `docker-compose.yml` file.
+   Replace the values with your desired settings. Note that the database credentials should match those defined in your `docker-compose.yml` file.
 
 ## Database Setup
 
@@ -86,11 +114,6 @@ Truck Scout TMS is a [Next.js](https://nextjs.org/) project integrated with [Pay
      - Username: (the value of POSTGRES_USER from docker-compose.yml)
      - Password: (the value of POSTGRES_PASSWORD from docker-compose.yml)
 
-## Payload CMS Setup
-
-1. Ensure the `payload.config.js` file is properly configured with your collections and settings.
-
-2. The first time you run the application, Payload will automatically set up the necessary tables in your PostgreSQL database.
 
 ## Running the Application
 
@@ -100,10 +123,6 @@ Truck Scout TMS is a [Next.js](https://nextjs.org/) project integrated with [Pay
    ```
 
 2. Open [http://localhost:3000](http://localhost:3000) in your browser to see the main application.
-
-3. Access the Payload CMS admin panel at [http://localhost:3000/admin](http://localhost:3000/admin)
-
-4. On first run, you'll be prompted to create an admin user for Payload CMS.
 
 ## Running Tests
 
@@ -146,7 +165,8 @@ The test environment uses `.env.test.local` for configuration. Make sure this fi
 ```env
 DATABASE_URL=postgresql://tms_test_user:test_password@localhost:5433/tms_test_db
 NEXT_PUBLIC_API_URL=http://localhost:3000
-TEST_ENV=local
+ENVIRONMENT=local
+BRANCH_NAME=main
 ```
 
 ## AI-Assisted Development

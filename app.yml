@@ -1,18 +1,30 @@
-name: truck-scout-tms-dev
+name: truck-scout-tms-${ENVIRONMENT}
 services:
   - name: web
     git:
-      branch: develop
+      branch: ${BRANCH_NAME}
       repo_clone_url: https://github.com/vicesoftware/truck-scout.git
     build_command: npm run build
     run_command: npm start
     envs:
       - key: NODE_ENV
         value: production
+        scope: RUN_AND_BUILD_TIME
       - key: DATABASE_URL
         value: ${DATABASE_URL}
+        scope: RUN_TIME
       - key: NEXT_PUBLIC_API_URL
         value: ${NEXT_PUBLIC_API_URL}
+        scope: RUN_AND_BUILD_TIME
+      - key: ENVIRONMENT
+        value: ${ENVIRONMENT}
+        scope: RUN_AND_BUILD_TIME
+      - key: BRANCH_NAME
+        value: ${BRANCH_NAME}
+        scope: RUN_AND_BUILD_TIME
+      - key: INSTANCE_SIZE
+        value: ${INSTANCE_SIZE}
+        scope: RUN_AND_BUILD_TIME
     http_port: 3000
     routes:
     - path: /
