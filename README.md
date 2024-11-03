@@ -32,7 +32,7 @@
 
 ## Overview
 
-Truck Scout TMS is a [Next.js](https://nextjs.org/) project integrated with [Payload CMS](https://payloadcms.com/) and PostgreSQL. It uses Docker for database management.
+Truck Scout TMS is a [Next.js](https://nextjs.org/) project with PostgreSQL. It uses Docker for database management.
 
 > 🤖 **Note:** This project is optomized for [AI-Assisted Development](#ai-assisted-development) so take a look at that section for more information before getting too far into your coding.
 
@@ -73,10 +73,9 @@ Please refer to the [DEPLOYMENT.md](DEPLOYMENT.md) file.
 2. Set up environment variables:
    Create a `.env` file in the project root with the following content:
    ```
-   DATABASE_URI=postgres://tms_user:secure_password_here@localhost:5432/tms_db
-   PAYLOAD_SECRET=your_long_random_string_here
+   DATABASE_URL=postgres://tms_user:secure_password_here@localhost:5432/tms_db
    ```
-   Replace the values with your desired settings. Note that the database credentials in the `DATABASE_URI` should match those defined in your `docker-compose.yml` file.
+   Replace the values with your desired settings. Note that the database credentials should match those defined in your `docker-compose.yml` file.
 
 ## Database Setup
 
@@ -115,11 +114,6 @@ Please refer to the [DEPLOYMENT.md](DEPLOYMENT.md) file.
      - Username: (the value of POSTGRES_USER from docker-compose.yml)
      - Password: (the value of POSTGRES_PASSWORD from docker-compose.yml)
 
-## Payload CMS Setup
-
-1. Ensure the `payload.config.js` file is properly configured with your collections and settings.
-
-2. The first time you run the application, Payload will automatically set up the necessary tables in your PostgreSQL database.
 
 ## Running the Application
 
@@ -129,10 +123,6 @@ Please refer to the [DEPLOYMENT.md](DEPLOYMENT.md) file.
    ```
 
 2. Open [http://localhost:3000](http://localhost:3000) in your browser to see the main application.
-
-3. Access the Payload CMS admin panel at [http://localhost:3000/admin](http://localhost:3000/admin)
-
-4. On first run, you'll be prompted to create an admin user for Payload CMS.
 
 ## Running Tests
 
