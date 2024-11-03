@@ -6,7 +6,6 @@
   - [Deployment Documentation](#deployment-documentation)
 - [Getting Started](#getting-started)
 - [Database Setup](#database-setup)
-- [Payload CMS Setup](#payload-cms-setup)
 - [Running the Application](#running-the-application)
 - [Running Tests](#running-tests)
   - [Docker Environment (Recommended for CI/CD)](#docker-environment-recommended-for-cicd)
@@ -128,15 +127,21 @@ Please refer to the [DEPLOYMENT.md](DEPLOYMENT.md) file.
 
 ### Docker Environment (Recommended for CI/CD)
 ```bash
-# Run tests once (CI mode)
-npm run test:api:ci
+# Clean up any existing containers first
+docker compose -f docker-compose.test.yml down -v
 
+# Run tests in CI mode (replicates GitHub Actions pipeline)
+TEST_MODE=ci docker compose -f docker-compose.test.yml up --abort-on-container-exit --exit-code-from test
+
+# Alternative development modes:
 # Run tests in watch mode
-npm run test:api:watch
+TEST_MODE=watch docker compose -f docker-compose.test.yml up
 
 # Clean up test containers when done
-npm run test:api:clean
+docker compose -f docker-compose.test.yml down -v
 ```
+
+> 💡 **Note:** Using `TEST_MODE=ci` exactly replicates how tests run in the GitHub Actions CI pipeline.
 
 ### Local Development Environment
 For quick local development, you'll need three terminal windows:
