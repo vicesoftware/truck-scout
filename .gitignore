@@ -27,6 +27,8 @@ yarn-error.log*
 
 # local env files
 .env*
+!.env.example
+!.env.test.example
 
 # vercel
 .vercel
@@ -35,11 +37,16 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# local dev postgress database with docker-compose flow
+# local dev postgres database with docker-compose flow
 pgdata/
+test_pgdata/
+postgres_data/
+
+# test artifacts
 cypress/videos
 cypress/screenshots
-test_pgdata/
+coverage/
+test-results/
 .aider*
 # AI development configuration
 aider.conf.yml
