@@ -54,6 +54,42 @@ describe('Environment Configuration', () => {
     try {
       const response = await fetch(`${apiUrl}/api/healthcheck`);
       expect(response.ok).toBe(true);
+      
+      const data = await response.json();
+      
+      // Verify the response structure and types
+      expect(data).toMatchObject({
+        status: expect.stringMatching(/^(OK|Error)$/),
+        environment: expect.stringMatching(/^(development|test|production|unknown)$/),
+        database: expect.stringMatching(/^(Connected|Not Connected)$/),
+        environmentVariables: {
+          valid: expect.any(Boolean),
+          missing: expect.any(Array)
+        }
+      });
+
+      // If status is OK, verify everything is working
+      if (data.status === 'OK') {
+        expect(data.database).toBe('Connected');
+        expect(data.environmentVariables.valid).toBe(true);
+        expect(data.environmentVariables.missing).toHaveLength(0);
+        expect(data.error).toBeUndefined();
+      }
+
+      // If there's an error, verify error details
+      if (data.status === 'Error') {
+        expect(data).toHaveProperty('error');
+        expect(data.error).toBeTruthy();
+        
+        // Check if it's a database error or environment variables error
+        if (data.database === 'Not Connected') {
+          expect(data.error).toContain('database');
+        }
+        if (!data.environmentVariables.valid) {
+          expect(data.error).toContain('Missing environment variables');
+        }
+      }
+
     } catch (error) {
       throw new Error(`API URL ${apiUrl} is not accessible: ${error}`);
     }

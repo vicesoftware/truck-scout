@@ -1,10 +1,34 @@
 import { NextResponse } from 'next/server';
 import { Pool } from 'pg';
 
+// Required environment variables for the application
+const REQUIRED_ENV_VARS = [
+  'DATABASE_URL',
+  'NEXT_PUBLIC_API_URL',
+  'NODE_ENV'
+];
+
+async function checkEnvironmentVariables() {
+  const missing = REQUIRED_ENV_VARS.filter(varName => !process.env[varName]);
+  const environment = process.env.NODE_ENV || 'unknown';
+  
+  if (missing.length > 0) {
+    return {
+      valid: false,
+      environment,
+      missing
+    };
+  }
+  
+  return {
+    valid: true,
+    environment
+  };
+}
+
 async function checkDatabaseConnection() {
     if (!process.env.DATABASE_URL) {
-        console.error('DATABASE_URL is not defined in the environment variables');
-        return { connected: false, error: 'DATABASE_URL is not defined in the environment variables' };
+        return { connected: false, error: 'DATABASE_URL is not defined' };
     }
 
     let pool = null;
@@ -12,7 +36,6 @@ async function checkDatabaseConnection() {
     try {
         pool = new Pool({
             connectionString: process.env.DATABASE_URL,
-            // SSL configuration removed as it's handled by NODE_TLS_REJECT_UNAUTHORIZED
         });
         
         const client = await pool.connect();
@@ -22,19 +45,7 @@ async function checkDatabaseConnection() {
     } catch (error) {
         const errorMessage = error instanceof Error ? 
             error.message : 'An unknown error occurred';
-
-        if (error instanceof Error) {
-            const errorResponse = { 
-                connected: false,
-                error: errorMessage,
-                variables: {
-                    DATABASE_URL: process.env.DATABASE_URL
-                }
-            };
-            console.error('Database connection error:', errorResponse);
-            return errorResponse;
-        }
-        return { connected: false, error: 'An unknown error occurred' };
+        return { connected: false, error: errorMessage };
     } finally {
         if (pool) {
             await pool.end();
@@ -45,9 +56,24 @@ async function checkDatabaseConnection() {
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
-    const response = await checkDatabaseConnection();
-    return NextResponse.json({
-        status: 'OK',
-        database: response.connected ? 'Connected' : 'Not Connected'
-    }, { status: response.connected ? 200 : 503 });
+    const envCheck = await checkEnvironmentVariables();
+    const dbCheck = await checkDatabaseConnection();
+
+    const status = envCheck.valid && dbCheck.connected ? 'OK' : 'Error';
+    
+    const response = {
+        status,
+        environment: envCheck.environment,
+        database: dbCheck.connected ? 'Connected' : 'Not Connected',
+        environmentVariables: {
+            valid: envCheck.valid,
+            missing: envCheck.missing
+        },
+        error: dbCheck.error || (envCheck.valid ? undefined : `Missing environment variables: ${envCheck.missing?.join(', ')}`)
+    };
+
+    return NextResponse.json(
+        response,
+        { status: status === 'OK' ? 200 : 503 }
+    );
 }
