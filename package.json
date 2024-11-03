@@ -22,7 +22,8 @@
     "pretest:local:all": "npm run type-check && npm run lint",
     "test:local:all": "start-server-and-test dev http://localhost:3000 'npm run test:api:local && npm run cypress:run --headless'",
     "posttest:local:all": "npm run test:db:down",
-    "test:local:quick": "start-server-and-test dev http://localhost:3000 'npm run test:api:local && npm run cypress:run --headless'"
+    "test:local:quick": "start-server-and-test dev http://localhost:3000 'npm run test:api:local && npm run cypress:run --headless'",
+    "postinstall": "npm run build"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.2",
@@ -80,5 +81,9 @@
   "engines": {
     "node": "20.x",
     "npm": "10.8.3"
-  }
+  },
+  "cacheDirectories": [
+    ".next/cache",
+    "node_modules"
+  ]
 }
