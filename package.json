@@ -22,8 +22,7 @@
     "pretest:local:all": "npm run type-check && npm run lint && npm run test:db:up",
     "test:local:all": "start-server-and-test dev http://localhost:3000 'npm run test:api:local && npm run cypress:run --headless'",
     "posttest:local:all": "npm run test:db:down",
-    "test:local:quick": "start-server-and-test dev http://localhost:3000 'npm run test:api:local && npm run cypress:run --headless'",
-    "postinstall": "npm run build"
+    "test:local:quick": "start-server-and-test dev http://localhost:3000 'npm run test:api:local && npm run cypress:run --headless'"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.2",
