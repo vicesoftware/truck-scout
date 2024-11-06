@@ -22,9 +22,6 @@ services:
       - key: BRANCH_NAME
         value: ${BRANCH_NAME}
         scope: RUN_AND_BUILD_TIME
-      - key: INSTANCE_SIZE
-        value: ${INSTANCE_SIZE}
-        scope: RUN_AND_BUILD_TIME
     http_port: 3000
     routes:
     - path: /

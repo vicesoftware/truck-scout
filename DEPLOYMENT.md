@@ -1,6 +1,17 @@
-# Deployment Configuration
+# Deployment Configuration <!-- omit in toc -->
 
 This document details the deployment configuration and build pipeline for Truck Scout TMS.
+
+- [Overview](#overview)
+  - [Build Pipeline](#build-pipeline)
+- [Build Pipeline Details](#build-pipeline-details)
+  - [Code Flow](#code-flow)
+- [Current Setup](#current-setup)
+  - [Environment Configuration](#environment-configuration)
+  - [Build Process](#build-process)
+- [Deployment Workflow](#deployment-workflow)
+- [Reference](#reference)
+
 
 ## Overview
 
@@ -53,33 +64,6 @@ Our deployment infrastructure consists of several key components working togethe
    - Health check verification
    - Zero-downtime deployment
 
-### Current Implementation Phases
-
-1. Application Configuration Optimization ✅
-   - Optimized package.json scripts
-   - Build caching configuration
-   - Node/npm version specifications
-
-2. Environment Variable Standardization ✅
-   - Standardized env vars in app.yml
-   - Production vs Development configurations
-   - Secure credential management
-
-3. App Spec Template Implementation (Planned)
-   - Template-based configuration
-   - Environment-specific overrides
-   - Standardized service definitions
-
-4. Monitoring Enhancement (Planned)
-   - Alert configurations
-   - Performance monitoring
-   - Error tracking
-
-5. App Spec Optimization (Planned)
-   - Service configuration optimization
-   - Resource allocation improvements
-   - Scaling configurations
-
 ## Current Setup
 
 ### Environment Configuration
@@ -91,7 +75,6 @@ The application uses Digital Ocean's App Platform for deployment, configured via
 - `NEXT_PUBLIC_API_URL`: API endpoint configuration
 - `ENVIRONMENT`: Deployment environment identifier
 - `BRANCH_NAME`: Source control branch reference
-- `INSTANCE_SIZE`: Resource allocation specification
 
 ### Build Process
 
@@ -108,20 +91,6 @@ The application uses Digital Ocean's App Platform for deployment, configured via
    - Uses `npm start` for production server
    - Runs on Node.js 20.x
    - Serves on port 3000
-
-### Resource Management
-
-Resources are allocated based on environment needs:
-- Development: Basic resources for testing
-- Staging: Moderate resources for QA
-- Production: Scaled resources for live traffic
-
-### Database Configuration
-
-PostgreSQL databases are provisioned per environment:
-- Automated backups enabled
-- Secure connection strings
-- Migration handling during deployment
 
 ## Deployment Workflow
 
@@ -146,42 +115,6 @@ PostgreSQL databases are provisioned per environment:
    - Error reporting enabled
    - Performance monitored
    - Alerts configured
-
-## Troubleshooting
-
-Common deployment issues and solutions:
-
-1. **Build Failures**
-   - Check build logs in Digital Ocean
-   - Verify package.json scripts
-   - Confirm environment variables
-
-2. **Runtime Errors**
-   - Review application logs
-   - Check environment configuration
-   - Verify database connectivity
-
-3. **Performance Issues**
-   - Monitor resource usage
-   - Check database queries
-   - Review application metrics
-
-## Future Improvements
-
-1. **Infrastructure as Code**
-   - Template-based configurations
-   - Automated environment setup
-   - Consistent deployments
-
-2. **Enhanced Monitoring**
-   - Advanced metrics collection
-   - Automated scaling rules
-   - Comprehensive alerting
-
-3. **Security Enhancements**
-   - Secret rotation
-   - Access control refinement
-   - Security scanning integration
 
 ## Reference
 
