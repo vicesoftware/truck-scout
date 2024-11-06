@@ -58,6 +58,9 @@ export interface Carrier {
 - **Framework**: [Next.js 14](https://nextjs.org/) with App Router
 - **API Layer**: Next.js API Routes
 - **Database**: PostgreSQL with [Prisma](https://www.prisma.io/) ORM
+  - Database migrations and type-safe queries
+  - Automated schema management
+  - Seeding functionality
 - **CMS**: [Payload CMS](https://payloadcms.com/)
 - **State Management**: [TanStack Query](https://tanstack.com/query) (formerly React Query)
 - **UI Components**: Custom components built with [Tailwind CSS](https://tailwindcss.com/)
@@ -115,3 +118,67 @@ This architecture promotes:
 - Type safety
 - Testing isolation
 - Maintainable codebase
+
+## Database & Migrations
+
+We use Prisma as our ORM and database migration tool. This provides:
+
+1. **Type-safe Database Access**:
+```typescript
+// Example of type-safe database query
+const carriers = await prisma.carrier.findMany({
+  where: { status: 'Active' }
+});
+```
+
+2. **Schema Management**:
+```prisma
+// prisma/schema.prisma
+model Carrier {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(255)
+  mcNumber  String?  @map("mc_number")
+  // ... other fields
+}
+```
+
+## Implementation Steps
+
+### 1. Local Development Setup
+- Install Prisma dependencies
+- Initialize Prisma schema based on existing carriers table
+- Create initial migration
+- Update API routes to use Prisma client
+- Update tests to work with Prisma
+
+### 2. Local Testing
+- Test Prisma migrations on local PostgreSQL
+- Verify seed data functionality
+- Run full test suite with Prisma implementation
+
+### 3. Digital Ocean Deployment
+- Backup existing production database
+- Apply migrations to development environment
+- Test deployment process
+- Apply migrations to production environment
+
+### Migration Commands
+
+```bash
+# Development
+npm run prisma:migrate:dev    # Create and apply migrations locally
+npm run prisma:generate       # Generate Prisma Client
+npm run prisma:seed          # Seed database
+
+# Production
+npm run prisma:migrate:deploy # Deploy migrations to production
+```
+
+### Environment Configuration
+```bash
+# Local development
+DATABASE_URL="postgresql://user:password@localhost:5432/dev_db"
+
+# Digital Ocean environments
+DATABASE_URL="postgresql://doadmin:${POSTGRES_PASSWORD}@${DB_HOST}:${DB_PORT}/defaultdb?sslmode=require"
+```
