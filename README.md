@@ -3,6 +3,7 @@
 
 - [Overview](#overview)
   - [Architecture Documentation](#architecture-documentation)
+  - [Database Documentation](#database-documentation)
   - [Deployment Documentation](#deployment-documentation)
   - [Development Approach](#development-approach)
 - [Getting Started](#getting-started)
@@ -36,7 +37,7 @@ Truck Scout TMS is a [Next.js](https://nextjs.org/) project with PostgreSQL. It 
 
 > 🤖 **Note:** This project is optomized for [AI-Assisted Development](#ai-assisted-development) so take a look at that section for more information before getting too far into your coding.
 
-> 🤖 **Note:** The [Architecture Documentation](Architecture-Documentation) and [Deployment Documentation](Deployment-Documentation) below are kept in separate files to allow it to be added to the context of AI-assisted development prompts like Aider or Cursor composer. This allows the AI to understand the project's architecture and deployment architecture and make better recommendations.
+> 🤖 **Note:** The [Architecture Documentation](Architecture-Documentation), [Database Documentation](Database-Documentation), and [Deployment Documentation](Deployment-Documentation) below are kept in separate files to allow it to be added to the context of AI-assisted development prompts like Aider or Cursor composer. This allows the AI to understand the project's architecture, database schema, and deployment architecture and make better recommendations.
 
 ### Architecture Documentation
 
@@ -49,6 +50,19 @@ For detailed information about the project's architecture, including:
 
 Please refer to the [ARCHITECTURE.md](docs/ARCHITECTURE.md) file.
 > 🤖 **Note:** Add this to the context of AI-assisted development prompts like Aider or Cursor composer to allow the AI to understand the project architecture and make better recommendations when adding new features or making changes to the codebase.
+
+### Database Documentation
+
+For detailed information about the project's database configuration, including:
+- Schema Management
+- Migration Strategy
+- Data Seeding
+- Rollback Procedures
+- Testing Framework
+- CI/CD Integration
+
+Please refer to the [DATABASE.md](DATABASE.md) file.
+> 🤖 **Note:** Add this to the context of AI-assisted development prompts like Aider or Cursor composer to allow the AI to understand the project's database architecture and make better recommendations when making changes to the database schema or working with migrations.
 
 ### Deployment Documentation
 

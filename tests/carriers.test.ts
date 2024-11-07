@@ -1,34 +1,29 @@
 import axios from 'axios';
-import { expect, describe, test, afterAll } from '@jest/globals';
-import { Pool } from 'pg';
+import { expect, describe, test, afterAll, beforeAll } from '@jest/globals';
+import { PrismaClient } from '@prisma/client';
 
 const isLocalDev = process.env.TEST_ENV === 'local';
 const API_URL = isLocalDev 
   ? 'http://localhost:3000'
   : (process.env.API_URL || 'http://nextjs:3000');
-const DATABASE_URL = isLocalDev
-  ? 'postgresql://tms_test_user:test_password@localhost:5433/tms_test_db'
-  : (process.env.DATABASE_URL || 'postgresql://tms_test_user:test_password@postgres:5432/tms_test_db');
 
 const axiosInstance = axios.create({
   baseURL: API_URL,
 });
 
-const pool = new Pool({
-  connectionString: DATABASE_URL,
-});
+const prisma = new PrismaClient();
 
 describe('Database and Carriers API', () => {
   let createdCarrierId: number;
 
+  beforeAll(async () => {
+    // Clean up database before tests
+    await prisma.carrier.deleteMany();
+  });
+
   test('Database should be accessible and have a carriers table', async () => {
-    const client = await pool.connect();
-    try {
-      const result = await client.query('SELECT COUNT(*) FROM carriers');
-      expect(result.rows[0].count).toBeDefined();
-    } finally {
-      client.release();
-    } 
+    const count = await prisma.carrier.count();
+    expect(count).toBeDefined();
   });
 
   test('GET /api/carriers should return an array of carriers', async () => {
@@ -50,10 +45,17 @@ describe('Database and Carriers API', () => {
     const response = await axiosInstance.post('/api/carriers', newCarrier);
     expect(response.status).toBe(201);
     expect(response.data).toMatchObject({
-    ...newCarrier,
-    rating: "4.0"
+      ...newCarrier,
+      rating: "4.0"
     });
     createdCarrierId = response.data.id;
+
+    // Verify in database directly using Prisma
+    const dbCarrier = await prisma.carrier.findUnique({
+      where: { id: createdCarrierId }
+    });
+    expect(dbCarrier).toBeDefined();
+    expect(dbCarrier?.name).toBe(newCarrier.name);
   });
 
   test('PUT /api/carriers/<id> should update an existing carrier', async () => {
@@ -69,10 +71,17 @@ describe('Database and Carriers API', () => {
     const response = await axiosInstance.put(`/api/carriers/${createdCarrierId}`, updatedCarrier);
     expect(response.status).toBe(200);
     expect(response.data).toMatchObject({
-    ...updatedCarrier,
-    id: createdCarrierId,
-    rating: "3.0"
+      ...updatedCarrier,
+      id: createdCarrierId,
+      rating: "3.0"
     });
+
+    // Verify in database directly using Prisma
+    const dbCarrier = await prisma.carrier.findUnique({
+      where: { id: createdCarrierId }
+    });
+    expect(dbCarrier).toBeDefined();
+    expect(dbCarrier?.name).toBe(updatedCarrier.name);
   });
 
   test('DELETE /api/carriers/<id> should delete an existing carrier and verify via GET', async () => {
@@ -110,8 +119,10 @@ describe('Database and Carriers API', () => {
       }
     }
   });
-});
 
-afterAll(async () => {
-  await pool.end();
+  afterAll(async () => {
+    // Clean up database after tests
+    await prisma.carrier.deleteMany();
+    await prisma.$disconnect();
+  });
 });
