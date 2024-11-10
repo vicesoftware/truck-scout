@@ -12,6 +12,126 @@ We use Prisma as our ORM and database migration tool, providing:
 - Rollback capabilities
 - Testing framework
 
+## Schema Management
+
+```prisma
+// prisma/schema.prisma
+model Carrier {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(255)
+  mcNumber  String?  @map("mc_number")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("carriers")
+}
+```
+
+## Migration Best Practices
+
+1. **Version Control**:
+```bash
+# Use descriptive names for migrations
+npm run prisma:migrate:dev --name add_carrier_status_enum
+```
+
+2. **Rollback Strategy**:
+```bash
+# Add to package.json scripts
+{
+  "scripts": {
+    "prisma:migrate:reset": "prisma migrate reset",
+    "prisma:db:rollback": "prisma migrate reset --skip-seed",
+    "prisma:migrate:status": "prisma migrate status"
+  }
+}
+```
+
+3. **Enhanced Data Seeding**:
+```
+prisma/seed/
+├── development.ts   # Full dataset from init.sql
+├── testing.ts      # Subset of carriers for tests
+├── production.ts   # Core production carriers
+└── seed-utils.ts   # Shared seeding utilities
+```
+
+4. **Schema Validation**:
+```typescript
+// src/lib/db/validateSchema.ts
+import { z } from 'zod'
+
+export const CarrierSchema = z.object({
+  id: z.number(),
+  name: z.string().min(1).max(255),
+  mcNumber: z.string().optional()
+})
+```
+
+5. **CI/CD Integration**:
+```yaml
+# .github/workflows/database.yml
+name: Database Migrations
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'prisma/**'
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run migrations
+        run: |
+          npm run prisma:migrate:deploy
+          npm run prisma:generate
+```
+
+6. **Migration Testing**:
+```typescript
+// tests/migrations/migration.test.ts
+describe('Migrations', () => {
+  it('should successfully apply all migrations', async () => {
+    const migrations = await prisma.$queryRaw`SELECT * FROM _prisma_migrations`
+    expect(migrations).toBeDefined()
+  })
+})
+```
+
+## Migration Commands
+
+```bash
+# Development Migrations
+npm run prisma:migrate:deploy     # Deploy database migrations
+npm run prisma:migrate:rollback   # Rollback the most recent migration
+npm run prisma:seed:dev           # Seed development database
+npm run prisma:db:reset           # Completely reset database
+
+# Detailed Script Descriptions
+prisma:migrate:deploy
+  - Executes migration deployment script
+  - Uses 'scripts/deploy-migrations.sh'
+  - Applies schema changes in production environment
+
+prisma:migrate:rollback
+  - Reverts the most recent database migration
+  - Uses 'scripts/migration-rollback.sh'
+  - Allows undoing the last schema change
+
+prisma:seed:dev
+  - Seeds development database with initial data
+  - Uses seed script at 'prisma/seed/development.ts'
+  - Populates database with development dataset
+
+prisma:db:reset
+  - Completely resets the database
+  - Drops and recreates database
+  - Applies all migrations
+  - Runs seed scripts
+  - WARNING: Use only in development
+```
+
 ## Implementation Status
 
 ### ✅ Completed
@@ -50,7 +170,9 @@ We use Prisma as our ORM and database migration tool, providing:
    - Added unique constraints to prevent data duplication
    - Created robust database reset mechanism
 
-### 📝 Todo (Streamlined Migration Strategy)
+## Todo and Future Improvements
+
+### 📝 Prioritized Improvements
 
 #### 1. CI/CD Migration Pipeline Strategy 🚧
 - [x] Add migration dry-run in GitHub Actions
@@ -80,4 +202,32 @@ We use Prisma as our ORM and database migration tool, providing:
 - [ ] Set up logging for database operations
 - [ ] Configure database connection timeout and retry strategies
 
-[Rest of the document remains unchanged]
+### 📝 Additional Recommendations
+1. Set up automated backup system
+   - Configure scheduled backups using pg_dump
+   - Implement backup rotation strategy
+   - Add backup verification process
+   - Create backup restoration documentation
+
+2. Expand deployment strategies
+   - Create staging environment
+   - Add migration smoke tests
+   - Implement rollback verification
+   - Document deployment checklist
+
+3. Enhance database management
+   - Add database performance monitoring
+   - Implement query optimization strategies
+   - Create database scaling documentation
+   - Add audit logging for schema changes
+   - Implement connection pooling
+   - Add database health checks
+
+## Environment Configuration
+```bash
+# Local development
+DATABASE_URL="postgresql://user:password@localhost:5432/dev_db"
+
+# Digital Ocean environments
+DATABASE_URL="postgresql://doadmin:${POSTGRES_PASSWORD}@${DB_HOST}:${DB_PORT}/defaultdb?sslmode=require"
+```
