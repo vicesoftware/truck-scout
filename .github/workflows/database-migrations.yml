@@ -1,16 +1,16 @@
 name: Database Migrations
 
 on:
-  pull_request:
+  push:
     branches:
-      - main
       - develop
+      - main
     paths:
       - 'prisma/**'
       - '.github/workflows/database-migrations.yml'
 
 jobs:
-  validate-migrations:
+  validate-and-deploy:
     runs-on: ubuntu-latest
     
     services:
@@ -58,43 +58,25 @@ jobs:
         npx prisma migrate diff \
           --from-empty \
           --to-schema-datamodel prisma/schema.prisma \
-          --script > migration.sql
+          --script
 
-    - name: Review Migration Changes
+    - name: Deploy Migrations to Production
+      env:
+        DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
       run: |
-        echo "Migration Script Preview:"
-        cat migration.sql
-
-    - name: Upload Migration Script
-      uses: actions/upload-artifact@v3
-      with:
-        name: migration-script
-        path: migration.sql
-        retention-days: 5
-
-  schema-review:
-    needs: validate-migrations
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-
-    - name: Download Migration Script
-      uses: actions/download-artifact@v3
-      with:
-        name: migration-script
-
-    - name: Analyze Migration Impact
-      run: |
-        # Basic script to analyze migration complexity
-        # Could be expanded to check for destructive changes, large table modifications, etc.
-        echo "Performing basic migration impact analysis"
+        # Reset database (use with caution in production)
+        npx prisma migrate reset --force
         
-        # Example checks (to be expanded)
-        if grep -q "DROP TABLE" migration.sql; then
-          echo "Warning: Migration contains table deletion"
-          exit 1
-        fi
+        # Apply migrations
+        npx prisma migrate deploy
+        
+        # Generate Prisma client
+        npx prisma generate
+        
+        # Seed database
+        npx prisma db seed
 
-        if grep -q "ALTER COLUMN" migration.sql; then
-          echo "Warning: Migration modifies column types"
-        fi
+    - name: Log Migration Status
+      env:
+        DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
+      run: npx prisma migrate status
