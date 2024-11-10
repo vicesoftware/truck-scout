@@ -1,0 +1,100 @@
+name: Database Migrations
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+    paths:
+      - 'prisma/**'
+      - '.github/workflows/database-migrations.yml'
+
+jobs:
+  validate-migrations:
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_DB: testdb
+          POSTGRES_PASSWORD: testpassword
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Use Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Generate Prisma Client
+      run: npx prisma generate
+
+    - name: Validate Prisma Schema
+      run: npx prisma validate
+
+    - name: Create Migration Dry Run
+      env:
+        DATABASE_URL: postgresql://postgres:testpassword@localhost:5432/testdb
+      run: |
+        npx prisma migrate dev --create-only
+
+    - name: Check Migration Compatibility
+      env:
+        DATABASE_URL: postgresql://postgres:testpassword@localhost:5432/testdb
+      run: |
+        npx prisma migrate diff \
+          --from-empty \
+          --to-schema-datamodel prisma/schema.prisma \
+          --script > migration.sql
+
+    - name: Review Migration Changes
+      run: |
+        echo "Migration Script Preview:"
+        cat migration.sql
+
+    - name: Upload Migration Script
+      uses: actions/upload-artifact@v3
+      with:
+        name: migration-script
+        path: migration.sql
+        retention-days: 5
+
+  schema-review:
+    needs: validate-migrations
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Download Migration Script
+      uses: actions/download-artifact@v3
+      with:
+        name: migration-script
+
+    - name: Analyze Migration Impact
+      run: |
+        # Basic script to analyze migration complexity
+        # Could be expanded to check for destructive changes, large table modifications, etc.
+        echo "Performing basic migration impact analysis"
+        
+        # Example checks (to be expanded)
+        if grep -q "DROP TABLE" migration.sql; then
+          echo "Warning: Migration contains table deletion"
+          exit 1
+        fi
+
+        if grep -q "ALTER COLUMN" migration.sql; then
+          echo "Warning: Migration modifies column types"
+        fi

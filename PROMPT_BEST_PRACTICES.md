@@ -1,0 +1,6 @@
+- please focus only on the task at hand and don't modify any code that is unrelated to the requested work.
+- dont' leve comments in my code saying things like 
+  - (Previous content remains the same)
+  - [... rest of the document remains the same ...]
+- if you are unsure of something, ask me before you make any changes.
+- if you have any questions, please ask me before you make any changes.

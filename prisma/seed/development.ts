@@ -1,13 +1,16 @@
 import { PrismaClient } from '@prisma/client'
-import { carriers, seedCarriers } from './seed-utils'
+import { carriers } from './seed-utils.js'
 
 const prisma = new PrismaClient()
 
 async function main() {
   console.log('Seeding development database...')
   
-  // Use full dataset for development
-  await seedCarriers(prisma, carriers)
+  // Use createMany to handle potential duplicates
+  await prisma.carrier.createMany({
+    data: carriers,
+    skipDuplicates: true
+  })
   
   console.log('Development seed completed')
 }

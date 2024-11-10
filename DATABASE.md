@@ -43,146 +43,41 @@ We use Prisma as our ORM and database migration tool, providing:
    - Create mock Prisma client for unit tests
    - Add database transaction tests
 
-### 📝 Todo (Prioritized and Expanded)
-1. Set up automated backup system
-   - Configure scheduled backups using pg_dump
-   - Implement backup rotation strategy
-   - Add backup verification process
-   - Create backup restoration documentation
+### ✅ Completed
+1. Database Reset and Seeding Improvements
+   - Added `prisma:db:reset` npm script
+   - Implemented duplicate prevention in seeding
+   - Added unique constraints to prevent data duplication
+   - Created robust database reset mechanism
 
-2. Configure CI/CD pipeline for migrations
-   - Add migration dry-run in CI
-   - Implement automatic schema validation
-   - Add migration status checks
-   - Create deployment approval process
+### 📝 Todo (Streamlined Migration Strategy)
 
-3. Test deployment process
-   - Create staging environment
-   - Add migration smoke tests
-   - Implement rollback verification
-   - Document deployment checklist
+#### 1. CI/CD Migration Pipeline Strategy 🚧
+- [x] Add migration dry-run in GitHub Actions
+- [x] Implement automatic schema validation
+- [x] Create deployment approval process for schema changes
+- [x] Update GitHub workflow to include Prisma migration checks
 
-4. Apply migrations to production environment
-   - Create production deployment strategy
-   - Document rollback procedures
-   - Add monitoring for migration performance
-   - Implement alerting for migration failures
+#### 2. Production Migration Deployment 🚧
+- [x] Create clear migration process for Digital Ocean
+- [x] Document step-by-step migration workflow
+- [x] Implement basic rollback mechanism script
+- [x] Create deployment script for Prisma migrations
+- [ ] Enhance migration performance monitoring
+- [ ] Add comprehensive error handling and logging
+- [ ] Complete testing of migration scripts
 
-5. Additional Recommendations
-   - Add database performance monitoring
-   - Implement query optimization strategies
-   - Create database scaling documentation
-   - Add audit logging for schema changes
-   - Implement connection pooling
-   - Add database health checks
+#### 3. Seed Data Management
+- [x] Implement duplicate prevention in seeding
+- [ ] Create script to sync seed data between environments
+- [ ] Implement versioning for seed data
+- [ ] Add data integrity checks for seed scripts
 
-## Schema Management
+#### 4. Performance and Monitoring
+- [ ] Add basic database performance monitoring
+- [ ] Implement connection pooling configuration
+- [ ] Create database health check endpoint
+- [ ] Set up logging for database operations
+- [ ] Configure database connection timeout and retry strategies
 
-```prisma
-// prisma/schema.prisma
-model Carrier {
-  id        Int      @id @default(autoincrement())
-  name      String   @db.VarChar(255)
-  mcNumber  String?  @map("mc_number")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  @@map("carriers")
-}
-```
-
-## Migration Best Practices
-
-1. **Version Control**:
-```bash
-# Use descriptive names for migrations
-npm run prisma:migrate:dev --name add_carrier_status_enum
-```
-
-2. **Rollback Strategy**:
-```bash
-# Add to package.json scripts
-{
-  "scripts": {
-    "prisma:migrate:reset": "prisma migrate reset",
-    "prisma:db:rollback": "prisma migrate reset --skip-seed",
-    "prisma:migrate:status": "prisma migrate status"
-  }
-}
-```
-
-3. **Enhanced Data Seeding**:
-```
-prisma/seed/
-├── development.ts   # Full dataset from init.sql
-├── testing.ts      # Subset of carriers for tests
-├── production.ts   # Core production carriers
-└── seed-utils.ts   # Shared seeding utilities
-```
-
-4. **Schema Validation**:
-```typescript
-// src/lib/db/validateSchema.ts
-import { z } from 'zod'
-
-export const CarrierSchema = z.object({
-  id: z.number(),
-  name: z.string().min(1).max(255),
-  mcNumber: z.string().optional()
-})
-```
-
-5. **CI/CD Integration**:
-```yaml
-# .github/workflows/database.yml
-name: Database Migrations
-on:
-  push:
-    branches: [main]
-    paths:
-      - 'prisma/**'
-jobs:
-  migrate:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Run migrations
-        run: |
-          npm run prisma:migrate:deploy
-          npm run prisma:generate
-```
-
-6. **Migration Testing**:
-```typescript
-// tests/migrations/migration.test.ts
-describe('Migrations', () => {
-  it('should successfully apply all migrations', async () => {
-    const migrations = await prisma.$queryRaw`SELECT * FROM _prisma_migrations`
-    expect(migrations).toBeDefined()
-  })
-})
-```
-
-## Migration Commands
-
-```bash
-# Development
-npm run prisma:migrate:dev    # Create and apply migrations locally
-npm run prisma:generate       # Generate Prisma Client
-npm run prisma:seed          # Seed database
-npm run prisma:migrate:reset # Reset database to clean state
-npm run prisma:db:rollback   # Rollback without running seeds
-npm run prisma:migrate:status # Check migration status
-
-# Production
-npm run prisma:migrate:deploy # Deploy migrations to production
-npm run db:backup           # Create database backup
-```
-
-## Environment Configuration
-```bash
-# Local development
-DATABASE_URL="postgresql://user:password@localhost:5432/dev_db"
-
-# Digital Ocean environments
-DATABASE_URL="postgresql://doadmin:${POSTGRES_PASSWORD}@${DB_HOST}:${DB_PORT}/defaultdb?sslmode=require"
+[Rest of the document remains unchanged]

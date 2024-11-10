@@ -1,0 +1,5 @@
+- think carefully about the component
+- when creating a mermaid diagram
+  - use modern color pallets that are easy to see
+  - make sure there is enough contrast to see text
+  - make sure the digram can be seen on both light and dark backgrounds

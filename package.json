@@ -1,6 +1,7 @@
 {
   "name": "truck-scout-tms",
   "version": "0.1.0",
+  "type": "module",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -23,7 +24,11 @@
     "pretest:local:all": "npm run type-check && npm run lint && npm run test:db:up",
     "test:local:all": "start-server-and-test dev http://localhost:3000 'npm run test:api:local && npm run cypress:run --headless'",
     "posttest:local:all": "npm run test:db:down",
-    "test:local:quick": "start-server-and-test dev http://localhost:3000 'npm run test:api:local && npm run cypress:run --headless'"
+    "test:local:quick": "start-server-and-test dev http://localhost:3000 'npm run test:api:local && npm run cypress:run --headless'",
+    "prisma:migrate:deploy": "bash scripts/deploy-migrations.sh",
+    "prisma:migrate:rollback": "bash scripts/migration-rollback.sh",
+    "prisma:seed:dev": "node --loader ts-node/esm prisma/seed/development.ts",
+    "prisma:db:reset": "prisma migrate reset --force"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.2",
@@ -78,6 +83,7 @@
     "start-server-and-test": "^2.0.8",
     "style-loader": "^4.0.0",
     "ts-jest": "^29.1.2",
+    "ts-node": "^10.9.2",
     "webpack": "^5.95.0",
     "webpack-cli": "^5.1.4"
   },
