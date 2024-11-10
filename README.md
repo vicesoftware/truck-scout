@@ -37,7 +37,7 @@ Truck Scout TMS is a [Next.js](https://nextjs.org/) project with PostgreSQL. It 
 
 > 🤖 **Note:** This project is optomized for [AI-Assisted Development](#ai-assisted-development) so take a look at that section for more information before getting too far into your coding.
 
-> 🤖 **Note:** The [Architecture Documentation](Architecture-Documentation), [Database Documentation](Database-Documentation), and [Deployment Documentation](Deployment-Documentation) below are kept in separate files to allow it to be added to the context of AI-assisted development prompts like Aider or Cursor composer. This allows the AI to understand the project's architecture, database schema, and deployment architecture and make better recommendations.
+> 🤖 **Note:** The [Architecture Documentation](docs/ARCHITECTURE.md), [Database Documentation](docs/DATABASE.md), and [Deployment Documentation](docs/DEPLOYMENT.md) below are kept in separate files to allow it to be added to the context of AI-assisted development prompts like Aider or Cursor composer. This allows the AI to understand the project's architecture, database schema, and deployment architecture and make better recommendations.
 
 ### Architecture Documentation
 
@@ -61,7 +61,7 @@ For detailed information about the project's database configuration, including:
 - Testing Framework
 - CI/CD Integration
 
-Please refer to the [DATABASE.md](DATABASE.md) file.
+Please refer to the [DATABASE.md](docs/DATABASE.md) file.
 > 🤖 **Note:** Add this to the context of AI-assisted development prompts like Aider or Cursor composer to allow the AI to understand the project's database architecture and make better recommendations when making changes to the database schema or working with migrations.
 
 ### Deployment Documentation
