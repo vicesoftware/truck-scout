@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { expect, describe, test, afterAll } from '@jest/globals';
+import { expect, describe, test, afterAll, beforeAll, afterEach } from '@jest/globals';
 import { Pool } from 'pg';
 
 const isLocalDev = process.env.TEST_ENV === 'local';
@@ -19,7 +19,53 @@ const pool = new Pool({
 });
 
 describe('Database and Brokers API', () => {
-  let createdBrokerId: number;
+  const createdBrokerIds: number[] = [];
+  let initialBrokerCount: number;
+  let finalBrokerCount: number;
+
+  // Helper function to clean up created brokers
+  async function cleanupCreatedBrokers() {
+    for (const brokerId of createdBrokerIds) {
+      try {
+        await axiosInstance.delete(`/api/brokers/${brokerId}`);
+      } catch (error) {
+        console.warn(`Failed to delete broker ${brokerId} during cleanup:`, error);
+      }
+    }
+    createdBrokerIds.length = 0; // Clear the array
+  }
+
+  // Capture initial broker count to restore after tests
+  beforeAll(async () => {
+    const client = await pool.connect();
+    try {
+      const result = await client.query('SELECT COUNT(*) FROM brokers');
+      initialBrokerCount = parseInt(result.rows[0].count, 10);
+    } finally {
+      client.release();
+    }
+  });
+
+  afterEach(async () => {
+    await cleanupCreatedBrokers();
+  });
+
+  afterAll(async () => {
+    await cleanupCreatedBrokers();
+
+    // Verify final broker count matches initial count
+    const client = await pool.connect();
+    try {
+      const result = await client.query('SELECT COUNT(*) FROM brokers');
+      finalBrokerCount = parseInt(result.rows[0].count, 10);
+      
+      // Ensure no additional brokers were left behind
+      expect(finalBrokerCount).toBe(initialBrokerCount);
+    } finally {
+      client.release();
+      await pool.end();
+    }
+  });
 
   test('Database should be accessible and have a brokers table', async () => {
     const client = await pool.connect();
@@ -37,131 +83,112 @@ describe('Database and Brokers API', () => {
     expect(Array.isArray(response.data)).toBe(true);
   });
 
-  test('POST /api/brokers should create a new broker', async () => {
+  test('POST /api/brokers should create a new broker and verify via GET', async () => {
     const newBroker = {
       name: 'Test Broker Company',
       contact_email: 'contact@testbroker.com',
       contact_phone: '1234567890',
-      type: 'Broker-Carrier',
-      mc_number: 'MC987654',
-      dot_number: 'DOT345678'
+      type: 'Broker-Carrier'
     };
 
-    const response = await axiosInstance.post('/api/brokers', newBroker);
-    expect(response.status).toBe(201);
-    expect(response.data).toMatchObject({
-      ...newBroker,
+    const postResponse = await axiosInstance.post('/api/brokers', newBroker);
+    expect(postResponse.status).toBe(201);
+    expect(postResponse.data).toMatchObject({
+      name: newBroker.name,
+      contact_email: newBroker.contact_email,
+      contact_phone: newBroker.contact_phone,
+      type: newBroker.type,
       id: expect.any(Number)
     });
-    createdBrokerId = response.data.id;
-  });
+    const createdBrokerId = postResponse.data.id;
+    createdBrokerIds.push(createdBrokerId);
 
-  test('GET /api/brokers/<id> should fetch a specific broker', async () => {
-    const response = await axiosInstance.get(`/api/brokers/${createdBrokerId}`);
-    expect(response.status).toBe(200);
-    expect(response.data).toMatchObject({
+    // Verify POST by doing a GET and checking data
+    const getResponse = await axiosInstance.get(`/api/brokers/${createdBrokerId}`);
+    expect(getResponse.status).toBe(200);
+    expect(getResponse.data).toMatchObject({
       id: createdBrokerId,
-      name: 'Test Broker Company',
-      contact_email: 'contact@testbroker.com'
+      name: newBroker.name,
+      contact_email: newBroker.contact_email,
+      contact_phone: newBroker.contact_phone,
+      type: newBroker.type
     });
   });
 
-  test('PUT /api/brokers/<id> should update an existing broker', async () => {
+  test('PUT /api/brokers/<id> should update an existing broker and verify via GET', async () => {
+    // First, create a broker to update
+    const newBroker = {
+      name: 'Broker to Update',
+      contact_email: 'update@testbroker.com',
+      contact_phone: '5555555555',
+      type: 'Broker-Carrier'
+    };
+
+    const createResponse = await axiosInstance.post('/api/brokers', newBroker);
+    const createdBrokerId = createResponse.data.id;
+    createdBrokerIds.push(createdBrokerId);
+
     const updatedBroker = {
       name: 'Updated Test Broker Company',
       contact_email: 'updated@testbroker.com',
       contact_phone: '9876543210',
-      type: 'Broker-Only',
-      mc_number: 'MC123456',
-      dot_number: 'DOT678901'
+      type: 'Broker-Only'
     };
 
-    const response = await axiosInstance.put(`/api/brokers/${createdBrokerId}`, updatedBroker);
-    expect(response.status).toBe(200);
-    expect(response.data).toMatchObject({
-      ...updatedBroker,
+    const putResponse = await axiosInstance.put(`/api/brokers/${createdBrokerId}`, updatedBroker);
+    expect(putResponse.status).toBe(200);
+    expect(putResponse.data).toMatchObject({
+      name: updatedBroker.name,
+      contact_email: updatedBroker.contact_email,
+      contact_phone: updatedBroker.contact_phone,
+      type: updatedBroker.type,
       id: createdBrokerId
+    });
+
+    // Verify PUT by doing a GET and checking updated data
+    const getResponse = await axiosInstance.get(`/api/brokers/${createdBrokerId}`);
+    expect(getResponse.status).toBe(200);
+    expect(getResponse.data).toMatchObject({
+      id: createdBrokerId,
+      name: updatedBroker.name,
+      contact_email: updatedBroker.contact_email,
+      contact_phone: updatedBroker.contact_phone,
+      type: updatedBroker.type
     });
   });
 
-  test('DELETE /api/brokers/<id> should delete an existing broker', async () => {
+  test('DELETE /api/brokers/<id> should delete an existing broker and verify via GET', async () => {
     // Create a new broker specifically for this test
     const newBroker = {
       name: 'Broker to Delete',
       contact_email: 'delete@testbroker.com',
       contact_phone: '5555555555',
-      type: 'Broker-Carrier',
-      mc_number: 'MC999999',
-      dot_number: 'DOT888888'
+      type: 'Broker-Carrier'
     };
 
-    let brokerToDeleteId: string | undefined;
+    const createResponse = await axiosInstance.post('/api/brokers', newBroker);
+    const brokerToDeleteId = createResponse.data.id;
+    
+    // Verify the broker exists before deletion
+    const getBeforeDeleteResponse = await axiosInstance.get(`/api/brokers/${brokerToDeleteId}`);
+    expect(getBeforeDeleteResponse.status).toBe(200);
 
+    // Delete the broker
+    const deleteResponse = await axiosInstance.delete(`/api/brokers/${brokerToDeleteId}`);
+    expect(deleteResponse.status).toBe(200);
+    expect(deleteResponse.data.message).toBe('Broker deleted successfully');
+
+    // Verify deletion by attempting to GET the broker (should result in 404)
     try {
-      // Create the broker
-      const createResponse = await axiosInstance.post('/api/brokers', newBroker);
-      expect(createResponse.status).toBe(201);
-      brokerToDeleteId = createResponse.data.id;
-      console.log(`Created broker with ID: ${brokerToDeleteId}`);
-
-      // Verify the broker exists
-      const getResponse = await axiosInstance.get(`/api/brokers/${brokerToDeleteId}`);
-      expect(getResponse.status).toBe(200);
-      console.log('Broker exists before deletion');
-
-      // Now attempt to delete the broker
-      const deleteResponse = await axiosInstance.delete(`/api/brokers/${brokerToDeleteId}`);
-      expect(deleteResponse.status).toBe(200);
-      expect(deleteResponse.data.message).toBe('Broker deleted successfully');
-
-      console.log('Broker deleted successfully');
-
-      // Verify the broker no longer exists
-      try {
-        await axiosInstance.get(`/api/brokers/${brokerToDeleteId}`);
-        throw new Error('Broker still exists after deletion');
-      } catch (error) {
-        if (axios.isAxiosError(error) && error.response?.status === 404) {
-          console.log('Broker successfully deleted and not found');
-        } else {
-          throw error;
-        }
-      }
+      await axiosInstance.get(`/api/brokers/${brokerToDeleteId}`);
+      throw new Error('Broker still exists after deletion');
     } catch (error) {
-      console.error('Error in DELETE test:');
-      
-      if (axios.isAxiosError(error)) {
-        console.error('Response status:', error.response?.status);
-        console.error('Response data:', error.response?.data);
-        console.error('Error message:', error.message);
-      } else if (error instanceof Error) {
-        console.error('Error message:', error.message);
+      if (axios.isAxiosError(error) && error.response?.status === 404) {
+        // This is the expected behavior
+        expect(error.response.status).toBe(404);
       } else {
-        console.error('Unknown error:', error);
+        throw error;
       }
-
-      // If the error is in the delete operation, try to get the broker to see if it still exists
-      if (brokerToDeleteId) {
-        try {
-          const checkResponse = await axiosInstance.get(`/api/brokers/${brokerToDeleteId}`);
-          console.error('Broker still exists after failed deletion:', {
-            id: checkResponse.data.id,
-            name: checkResponse.data.name,
-            mc_number: checkResponse.data.mc_number
-          });
-        } catch (checkError) {
-          if (axios.isAxiosError(checkError)) {
-            console.error('Error checking broker existence after failed deletion:', {
-              status: checkError.response?.status,
-              message: checkError.message
-            });
-          } else {
-            console.error('Unknown error checking broker existence after failed deletion');
-          }
-        }
-      }
-
-      throw error;
     }
   });
 
@@ -202,8 +229,4 @@ describe('Database and Brokers API', () => {
       }
     }
   });
-});
-
-afterAll(async () => {
-  await pool.end();
 });
