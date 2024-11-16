@@ -1,6 +1,12 @@
 # Trucking Brokers
 A trucking broker is a company that arranges transportation for shippers and carriers. They can be either a broker-only company or a broker-carrier company.
 
+## AI Agent Prompt
+When implementing the brokers domain follow the best practices outlined in 
+
+* [PROMPT_BEST_PRACTICES.md](docs/prompts/PROMPT_BEST_PRACTICES.md) document
+* [ARCHITECTURE.md](docs/ARCHITECTURE.md) document
+
 ## Implementation Plan
 
 ### Phase 1: Domain Model and API Development

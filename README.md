@@ -46,7 +46,7 @@ For detailed information about the project's architecture, including:
 - Data Flow
 - Best Practices
 
-Please refer to the [ARCHITECTURE.md](ARCHITECTURE.md) file.
+Please refer to the [ARCHITECTURE.md](docs/ARCHITECTURE.md) file.
 > 🤖 **Note:** Add this to the context of AI-assisted development prompts like Aider or Cursor composer to allow the AI to understand the project architecture and make better recommendations when adding new features or making changes to the codebase.
 
 ### Deployment Documentation
@@ -58,7 +58,7 @@ For detailed information about the project's deployment configuration, including
 - Database Configuration
 - Monitoring and Troubleshooting
 
-Please refer to the [DEPLOYMENT.md](DEPLOYMENT.md) file.
+Please refer to the [DEPLOYMENT.md](docs/DEPLOYMENT.md) file.
 > 🤖 **Note:** Add this to the context of AI-assisted development prompts like Aider or Cursor composer to allow the AI to understand the project's deployment architecture and make better recommendations when making changes to deployment configuration.
 
 ## Getting Started
