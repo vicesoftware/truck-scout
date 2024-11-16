@@ -4,6 +4,7 @@
 - [Overview](#overview)
   - [Architecture Documentation](#architecture-documentation)
   - [Deployment Documentation](#deployment-documentation)
+  - [Development Approach](#development-approach)
 - [Getting Started](#getting-started)
 - [Database Setup](#database-setup)
 - [Running the Application](#running-the-application)
@@ -60,6 +61,14 @@ For detailed information about the project's deployment configuration, including
 
 Please refer to the [DEPLOYMENT.md](docs/DEPLOYMENT.md) file.
 > 🤖 **Note:** Add this to the context of AI-assisted development prompts like Aider or Cursor composer to allow the AI to understand the project's deployment architecture and make better recommendations when making changes to deployment configuration.
+
+### Development Approach
+
+We are pioneering an innovative software development methodology called **Documentation Driven Development** (DDD), which leverages AI as a pair programmer. This approach draws inspiration from Extreme Programming (XP) principles and transforms documentation into functional software.
+
+For a comprehensive overview of our development approach, including its principles, benefits, and workflow, please refer to the [DOMAIN_DRIVEN_DEVELOPMENT_APPROACH.md](docs/DOMAIN_DRIVEN_DEVELOPMENT_APPROACH.md) document.
+
+> 🤖 **Experimental Approach:** This methodology is actively being tested and refined in this repository. We welcome feedback and contributions to evolve this innovative development process.
 
 ## Getting Started
 
