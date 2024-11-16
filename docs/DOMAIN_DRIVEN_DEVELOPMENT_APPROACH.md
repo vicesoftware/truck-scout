@@ -4,6 +4,30 @@
 
 Documentation Driven Development (DDD) is an innovative software development approach that leverages AI as a pair programmer, drawing inspiration from Extreme Programming (XP) principles. This methodology emphasizes documentation as the primary driver of development, using AI agents to transform documentation into functional software.
 
+```mermaid
+flowchart TD
+    A1["(1) Create Feature Requirements Markdown"] --> B2["(2) Develop Implementation Plan with AI"]
+    B2 --> C3["(3) Implement Feature using AI Assistance"]
+    C3 --> D4["(4) Add Comprehensive Tests"]
+    D4 --> E5["(5) Refactor and Optimize"]
+    E5 --> F6["(6) Generate Focused Documentation"]
+    F6 --> A1
+
+    classDef step1 fill:#2C3E50,color:#ECF0F1,stroke:#34495E,stroke-width:2px;
+    classDef step2 fill:#16A085,color:#ECF0F1,stroke:#1ABC9C,stroke-width:2px;
+    classDef step3 fill:#2980B9,color:#ECF0F1,stroke:#3498DB,stroke-width:2px;
+    classDef step4 fill:#8E44AD,color:#ECF0F1,stroke:#9B59B6,stroke-width:2px;
+    classDef step5 fill:#D35400,color:#ECF0F1,stroke:#E67E22,stroke-width:2px;
+    classDef step6 fill:#27AE60,color:#ECF0F1,stroke:#2ECC71,stroke-width:2px;
+
+    class A1 step1;
+    class B2 step2;
+    class C3 step3;
+    class D4 step4;
+    class E5 step5;
+    class F6 step6;
+```
+
 ## Core Principles
 
 ### 1. Documentation as the Starting Point
