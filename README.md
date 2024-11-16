@@ -37,7 +37,6 @@ Truck Scout TMS is a [Next.js](https://nextjs.org/) project with PostgreSQL. It 
 
 > 🤖 **Note:** The [Architecture Documentation](Architecture-Documentation) and [Deployment Documentation](Deployment-Documentation) below are kept in separate files to allow it to be added to the context of AI-assisted development prompts like Aider or Cursor composer. This allows the AI to understand the project's architecture and deployment architecture and make better recommendations.
 
-
 ### Architecture Documentation
 
 For detailed information about the project's architecture, including:
@@ -113,7 +112,6 @@ Please refer to the [DEPLOYMENT.md](DEPLOYMENT.md) file.
      - Username: (the value of POSTGRES_USER from docker-compose.yml)
      - Password: (the value of POSTGRES_PASSWORD from docker-compose.yml)
 
-
 ## Running the Application
 
 1. Start the development server:
@@ -124,6 +122,10 @@ Please refer to the [DEPLOYMENT.md](DEPLOYMENT.md) file.
 2. Open [http://localhost:3000](http://localhost:3000) in your browser to see the main application.
 
 ## Running Tests
+
+For detailed API testing best practices and step-by-step instructions on running tests, please refer to the [API_TESTING_BEST_PRACTICES.md](docs/API_TESTING_BEST_PRACTICES.md) document.
+
+> 🤖 **Note:** We've centralized the API testing documentation to enhance AI development workflows and provide a comprehensive guide for developers. This approach allows AI agents and developers to quickly understand our testing methodology and reproduce our testing environment while keeping token counts low.
 
 ### Docker Environment (Recommended for CI/CD)
 ```bash

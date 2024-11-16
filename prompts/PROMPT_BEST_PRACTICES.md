@@ -37,6 +37,42 @@
 - Do NOT remove or alter existing content without explicit instruction
 - Do NOT make sweeping changes that could impact unrelated parts of the project
 
+## Critical Content Preservation Strategy
+
+### Content Modification Workflow
+1. **Full Content Preservation**
+   - When modifying a file, ALWAYS include the ENTIRE original content
+   - Add new content by inserting or appending, never by replacing wholesale
+   - If adding new sections, place them strategically without disrupting existing structure
+
+2. **Handling Partial Updates**
+   - If only a small portion of a file needs updating:
+     * Identify the exact location for the change
+     * Modify ONLY that specific section
+     * Ensure all surrounding content remains untouched
+   - Use precise, targeted modifications
+   - Avoid global replacements or bulk edits
+
+3. **Tooling Considerations**
+   - When using write_to_file or similar tools:
+     * Always provide the complete file content
+     * Do NOT use truncation or partial content strategies
+     * Treat each file modification as a complete file rewrite
+   - If unsure about the full content, use read_file first to capture the entire original file
+
+### Common Pitfall Prevention
+- **Red Flags to Watch For**:
+  * Accidentally removing sections of a file
+  * Using placeholders like "[...]"
+  * Truncating content
+  * Assuming certain sections are unimportant
+
+- **Mitigation Strategies**:
+  * Always double-check file content before submission
+  * Use diff tools to verify changes
+  * Ask for confirmation if any doubt exists
+  * Treat every file as a complete, interconnected document
+
 ## Recommended Workflow
 
 1. Read the entire task description carefully
@@ -54,4 +90,8 @@
   * Showing proposed changes before implementation
   * Breaking complex tasks into smaller, more manageable steps
 
-Remember: The goal is to make the smallest, most targeted change possible that fully addresses the task requirements.
+## Philosophical Approach
+
+Remember: Each file is a living document. Your goal is not just to make changes, but to evolve the document while maintaining its integrity, context, and original intent. Every modification should feel like a natural, seamless extension of the existing content.
+
+The ultimate goal is to make the smallest, most targeted change possible that fully addresses the task requirements while preserving the holistic nature of the document.
