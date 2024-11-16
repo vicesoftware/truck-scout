@@ -84,52 +84,15 @@ When implementing the brokers domain follow the best practices outlined in
      * Validate data transformations
      * Ensure tests focus on observable database behavior
 
-4. Create API Client Functions
-   - [ ] Develop `src/domains/brokers/api.ts`
-     * Create methods for fetching brokers
-     * Implement load-related API methods
-     * Add methods for carrier, shipper, and factor retrieval
-     * Ensure error handling for API calls
-   - [ ] Develop feature-centric API client tests
-     * Test complete feature workflows
-     * Validate API method interactions
-     * Verify error scenarios and edge cases
-     * Focus on user-facing functionality
-
-5. Create React Query Hooks
-   - [ ] Develop `src/domains/brokers/hooks.ts`
-     * Implement hooks for brokers list and individual broker
-     * Create hooks for loads, carriers, shippers, and factors
-     * Add mutation hook for creating loads
-   - [ ] Create interaction-focused tests
-     * Simulate user interface interactions
-     * Test hook behavior in realistic scenarios
-     * Validate data fetching and mutation flows
-     * Ensure tests are lightweight and maintainable
-
-### Phase 2: Advanced Broker Management
-- [ ] Implement advanced filtering and search capabilities
-- [ ] Develop comprehensive reporting features
-- [ ] Create user role-based access controls
-- [ ] Integrate with external transportation management systems
-
-### Phase 3: Performance and Scalability
-- [ ] Optimize database queries
-- [ ] Implement caching mechanisms
-- [ ] Develop load balancing strategies
-- [ ] Create monitoring and alerting systems
-
-### Phase 4: Machine Learning Integration
-- [ ] Develop predictive load matching algorithms
-- [ ] Implement risk assessment models
-- [ ] Create intelligent pricing recommendations
-- [ ] Build carrier performance analytics
-
-### Phase 5: Mobile and Cross-Platform Support
-- [ ] Develop responsive web interface
-- [ ] Create mobile application for iOS and Android
-- [ ] Implement cross-platform synchronization
-- [ ] Develop offline mode capabilities
+4. Build UI
+   - [] Create Next.js page for loads
+     * match the styles in the [UX_STYLING_BEST_PRACTICES.md](docs/ux/UX_STYLING_BEST_PRACTICES.md) document
+     * Loads table implemented
+     * Loads table is searchable
+     * Loads table is paginated
+     * Loads table is sortable
+     * Loads table is filterable
+5. 
 
 ## Future Considerations
 - Blockchain integration for transparent transaction tracking
