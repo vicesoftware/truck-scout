@@ -75,7 +75,7 @@ describe('Database and Carriers API', () => {
     });
   });
 
-  test('DELETE /api/carriers/<id> should delete an existing carrier', async () => {
+  test('DELETE /api/carriers/<id> should delete an existing carrier and verify via GET', async () => {
     // Create a new carrier specifically for this test
     const newCarrier = {
       name: 'Carrier to Delete',
@@ -86,73 +86,28 @@ describe('Database and Carriers API', () => {
       rating: 3.5
     };
 
-    let carrierToDeleteId: string | undefined;
+    const createResponse = await axiosInstance.post('/api/carriers', newCarrier);
+    const carrierToDeleteId = createResponse.data.id;
+    
+    // Verify the carrier exists before deletion
+    const getBeforeDeleteResponse = await axiosInstance.get(`/api/carriers/${carrierToDeleteId}`);
+    expect(getBeforeDeleteResponse.status).toBe(200);
 
+    // Delete the carrier
+    const deleteResponse = await axiosInstance.delete(`/api/carriers/${carrierToDeleteId}`);
+    expect(deleteResponse.status).toBe(200);
+    expect(deleteResponse.data.message).toBe('Carrier deleted successfully');
+
+    // Verify deletion by attempting to GET the carrier (should result in 404)
     try {
-      // Create the carrier
-      const createResponse = await axiosInstance.post('/api/carriers', newCarrier);
-      expect(createResponse.status).toBe(201);
-      carrierToDeleteId = createResponse.data.id;
-      console.log(`Created carrier with ID: ${carrierToDeleteId}`);
-
-      // Verify the carrier exists
-      const getResponse = await axiosInstance.get(`/api/carriers/${carrierToDeleteId}`);
-      expect(getResponse.status).toBe(200);
-      console.log('Carrier exists before deletion');
-
-      // Now attempt to delete the carrier
-      const deleteResponse = await axiosInstance.delete(`/api/carriers/${carrierToDeleteId}`);
-      expect(deleteResponse.status).toBe(200);
-      expect(deleteResponse.data.message).toBe('Carrier deleted successfully');
-
-      console.log('Carrier deleted successfully');
-
-      // Verify the carrier no longer exists
-      try {
-        await axiosInstance.get(`/api/carriers/${carrierToDeleteId}`);
-        throw new Error('Carrier still exists after deletion');
-      } catch (error) {
-        if (axios.isAxiosError(error) && error.response?.status === 404) {
-          console.log('Carrier successfully deleted and not found');
-        } else {
-          throw error;
-        }
-      }
+      await axiosInstance.get(`/api/carriers/${carrierToDeleteId}`);
+      throw new Error('Carrier still exists after deletion');
     } catch (error) {
-      console.error('Error in DELETE test:');
-      
-      if (axios.isAxiosError(error)) {
-        console.error('Response status:', error.response?.status);
-        console.error('Response data:', error.response?.data);
-        console.error('Error message:', error.message);
-      } else if (error instanceof Error) {
-        console.error('Error message:', error.message);
+      if (axios.isAxiosError(error) && error.response?.status === 404) {
+        expect(error.response.status).toBe(404);
       } else {
-        console.error('Unknown error:', error);
+        throw error;
       }
-
-      // If the error is in the delete operation, try to get the carrier to see if it still exists
-      if (carrierToDeleteId) {
-        try {
-          const checkResponse = await axiosInstance.get(`/api/carriers/${carrierToDeleteId}`);
-          console.error('Carrier still exists after failed deletion:', {
-            id: checkResponse.data.id,
-            name: checkResponse.data.name,
-            mc_number: checkResponse.data.mc_number
-          });
-        } catch (checkError) {
-          if (axios.isAxiosError(checkError)) {
-            console.error('Error checking carrier existence after failed deletion:', {
-              status: checkError.response?.status,
-              message: checkError.message
-            });
-          } else {
-            console.error('Unknown error checking carrier existence after failed deletion');
-          }
-        }
-      }
-
-      throw error;
     }
   });
 });

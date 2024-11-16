@@ -2,10 +2,11 @@
 # Truck Scout TMS
 
 - [Overview](#overview)
-- [Architecture Documentation](#architecture-documentation)
+  - [Architecture Documentation](#architecture-documentation)
+  - [Deployment Documentation](#deployment-documentation)
+  - [Development Approach](#development-approach)
 - [Getting Started](#getting-started)
 - [Database Setup](#database-setup)
-- [Payload CMS Setup](#payload-cms-setup)
 - [Running the Application](#running-the-application)
 - [Running Tests](#running-tests)
   - [Docker Environment (Recommended for CI/CD)](#docker-environment-recommended-for-cicd)
@@ -31,11 +32,13 @@
 
 ## Overview
 
-Truck Scout TMS is a [Next.js](https://nextjs.org/) project integrated with [Payload CMS](https://payloadcms.com/) and PostgreSQL. It uses Docker for database management.
+Truck Scout TMS is a [Next.js](https://nextjs.org/) project with PostgreSQL. It uses Docker for database management.
 
 > 🤖 **Note:** This project is optomized for [AI-Assisted Development](#ai-assisted-development) so take a look at that section for more information before getting too far into your coding.
 
-## Architecture Documentation
+> 🤖 **Note:** The [Architecture Documentation](Architecture-Documentation) and [Deployment Documentation](Deployment-Documentation) below are kept in separate files to allow it to be added to the context of AI-assisted development prompts like Aider or Cursor composer. This allows the AI to understand the project's architecture and deployment architecture and make better recommendations.
+
+### Architecture Documentation
 
 For detailed information about the project's architecture, including:
 - Project Structure
@@ -44,9 +47,28 @@ For detailed information about the project's architecture, including:
 - Data Flow
 - Best Practices
 
-Please refer to the [ARCHITECTURE.md](ARCHITECTURE.md) file.
+Please refer to the [ARCHITECTURE.md](docs/ARCHITECTURE.md) file.
+> 🤖 **Note:** Add this to the context of AI-assisted development prompts like Aider or Cursor composer to allow the AI to understand the project architecture and make better recommendations when adding new features or making changes to the codebase.
 
-> 💡 **Note:** The architecture documentation is kept separate to allow it to be added to the context of AI-assisted development prompts like Aider or Cursor composer. This allows the AI to understand the project architecture and make better recommendations.
+### Deployment Documentation
+
+For detailed information about the project's deployment configuration, including:
+- Build Pipeline
+- Digital Ocean App Platform Setup
+- Environment Management
+- Database Configuration
+- Monitoring and Troubleshooting
+
+Please refer to the [DEPLOYMENT.md](docs/DEPLOYMENT.md) file.
+> 🤖 **Note:** Add this to the context of AI-assisted development prompts like Aider or Cursor composer to allow the AI to understand the project's deployment architecture and make better recommendations when making changes to deployment configuration.
+
+### Development Approach
+
+We are pioneering an innovative software development methodology called **Documentation Driven Development** (DDD), which leverages AI as a pair programmer. This approach draws inspiration from Extreme Programming (XP) principles and transforms documentation into functional software.
+
+For a comprehensive overview of our development approach, including its principles, benefits, and workflow, please refer to the [DOMAIN_DRIVEN_DEVELOPMENT_APPROACH.md](docs/DOMAIN_DRIVEN_DEVELOPMENT_APPROACH.md) document.
+
+> 🤖 **Experimental Approach:** This methodology is actively being tested and refined in this repository. We welcome feedback and contributions to evolve this innovative development process.
 
 ## Getting Started
 
@@ -58,10 +80,9 @@ Please refer to the [ARCHITECTURE.md](ARCHITECTURE.md) file.
 2. Set up environment variables:
    Create a `.env` file in the project root with the following content:
    ```
-   DATABASE_URI=postgres://tms_user:secure_password_here@localhost:5432/tms_db
-   PAYLOAD_SECRET=your_long_random_string_here
+   DATABASE_URL=postgres://tms_user:secure_password_here@localhost:5432/tms_db
    ```
-   Replace the values with your desired settings. Note that the database credentials in the `DATABASE_URI` should match those defined in your `docker-compose.yml` file.
+   Replace the values with your desired settings. Note that the database credentials should match those defined in your `docker-compose.yml` file.
 
 ## Database Setup
 
@@ -100,12 +121,6 @@ Please refer to the [ARCHITECTURE.md](ARCHITECTURE.md) file.
      - Username: (the value of POSTGRES_USER from docker-compose.yml)
      - Password: (the value of POSTGRES_PASSWORD from docker-compose.yml)
 
-## Payload CMS Setup
-
-1. Ensure the `payload.config.js` file is properly configured with your collections and settings.
-
-2. The first time you run the application, Payload will automatically set up the necessary tables in your PostgreSQL database.
-
 ## Running the Application
 
 1. Start the development server:
@@ -115,23 +130,35 @@ Please refer to the [ARCHITECTURE.md](ARCHITECTURE.md) file.
 
 2. Open [http://localhost:3000](http://localhost:3000) in your browser to see the main application.
 
-3. Access the Payload CMS admin panel at [http://localhost:3000/admin](http://localhost:3000/admin)
-
-4. On first run, you'll be prompted to create an admin user for Payload CMS.
-
 ## Running Tests
+
+For detailed testing best practices and step-by-step instructions on running tests, please refer to the following documents:
+
+Core Principles:
+- [TESTING_BEST_PRACTICES.md](docs/TESTING_BEST_PRACTICES.md)
+
+Architecture Layer Specific Principles:
+- [API_TESTING_BEST_PRACTICES.md](docs/API_TESTING_BEST_PRACTICES.md)
+
+> 🤖 **Note:** We've centralized the testing documentation to enhance AI development workflows and provide a comprehensive guide for developers. This approach allows AI agents and developers to quickly understand our testing methodology and reproduce our testing environment while keeping token counts low.
 
 ### Docker Environment (Recommended for CI/CD)
 ```bash
-# Run tests once (CI mode)
-npm run test:api:ci
+# Clean up any existing containers first
+docker compose -f docker-compose.test.yml down -v
 
+# Run tests in CI mode (replicates GitHub Actions pipeline)
+TEST_MODE=ci docker compose -f docker-compose.test.yml up --abort-on-container-exit --exit-code-from test
+
+# Alternative development modes:
 # Run tests in watch mode
-npm run test:api:watch
+TEST_MODE=watch docker compose -f docker-compose.test.yml up
 
 # Clean up test containers when done
-npm run test:api:clean
+docker compose -f docker-compose.test.yml down -v
 ```
+
+> 💡 **Note:** Using `TEST_MODE=ci` exactly replicates how tests run in the GitHub Actions CI pipeline.
 
 ### Local Development Environment
 For quick local development, you'll need three terminal windows:
