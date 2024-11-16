@@ -132,9 +132,15 @@ For a comprehensive overview of our development approach, including its principl
 
 ## Running Tests
 
-For detailed API testing best practices and step-by-step instructions on running tests, please refer to the [API_TESTING_BEST_PRACTICES.md](docs/API_TESTING_BEST_PRACTICES.md) document.
+For detailed testing best practices and step-by-step instructions on running tests, please refer to the following documents:
 
-> 🤖 **Note:** We've centralized the API testing documentation to enhance AI development workflows and provide a comprehensive guide for developers. This approach allows AI agents and developers to quickly understand our testing methodology and reproduce our testing environment while keeping token counts low.
+Core Principles:
+- [TESTING_BEST_PRACTICES.md](docs/TESTING_BEST_PRACTICES.md)
+
+Architecture Layer Specific Principles:
+- [API_TESTING_BEST_PRACTICES.md](docs/API_TESTING_BEST_PRACTICES.md)
+
+> 🤖 **Note:** We've centralized the testing documentation to enhance AI development workflows and provide a comprehensive guide for developers. This approach allows AI agents and developers to quickly understand our testing methodology and reproduce our testing environment while keeping token counts low.
 
 ### Docker Environment (Recommended for CI/CD)
 ```bash
