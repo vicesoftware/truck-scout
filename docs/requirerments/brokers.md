@@ -6,6 +6,7 @@ When implementing the brokers domain follow the best practices outlined in
 
 * [PROMPT_BEST_PRACTICES.md](docs/prompts/PROMPT_BEST_PRACTICES.md) document
 * [ARCHITECTURE.md](docs/ARCHITECTURE.md) document
+* [TESTING_BEST_PRACTICES.md](docs/TESTING_BEST_PRACTICES.md) document
 
 ## Entities and Relationships
 
@@ -46,14 +47,11 @@ When implementing the brokers domain follow the best practices outlined in
      * Carrier interface implemented
      * Shipper interface implemented
      * Factor interface implemented
-   - [x] Create comprehensive unit tests for domain types in `tests/brokers-types.test.ts`
-     * Validated interface structures
-     * Tested type compatibility
-     * Ensured type safety for broker-related interfaces
-     * Verified required and optional properties
-     * Checked enum and union type constraints
-     * Added Jest type definitions for robust testing
-     * Implemented flexible optional property testing
+   - [x] Create comprehensive behavior-focused tests for domain types
+     * Validate type compatibility and constraints
+     * Ensure types support key business workflows
+     * Test type interactions in realistic scenarios
+     * Focus on observable behavior, not implementation details
 
 2. Develop API Routes
    - [x] Implement `src/app/api/brokers/route.ts`
@@ -67,31 +65,24 @@ When implementing the brokers domain follow the best practices outlined in
      * Added PUT method to update broker details
      * Implemented DELETE method to remove brokers
      * Uses direct SQL queries
-   - [x] Create comprehensive API route tests in `tests/brokers.test.ts`
-     * Tested database connection and brokers table
-     * Validated GET /api/brokers endpoint
-     * Tested POST /api/brokers for broker creation
-     * Implemented PUT /api/brokers/<id> update tests
-     * Created DELETE /api/brokers/<id> deletion tests
-     * Includes error handling and edge case coverage
-     * Added data cleanup mechanism to ensure test isolation
-   - [x] Passed comprehensive API tests in `tests/brokers-api.test.ts`
-     * Verified API endpoint functionality
-     * Confirmed robust error handling
-     * Validated data retrieval and manipulation
-     * Ensured consistent API behavior across different operations
+   - [x] Create comprehensive API route tests
+     * Verify complete API to database round-trip
+     * Test full lifecycle of broker-related operations
+     * Validate data integrity across API calls
+     * Simulate real-world user interaction scenarios
+     * Confirm correct error handling and edge cases
+     * Ensure tests are independent of internal implementation
 
 3. Database Schema Considerations
    - [x] Prepare SQL schema for brokers table
      * Included columns: id, name, contact_email, contact_phone, type
      * Defined appropriate data types and constraints in `init.sql`
      * Used PostgreSQL ENUM for broker type
-   - [x] Ensured consistent naming conventions with existing database schema
    - [x] Create database schema validation tests
-     * Verified table structure
-     * Tested column constraints
-     * Validated data type mappings
-     * Existing tests in `tests/brokers.test.ts` provide comprehensive schema validation
+     * Verify data persistence and retrieval
+     * Test schema constraints and relationships
+     * Validate data transformations
+     * Ensure tests focus on observable database behavior
 
 4. Create API Client Functions
    - [ ] Develop `src/domains/brokers/api.ts`
@@ -99,20 +90,22 @@ When implementing the brokers domain follow the best practices outlined in
      * Implement load-related API methods
      * Add methods for carrier, shipper, and factor retrieval
      * Ensure error handling for API calls
-   - [ ] Develop comprehensive tests for API client functions
-     * Unit tests for each API method
-     * Test error handling scenarios
-     * Validate data transformation and retrieval
+   - [ ] Develop feature-centric API client tests
+     * Test complete feature workflows
+     * Validate API method interactions
+     * Verify error scenarios and edge cases
+     * Focus on user-facing functionality
 
 5. Create React Query Hooks
    - [ ] Develop `src/domains/brokers/hooks.ts`
      * Implement hooks for brokers list and individual broker
      * Create hooks for loads, carriers, shippers, and factors
      * Add mutation hook for creating loads
-   - [ ] Create tests for React Query hooks
-     * Test hook behavior
-     * Validate data fetching and mutation
-     * Ensure proper state management
+   - [ ] Create interaction-focused tests
+     * Simulate user interface interactions
+     * Test hook behavior in realistic scenarios
+     * Validate data fetching and mutation flows
+     * Ensure tests are lightweight and maintainable
 
 ### Phase 2: Advanced Broker Management
 - [ ] Implement advanced filtering and search capabilities
