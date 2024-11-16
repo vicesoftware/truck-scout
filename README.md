@@ -4,6 +4,7 @@
 - [Overview](#overview)
   - [Architecture Documentation](#architecture-documentation)
   - [Deployment Documentation](#deployment-documentation)
+  - [Development Approach](#development-approach)
 - [Getting Started](#getting-started)
 - [Database Setup](#database-setup)
 - [Running the Application](#running-the-application)
@@ -37,7 +38,6 @@ Truck Scout TMS is a [Next.js](https://nextjs.org/) project with PostgreSQL. It 
 
 > 🤖 **Note:** The [Architecture Documentation](Architecture-Documentation) and [Deployment Documentation](Deployment-Documentation) below are kept in separate files to allow it to be added to the context of AI-assisted development prompts like Aider or Cursor composer. This allows the AI to understand the project's architecture and deployment architecture and make better recommendations.
 
-
 ### Architecture Documentation
 
 For detailed information about the project's architecture, including:
@@ -47,7 +47,7 @@ For detailed information about the project's architecture, including:
 - Data Flow
 - Best Practices
 
-Please refer to the [ARCHITECTURE.md](ARCHITECTURE.md) file.
+Please refer to the [ARCHITECTURE.md](docs/ARCHITECTURE.md) file.
 > 🤖 **Note:** Add this to the context of AI-assisted development prompts like Aider or Cursor composer to allow the AI to understand the project architecture and make better recommendations when adding new features or making changes to the codebase.
 
 ### Deployment Documentation
@@ -59,8 +59,16 @@ For detailed information about the project's deployment configuration, including
 - Database Configuration
 - Monitoring and Troubleshooting
 
-Please refer to the [DEPLOYMENT.md](DEPLOYMENT.md) file.
+Please refer to the [DEPLOYMENT.md](docs/DEPLOYMENT.md) file.
 > 🤖 **Note:** Add this to the context of AI-assisted development prompts like Aider or Cursor composer to allow the AI to understand the project's deployment architecture and make better recommendations when making changes to deployment configuration.
+
+### Development Approach
+
+We are pioneering an innovative software development methodology called **Documentation Driven Development** (DDD), which leverages AI as a pair programmer. This approach draws inspiration from Extreme Programming (XP) principles and transforms documentation into functional software.
+
+For a comprehensive overview of our development approach, including its principles, benefits, and workflow, please refer to the [DOMAIN_DRIVEN_DEVELOPMENT_APPROACH.md](docs/DOMAIN_DRIVEN_DEVELOPMENT_APPROACH.md) document.
+
+> 🤖 **Experimental Approach:** This methodology is actively being tested and refined in this repository. We welcome feedback and contributions to evolve this innovative development process.
 
 ## Getting Started
 
@@ -113,7 +121,6 @@ Please refer to the [DEPLOYMENT.md](DEPLOYMENT.md) file.
      - Username: (the value of POSTGRES_USER from docker-compose.yml)
      - Password: (the value of POSTGRES_PASSWORD from docker-compose.yml)
 
-
 ## Running the Application
 
 1. Start the development server:
@@ -124,6 +131,16 @@ Please refer to the [DEPLOYMENT.md](DEPLOYMENT.md) file.
 2. Open [http://localhost:3000](http://localhost:3000) in your browser to see the main application.
 
 ## Running Tests
+
+For detailed testing best practices and step-by-step instructions on running tests, please refer to the following documents:
+
+Core Principles:
+- [TESTING_BEST_PRACTICES.md](docs/TESTING_BEST_PRACTICES.md)
+
+Architecture Layer Specific Principles:
+- [API_TESTING_BEST_PRACTICES.md](docs/API_TESTING_BEST_PRACTICES.md)
+
+> 🤖 **Note:** We've centralized the testing documentation to enhance AI development workflows and provide a comprehensive guide for developers. This approach allows AI agents and developers to quickly understand our testing methodology and reproduce our testing environment while keeping token counts low.
 
 ### Docker Environment (Recommended for CI/CD)
 ```bash
