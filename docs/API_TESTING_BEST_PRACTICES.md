@@ -38,6 +38,34 @@ This document outlines best practices for writing comprehensive and robust API t
 4. **Environment Flexibility**
 5. **Detailed Logging**
 
+## Test Environment Configuration
+
+### Jest Configuration and Module Systems
+Jest configuration uses CommonJS format (`.cjs` extension) to avoid conflicts between ES Modules and CommonJS. This is important because:
+
+1. Node.js treats `.js` files differently based on whether `"type": "module"` is set in `package.json`
+2. Jest has historically used CommonJS and may have compatibility issues with ES Modules
+3. Using `.cjs` extension explicitly tells Node.js to treat the file as CommonJS, regardless of package.json settings
+
+### Jest Configuration
+The test environment is configured in `jest.config.cjs`, which handles:
+
+- Test environment setup (Node.js environment)
+- TypeScript integration via ts-jest
+- Path aliases for clean imports
+- Test file patterns and locations
+- Performance settings (worker count and memory limits)
+- Global test timeouts
+- Automatic mock resets between tests
+
+Key Configuration Points:
+- Tests run in a Node.js environment
+- 30-second timeout for API tests (configurable via environment variable)
+- Automatic mock clearing between tests
+- TypeScript support via ts-jest
+- Path aliases support (@/ maps to src/)
+- Worker memory limits to prevent OOM issues
+
 ## Test Suite Structure
 
 ### 1. Environment Configuration
