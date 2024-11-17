@@ -1,5 +1,5 @@
 import { defineConfig } from "cypress";
-import webpackConfig from './webpack.config.js';
+import * as webpackConfig from './webpack.config.js';
 
 export default defineConfig({
   component: {

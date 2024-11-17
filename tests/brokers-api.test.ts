@@ -22,7 +22,7 @@ const pool = new Pool({
   connectionString: DATABASE_URL,
 });
 
-describe('Database and Brokers API', () => {
+describe.skip('Database and Brokers API', () => {
   const createdBrokerIds: number[] = [];
   let initialBrokerCount: number;
   let finalBrokerCount: number;

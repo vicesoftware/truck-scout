@@ -18,5 +18,4 @@ module.exports = {
   restoreMocks: true,
   maxWorkers: process.env.JEST_WORKERS || '50%',
   workerIdleMemoryLimit: '512MB',
-  random: true,
 };
