@@ -1,6 +1,34 @@
-# Database & Migrations
+# Database & Migrations <!-- omit in toc -->
 
 This document outlines our database migration strategy and implementation details using Prisma ORM.
+
+- [Overview](#overview)
+- [Schema Management](#schema-management)
+- [Migration Best Practices](#migration-best-practices)
+- [Migration Commands](#migration-commands)
+- [CI/CD Workflow](#cicd-workflow)
+- [Local Development and Testing](#local-development-and-testing)
+  - [Quick Start](#quick-start)
+    - [Key Local Testing Commands](#key-local-testing-commands)
+  - [Testing Workflow](#testing-workflow)
+- [Implementation Status](#implementation-status)
+  - [✅ Completed](#-completed)
+  - [✅ Completed](#-completed-1)
+  - [✅ Completed](#-completed-2)
+- [Todo and Future Improvements](#todo-and-future-improvements)
+  - [🚧 Short-Term Development Priorities](#-short-term-development-priorities)
+    - [Database Migration and Development Workflow](#database-migration-and-development-workflow)
+  - [📝 Long-Term Improvements (Pre-Production)](#-long-term-improvements-pre-production)
+    - [Production Migration Deployment](#production-migration-deployment)
+    - [Seed Data Management](#seed-data-management)
+    - [Performance and Monitoring](#performance-and-monitoring)
+  - [🚀 Enterprise and Scaling Considerations (Post-Product-Market-Fit)](#-enterprise-and-scaling-considerations-post-product-market-fit)
+    - [Advanced Database Management](#advanced-database-management)
+    - [Security and Compliance](#security-and-compliance)
+    - [Scalability Preparation](#scalability-preparation)
+  - [📝 Additional Recommendations](#-additional-recommendations)
+- [Environment Configuration](#environment-configuration)
+
 
 ## Overview
 
@@ -153,6 +181,32 @@ This approach ensures:
 - Automated schema updates
 - Predictable seeding process
 
+## Local Development and Testing
+
+### Quick Start
+For detailed instructions on local database management, testing, and troubleshooting, refer to our [Local Database Testing Guide](DATABASE_LOCAL_TESTING.md).
+
+#### Key Local Testing Commands
+```bash
+# Generate Prisma Client
+npm run prisma:generate
+
+# Run Migrations
+npm run prisma:migrate:deploy
+
+# Seed Development Database
+npm run prisma:seed:dev
+
+# Reset Database
+npm run prisma:db:reset
+```
+
+### Testing Workflow
+1. Ensure local PostgreSQL is running
+2. Configure `.env` with `DATABASE_URL`
+3. Follow steps in Local Database Testing Guide
+4. Verify database state and migrations
+
 ## Implementation Status
 
 ### ✅ Completed
@@ -193,32 +247,74 @@ This approach ensures:
 
 ## Todo and Future Improvements
 
-### 📝 Prioritized Improvements
-
-#### 1. CI/CD Migration Pipeline Strategy 🚧
+### 🚧 Short-Term Development Priorities
+#### Database Migration and Development Workflow
 - [x] Add migration dry-run in GitHub Actions
 - [x] Implement automatic schema validation
 - [x] Create deployment approval process for schema changes
 - [x] Update GitHub workflow to include Prisma migration checks
-
-#### 2. Production Migration Deployment 🚧
 - [x] Create clear migration process for Digital Ocean
 - [x] Document step-by-step migration workflow
 - [x] Implement basic rollback mechanism script
 - [x] Create deployment script for Prisma migrations
+
+### 📝 Long-Term Improvements (Pre-Production)
+
+#### Production Migration Deployment
+- [ ] Enhance migration performance monitoring
+- [ ] Add comprehensive error handling and logging
 - [ ] Complete testing of migration scripts
 
-#### 3. Seed Data Management
-- [x] Implement duplicate prevention in seeding
+#### Seed Data Management
+- [ ] Create script to sync seed data between environments
 - [ ] Implement versioning for seed data
 - [ ] Add data integrity checks for seed scripts
 
+#### Performance and Monitoring
+- [ ] Add basic database performance monitoring
+- [ ] Implement connection pooling configuration
+- [ ] Create database health check endpoint
+- [ ] Set up logging for database operations
+- [ ] Configure database connection timeout and retry strategies
+
+### 🚀 Enterprise and Scaling Considerations (Post-Product-Market-Fit)
+
+#### Advanced Database Management
+- [ ] Develop comprehensive performance monitoring system
+- [ ] Implement sophisticated backup and restoration strategies
+- [ ] Create advanced migration and schema evolution tools
+
+#### Security and Compliance
+- [ ] Design enterprise-grade access control mechanisms
+- [ ] Implement advanced data anonymization techniques
+- [ ] Develop comprehensive audit logging
+
+#### Scalability Preparation
+- [ ] Prepare for horizontal scaling
+- [ ] Design read replica configuration strategy
+- [ ] Implement advanced caching mechanisms
+
 ### 📝 Additional Recommendations
+
 1. Set up automated backup system
    - Configure scheduled backups using pg_dump
    - Implement backup rotation strategy
    - Add backup verification process
    - Create backup restoration documentation
+
+2. Expand deployment strategies
+   - Create staging environment
+   - Add migration smoke tests
+   - Implement rollback verification
+   - Document deployment checklist
+
+3. Enhance database management
+   - Add database performance monitoring
+   - Implement query optimization strategies
+   - Create database scaling documentation
+   - Add audit logging for schema changes
+   - Implement connection pooling
+   - Add database health checks
 
 ## Environment Configuration
 ```bash

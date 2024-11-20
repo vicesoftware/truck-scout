@@ -1,0 +1,36 @@
+name: Database Schema Update
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'prisma/**'
+
+jobs:
+  reset-and-seed:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Deploy Database Migrations
+        run: npm run prisma:migrate:deploy
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+      - name: Reset Database
+        run: npm run prisma:db:reset
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+      - name: Seed Development Database
+        run: npm run prisma:seed:dev
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
