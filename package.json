@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
@@ -27,9 +27,8 @@
     "test:local:quick": "start-server-and-test dev http://localhost:3000 'npm run test:api:local && npm run cypress:run --headless'",
     "prisma:migrate:deploy": "bash scripts/deploy-migrations.sh",
     "prisma:migrate:rollback": "bash scripts/migration-rollback.sh",
-    "prisma:seed:dev": "node --loader ts-node/esm prisma/seed/development.ts",
-    "prisma:db:reset": "prisma migrate reset --force",
-    "postinstall": "prisma generate"
+    "prisma:seed:dev": "node --loader ts-node/esm scripts/seed-development.ts",
+    "prisma:db:reset": "prisma migrate reset --force"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.2",

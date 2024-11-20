@@ -70,22 +70,18 @@ export const CarrierSchema = z.object({
 
 5. **CI/CD Integration**:
 ```yaml
-# .github/workflows/database.yml
-name: Database Migrations
-on:
-  push:
-    branches: [main]
-    paths:
-      - 'prisma/**'
+# .github/workflows/dev-ci-cd.yml
 jobs:
-  migrate:
-    runs-on: ubuntu-latest
+  install-and-build:
     steps:
-      - uses: actions/checkout@v2
-      - name: Run migrations
-        run: |
-          npm run prisma:migrate:deploy
-          npm run prisma:generate
+      - name: Deploy Database Migrations
+        run: npm run prisma:migrate:deploy
+      
+      - name: Generate Prisma Client
+        run: npx prisma generate
+      
+      - name: Seed Development Database
+        run: npm run prisma:seed:dev
 ```
 
 6. **Migration Testing**:
@@ -131,6 +127,31 @@ prisma:db:reset
   - Runs seed scripts
   - WARNING: Use only in development
 ```
+
+## CI/CD Workflow
+
+Our current CI/CD workflow integrates database management directly into the main pipeline:
+
+1. **Dependency Installation**
+   - Install project dependencies
+   - Prepare environment for database operations
+
+2. **Database Preparation**
+   - Run database migrations using `prisma:migrate:deploy`
+   - Generate Prisma client to ensure type safety
+   - Seed development database with initial data
+
+3. **Build and Test**
+   - Perform type checking
+   - Run linting
+   - Build application
+   - Execute test suites (Jest and Cypress)
+
+This approach ensures:
+- Consistent database state across environments
+- Type-safe database interactions
+- Automated schema updates
+- Predictable seeding process
 
 ## Implementation Status
 
@@ -185,22 +206,12 @@ prisma:db:reset
 - [x] Document step-by-step migration workflow
 - [x] Implement basic rollback mechanism script
 - [x] Create deployment script for Prisma migrations
-- [ ] Enhance migration performance monitoring
-- [ ] Add comprehensive error handling and logging
 - [ ] Complete testing of migration scripts
 
 #### 3. Seed Data Management
 - [x] Implement duplicate prevention in seeding
-- [ ] Create script to sync seed data between environments
 - [ ] Implement versioning for seed data
 - [ ] Add data integrity checks for seed scripts
-
-#### 4. Performance and Monitoring
-- [ ] Add basic database performance monitoring
-- [ ] Implement connection pooling configuration
-- [ ] Create database health check endpoint
-- [ ] Set up logging for database operations
-- [ ] Configure database connection timeout and retry strategies
 
 ### 📝 Additional Recommendations
 1. Set up automated backup system
@@ -208,20 +219,6 @@ prisma:db:reset
    - Implement backup rotation strategy
    - Add backup verification process
    - Create backup restoration documentation
-
-2. Expand deployment strategies
-   - Create staging environment
-   - Add migration smoke tests
-   - Implement rollback verification
-   - Document deployment checklist
-
-3. Enhance database management
-   - Add database performance monitoring
-   - Implement query optimization strategies
-   - Create database scaling documentation
-   - Add audit logging for schema changes
-   - Implement connection pooling
-   - Add database health checks
 
 ## Environment Configuration
 ```bash
