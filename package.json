@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
@@ -28,7 +28,8 @@
     "prisma:migrate:deploy": "bash scripts/deploy-migrations.sh",
     "prisma:migrate:rollback": "bash scripts/migration-rollback.sh",
     "prisma:seed:dev": "node --loader ts-node/esm prisma/seed/development.ts",
-    "prisma:db:reset": "prisma migrate reset --force"
+    "prisma:db:reset": "prisma migrate reset --force",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.2",
