@@ -1,5 +1,4 @@
 # Database & Migrations <!-- omit in toc -->
-
 This document outlines our database migration strategy and implementation details using Prisma ORM.
 
 - [Overview](#overview)
@@ -201,9 +200,18 @@ We aim to achieve the following in our CI/CD workflow:
    - Seed the database with initial data using `npm run prisma:seed:dev`.
 
 5. **Execute Tests**
-   - Run Jest integration tests against the Dockerized environment.
-   - Perform end-to-end tests with Cypress where applicable.
-   - Tests are isolated and use dedicated test databases.
+   - Run integration tests in two parallel jobs:
+     1. **API Integration Tests**:
+        - Uses Docker Compose with Dockerfile.test
+        - Runs `test:api:ci` command in CI environment
+        - Uses dedicated test database with health checks
+        - Configured via docker-compose.test.yml
+     2. **End-to-End Tests**:
+        - Uses Cypress GitHub Action
+        - Runs `cypress:run` command
+        - Tests against running Next.js application
+   - Tests are isolated and use dedicated test databases
+   - Environment variables are properly configured for each test type
 
 6. **Tear Down Services**
    - After tests are completed, tear down Docker Compose services to clean up resources.
@@ -393,13 +401,39 @@ By implementing these systems, we aim to streamline our development processes, r
    - Added port configuration verification steps
    - Created clear steps for resolving common connection issues
 
-2. **CI Integration Tests Using Docker Compose**
-   - Modify CI workflow to utilize Docker Compose for running integration tests.
-     - Update `jest-tests` job to include steps for bringing up services using Docker Compose.
-     - Ensure database service health checks are in place before running tests.
-     - Tear down services after tests.
-   - Configure environment variables to point to Docker Compose services in CI.
-   - Validate the setup with successful test runs in CI.
+2. **CI Integration Tests Using Docker Compose** ✅
+   - Implemented Docker Compose configuration for API integration tests
+     - Configured docker-compose.test.yml with proper service dependencies
+     - Added database health checks for test reliability
+   - Configured CI workflow to run both types of integration tests:
+     - API tests via jest-tests job using Docker Compose
+     - E2E tests via cypress-tests job
+   - Environment variables properly configured for CI environment
+   - Services torn down properly after test completion
+   - **Local CI Pipeline Testing Workflow**:
+     1. Build test image:
+        ```bash
+        docker build -f Dockerfile.test -t app-test:latest .
+        ```
+     2. Run API integration tests locally:
+        ```bash
+        TEST_MODE=ci docker compose -f docker-compose.test.yml up \
+          --abort-on-container-exit \
+          --exit-code-from test
+        ```
+     3. Clean up test environment:
+        ```bash
+        docker compose -f docker-compose.test.yml down -v
+        ```
+     4. Run Cypress E2E tests:
+        ```bash
+        npm ci
+        npm start
+        npm run cypress:run
+        ```
+     - Ensures tests pass locally before pushing to GitHub Actions
+     - Mirrors CI environment configuration
+     - Validates changes before remote testing
 
 3. **Automate Migrations Against Dev Database in Digital Ocean**
    - Create a deployment workflow (`deploy-dev.yml`) for the dev environment.
