@@ -23,7 +23,7 @@
 
 4. Schema Constraint Testing
    - Missing tests for unique constraints:
-     * MC number uniqueness not verified
+     * ✅ MC number uniqueness verified
      * DOT number uniqueness not tested
      * Name + Phone composite unique constraint untested
    - Default values not validated:
@@ -54,7 +54,7 @@ This document outlines the current state of carrier testing and provides a compr
 ### Coverage Gaps
 
 1. Constraint Testing
-   - [ ] Unique MC number constraint
+   - [x] Unique MC number constraint
    - [ ] Unique DOT number constraint
    - [ ] Composite unique constraint (name + phone)
    - [ ] Default value testing (status="Pending")

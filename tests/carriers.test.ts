@@ -219,6 +219,42 @@ describe('Carriers API', () => {
     expect(count).toBe(0);
   });
 
+  test('POST /api/carriers should prevent duplicate MC number', async () => {
+    const duplicateMcNumber = 'MC123456';
+    const baseCarrier = {
+      name: 'First Test Carrier',
+      mc_number: duplicateMcNumber,
+      dot_number: 'DOT789012',
+      phone: '1234567890',
+      status: 'Active',
+      rating: 4.0
+    };
+
+    const secondCarrier = {
+      ...baseCarrier,
+      name: 'Second Test Carrier',
+      dot_number: 'DOT987654',
+      phone: '0987654321'
+    };
+
+    // Create first carrier successfully
+    const firstResponse = await axiosInstance.post('/api/carriers', baseCarrier);
+    expect(firstResponse.status).toBe(201);
+
+    // Attempt to create second carrier with same MC number
+    try {
+      await axiosInstance.post('/api/carriers', secondCarrier);
+      throw new Error('Should have thrown an error for duplicate MC number');
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        expect(error.response?.status).toBe(409);
+        expect(error.response?.data.message).toContain('MC number must be unique');
+      } else {
+        throw error;
+      }
+    }
+  });
+
   afterAll(async () => {
     try {
       await prisma.$transaction([
