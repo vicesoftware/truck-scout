@@ -6,7 +6,7 @@ services:
       POSTGRES_USER: tms_test_user
       POSTGRES_PASSWORD: test_password
     ports:
-      - "5433:5432"
+      - "5432:5432"
     volumes:
       - test_pgdata:/var/lib/postgresql/data
     healthcheck:

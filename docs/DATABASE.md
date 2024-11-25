@@ -413,7 +413,7 @@ By implementing these systems, we aim to streamline our development processes, r
    - **Local CI Pipeline Testing Workflow**:
      1. Build test image:
         ```bash
-        docker build -f Dockerfile.test -t app-test:latest .
+        docker build -f Dockerfile.test -t app-test:latest --build-arg TEST_MODE=ci .
         ```
      2. Run API integration tests locally:
         ```bash

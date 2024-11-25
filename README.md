@@ -94,7 +94,7 @@ For a comprehensive overview of our development approach, including its principl
 2. Set up environment variables:
    Create a `.env` file in the project root with the following content:
    ```
-   DATABASE_URL=postgres://tms_user:secure_password_here@localhost:5432/tms_db
+   DATABASE_URL=postgres://tms_test_user:test_password@localhost:5432/tms_test_db
    ```
    Replace the values with your desired settings. Note that the database credentials should match those defined in your `docker-compose.yml` file.
 
@@ -199,7 +199,7 @@ npm run test:db:down
 
 The test environment uses `.env.test.local` for configuration. Make sure this file contains:
 ```env
-DATABASE_URL=postgresql://tms_test_user:test_password@localhost:5433/tms_test_db
+DATABASE_URL=postgresql://tms_test_user:test_password@localhost:5432/tms_test_db
 NEXT_PUBLIC_API_URL=http://localhost:3000
 TEST_ENV=local
 ```

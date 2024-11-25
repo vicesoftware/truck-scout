@@ -9,7 +9,7 @@ const API_URL = isLocalDev
   ? 'http://localhost:3000'
   : (process.env.API_URL || 'http://nextjs:3000');
 const DATABASE_URL = isLocalDev
-  ? 'postgresql://tms_test_user:test_password@localhost:5433/tms_test_db'
+  ? 'postgresql://tms_test_user:test_password@localhost:5432/tms_test_db'
   : (process.env.DATABASE_URL || 'postgresql://tms_test_user:test_password@postgres:5432/tms_test_db');
 
 const axiosInstance = axios.create({

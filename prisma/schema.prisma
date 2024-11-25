@@ -10,13 +10,13 @@ datasource db {
 model Carrier {
   id        Int      @id @default(autoincrement())
   name      String   @db.VarChar(255)
-  mcNumber  String?  @map("mc_number")
-  dotNumber String?  @map("dot_number")
+  mcNumber  String   @unique @map("mc_number")
+  dotNumber String?  @unique @map("dot_number")
   phone     String?
-  status    String?
-  rating    Float?
+  status    String?  @default("Pending")
+  rating    Float    @default(0.0)
   createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   @@unique([name, phone])
   @@map("carriers")
