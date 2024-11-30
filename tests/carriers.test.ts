@@ -25,7 +25,9 @@ const API_PORT = process.env.PORT || 3000;
 const API_HOST = process.env.HOST || 'localhost';
 const API_URL = isLocalDev 
   ? `http://${API_HOST}:${API_PORT}`
-  : (process.env.API_URL || `http://${API_HOST}:${API_PORT}`);
+  : (process.env.API_URL || 'http://nextjs:3000');
+
+console.log('Using API URL:', API_URL); // Add logging to verify URL
 
 const axiosInstance = axios.create({
   baseURL: API_URL,
@@ -49,7 +51,21 @@ describe('Carriers API', () => {
         FROM information_schema.tables 
         WHERE table_schema = 'public' AND table_name = 'carriers'
       `;
-      await axiosInstance.get('/api/healthcheck');
+      
+      try {
+        const response = await axiosInstance.get('/api/healthcheck');
+        console.log('Healthcheck response:', response.status);
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          console.error('API Connection Error:', {
+            message: error.message,
+            code: error.code,
+            url: error.config?.url,
+            baseURL: error.config?.baseURL,
+          });
+        }
+        throw error;
+      }
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
         throw new Error(`Cannot connect to API: ${error.message}`);
