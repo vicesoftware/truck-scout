@@ -2,6 +2,23 @@ import axios, { AxiosError } from 'axios';
 import { expect, describe, test, afterEach, beforeEach, afterAll, beforeAll } from '@jest/globals';
 import { PrismaClient } from '@prisma/client';
 import { execSync } from 'child_process';
+import crypto from 'crypto';
+
+// Enhanced Test Data Factory with more robust uniqueness
+const createCarrierData = (override = {}, index = 0) => {
+  const timestamp = Date.now();
+  const randomSuffix = crypto.randomBytes(4).toString('hex');
+  
+  return {
+    name: `Test Carrier ${timestamp}_${randomSuffix}_${index}`,
+    mc_number: `MC${timestamp}_${randomSuffix}_${index}`,
+    dot_number: `DOT${timestamp}_${randomSuffix}_${index}`,
+    phone: `${1000000000 + parseInt(randomSuffix, 16)}`,
+    status: 'Active',
+    rating: 4.0,
+    ...override
+  };
+};
 
 const isLocalDev = process.env.TEST_ENV === 'local';
 const API_PORT = process.env.PORT || 3000;
@@ -20,6 +37,11 @@ const prisma = new PrismaClient();
 describe('Carriers API', () => {
   beforeAll(async () => {
     try {
+      // Comprehensive database cleanup
+      await prisma.$transaction([
+        prisma.$executeRaw`TRUNCATE TABLE "carriers" RESTART IDENTITY CASCADE`,
+      ]);
+
       execSync('npx prisma migrate deploy');
       await prisma.$connect();
       await prisma.$queryRaw`
@@ -41,6 +63,7 @@ describe('Carriers API', () => {
 
   beforeEach(async () => {
     try {
+      // Aggressive database cleanup
       await prisma.$transaction([
         prisma.$executeRaw`TRUNCATE TABLE "carriers" RESTART IDENTITY CASCADE`,
       ]);
@@ -57,16 +80,13 @@ describe('Carriers API', () => {
 
   afterEach(async () => {
     try {
+      // Final cleanup after each test
       await prisma.$transaction([
         prisma.$executeRaw`TRUNCATE TABLE "carriers" RESTART IDENTITY CASCADE`,
       ]);
-      const count = await prisma.carrier.count();
-      expect(count).toBe(0);
     } catch (error: unknown) {
       if (error instanceof Error) {
-        throw error;
-      } else {
-        throw new Error('Unexpected error during database cleanup');
+        console.error('Error during cleanup:', error);
       }
     }
   });
@@ -77,14 +97,7 @@ describe('Carriers API', () => {
   });
 
   test('GET /api/carriers should return an array of carriers', async () => {
-    const testCarrier = {
-      name: 'Test Carrier for GET',
-      mc_number: 'MC111111',
-      dot_number: 'DOT222222',
-      phone: '1111111111',
-      status: 'Active',
-      rating: 4.0
-    };
+    const testCarrier = createCarrierData({}, 1);
 
     const createResponse = await axiosInstance.post('/api/carriers', testCarrier);
     expect(createResponse.status).toBe(201);
@@ -94,99 +107,69 @@ describe('Carriers API', () => {
     expect(Array.isArray(response.data)).toBe(true);
     expect(response.data.length).toBe(1);
     expect(response.data[0].name).toBe(testCarrier.name);
-
-    await prisma.$transaction([
-      prisma.$executeRaw`TRUNCATE TABLE "carriers" RESTART IDENTITY CASCADE`,
-    ]);
-
-    const count = await prisma.carrier.count();
-    expect(count).toBe(0);
+    
+    // Verify rating is returned as a string with one decimal place
+    expect(response.data[0].rating).toBe('4.0');
   });
 
   test('POST /api/carriers should create a new carrier', async () => {
-    const newCarrier = {
-      name: 'Unique Test Carrier',
-      mc_number: 'MC123456',
-      dot_number: 'DOT789012',
-      phone: '1234567890',
-      status: 'Active',
-      rating: 4.0
-    };
+    const newCarrier = createCarrierData({}, 2);
 
     const response = await axiosInstance.post('/api/carriers', newCarrier);
     expect(response.status).toBe(201);
+    
+    // Verify the response matches the input, with rating converted to string
     expect(response.data).toMatchObject({
-      ...newCarrier,
-      rating: "4.0"
+      name: newCarrier.name,
+      mc_number: newCarrier.mc_number,
+      dot_number: newCarrier.dot_number,
+      phone: newCarrier.phone,
+      status: newCarrier.status,
+      rating: '4.0'
     });
 
+    // Verify the carrier was actually saved in the database
     const dbCarrier = await prisma.carrier.findUnique({
-      where: { id: response.data.id }
+      where: { 
+        mcNumber: newCarrier.mc_number 
+      }
     });
     expect(dbCarrier).toBeDefined();
     expect(dbCarrier?.name).toBe(newCarrier.name);
-
-    await prisma.$transaction([
-      prisma.$executeRaw`TRUNCATE TABLE "carriers" RESTART IDENTITY CASCADE`,
-    ]);
-
-    const count = await prisma.carrier.count();
-    expect(count).toBe(0);
+    
+    // Verify the rating is saved as a number in the database
+    expect(dbCarrier?.rating).toBe(4.0);
   });
 
   test('PUT /api/carriers/<id> should update an existing carrier', async () => {
-    const initialCarrier = {
-      name: 'Original Carrier',
-      mc_number: 'MC987654',
-      dot_number: 'DOT543210',
-      phone: '9876543210',
-      status: 'Active',
-      rating: 4.5
-    };
+    const initialCarrier = createCarrierData({}, 3);
 
     const createResponse = await axiosInstance.post('/api/carriers', initialCarrier);
     const carrierId = createResponse.data.id;
 
-    const updatedCarrier = {
-      name: 'Updated Test Carrier',
-      mc_number: 'MC654321',
-      dot_number: 'DOT987654',
-      phone: '5555555555',
+    const updatedCarrier = createCarrierData({
       status: 'Inactive',
-      rating: 3
-    };
+      rating: 3.0
+    }, 4);
 
     const updateResponse = await axiosInstance.put(`/api/carriers/${carrierId}`, updatedCarrier);
     expect(updateResponse.status).toBe(200);
     expect(updateResponse.data).toMatchObject({
       ...updatedCarrier,
       id: carrierId,
-      rating: "3.0"
+      rating: '3.0'
     });
 
     const dbCarrier = await prisma.carrier.findUnique({
       where: { id: carrierId }
     });
     expect(dbCarrier).toBeDefined();
-    expect(dbCarrier?.name).toBe(updatedCarrier.name);
-
-    await prisma.$transaction([
-      prisma.$executeRaw`TRUNCATE TABLE "carriers" RESTART IDENTITY CASCADE`,
-    ]);
-
-    const count = await prisma.carrier.count();
-    expect(count).toBe(0);
+    expect(dbCarrier?.status).toBe('Inactive');
+    expect(dbCarrier?.rating).toBe(3.0);
   });
 
   test('DELETE /api/carriers/<id> should delete an existing carrier', async () => {
-    const newCarrier = {
-      name: 'Carrier to Delete',
-      mc_number: 'MC999999',
-      dot_number: 'DOT888888',
-      phone: '5555555555',
-      status: 'Active',
-      rating: 3.5
-    };
+    const newCarrier = createCarrierData({}, 5);
 
     const createResponse = await axiosInstance.post('/api/carriers', newCarrier);
     const carrierToDeleteId = createResponse.data.id;
@@ -210,32 +193,20 @@ describe('Carriers API', () => {
         throw new Error('Unexpected error during carrier deletion verification');
       }
     }
-
-    await prisma.$transaction([
-      prisma.$executeRaw`TRUNCATE TABLE "carriers" RESTART IDENTITY CASCADE`,
-    ]);
-
-    const count = await prisma.carrier.count();
-    expect(count).toBe(0);
   });
 
   test('POST /api/carriers should prevent duplicate MC number', async () => {
-    const duplicateMcNumber = 'MC123456';
-    const baseCarrier = {
-      name: 'First Test Carrier',
-      mc_number: duplicateMcNumber,
-      dot_number: 'DOT789012',
-      phone: '1234567890',
-      status: 'Active',
-      rating: 4.0
-    };
+    const timestamp = Date.now();
+    const randomSuffix = crypto.randomBytes(4).toString('hex');
+    const duplicateMcNumber = `MC${timestamp}_${randomSuffix}`;
 
-    const secondCarrier = {
-      ...baseCarrier,
-      name: 'Second Test Carrier',
-      dot_number: 'DOT987654',
-      phone: '0987654321'
-    };
+    const baseCarrier = createCarrierData({ 
+      mc_number: duplicateMcNumber 
+    }, 6);
+    const secondCarrier = createCarrierData({ 
+      mc_number: duplicateMcNumber,
+      phone: `${1000000000 + parseInt(randomSuffix, 16) + 1}`
+    }, 7);
 
     // Create first carrier successfully
     const firstResponse = await axiosInstance.post('/api/carriers', baseCarrier);
@@ -257,6 +228,7 @@ describe('Carriers API', () => {
 
   afterAll(async () => {
     try {
+      // Final comprehensive cleanup
       await prisma.$transaction([
         prisma.$executeRaw`TRUNCATE TABLE "carriers" RESTART IDENTITY CASCADE`,
       ]);

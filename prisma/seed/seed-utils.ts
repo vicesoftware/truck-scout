@@ -2,14 +2,16 @@ import { PrismaClient } from '@prisma/client'
 
 export interface CarrierSeed {
   name: string
-  mcNumber: string | null
+  mcNumber: string  // Changed from string | null to string
   dotNumber: string | null
   phone: string | null
   status: 'Active' | 'Pending'
   rating: number
 }
 
+// The rest of the file remains the same
 export const carriers: CarrierSeed[] = [
+  // Existing carrier data remains unchanged
   {
     name: 'FastTruck Inc.',
     mcNumber: 'MC123456',

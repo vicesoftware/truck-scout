@@ -15,7 +15,12 @@ const CarrierUpdateSchema = z.object({
 
 export async function GET(request: Request, { params }: { params: { id: string } }) {
   try {
-    const id = parseInt(params.id);
+    const id = parseInt(params.id, 10);
+    
+    if (isNaN(id)) {
+      return NextResponse.json({ error: 'Invalid carrier ID' }, { status: 400 });
+    }
+    
     const carrier = await prisma.carrier.findUnique({
       where: { id }
     });
@@ -23,7 +28,13 @@ export async function GET(request: Request, { params }: { params: { id: string }
     if (!carrier) {
       return NextResponse.json({ error: 'Carrier not found' }, { status: 404 });
     }
-    return NextResponse.json(carrier);
+    
+    return NextResponse.json({
+      ...carrier,
+      mc_number: carrier.mcNumber,
+      dot_number: carrier.dotNumber,
+      rating: Number(carrier.rating).toFixed(1)
+    });
   } catch (error) {
     console.error('Error fetching carrier:', error);
     return NextResponse.json({ error: 'Failed to fetch carrier' }, { status: 500 });
@@ -32,11 +43,18 @@ export async function GET(request: Request, { params }: { params: { id: string }
 
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
   try {
-    const id = parseInt(params.id);
-    const body = await request.json();
-    const validatedData = CarrierUpdateSchema.parse(body);
+    // Strict ID parsing and validation
+    const id = parseInt(params.id, 10);
     
-    // First, check if the carrier exists
+    if (isNaN(id)) {
+      console.error('Invalid carrier ID:', params.id);
+      return NextResponse.json({ 
+        error: 'Invalid carrier ID', 
+        providedId: params.id 
+      }, { status: 400 });
+    }
+
+    // Check if carrier exists before update
     const existingCarrier = await prisma.carrier.findUnique({
       where: { id }
     });
@@ -45,29 +63,37 @@ export async function PUT(request: Request, { params }: { params: { id: string }
       return NextResponse.json({ error: 'Carrier not found' }, { status: 404 });
     }
 
+    // Parse and validate request body
+    const body = await request.json();
+    const validatedData = CarrierUpdateSchema.parse(body);
+
+    // Comprehensive update with all possible fields
     const carrier = await prisma.carrier.update({
       where: { id },
       data: {
         name: validatedData.name,
-        mcNumber: validatedData.mc_number
+        mcNumber: validatedData.mc_number,
+        dotNumber: validatedData.dot_number,
+        phone: validatedData.phone,
+        status: validatedData.status,
+        rating: validatedData.rating ? Number(validatedData.rating) : existingCarrier.rating
       }
     });
 
-    // Construct the response to match the test expectations
+    // Construct response matching test expectations
     const response = {
       ...carrier,
       id: carrier.id,
       mc_number: carrier.mcNumber,
-      dot_number: validatedData.dot_number,
-      phone: validatedData.phone,
-      status: validatedData.status,
-      rating: validatedData.rating ? Number(validatedData.rating).toFixed(1) : "0.0"
+      dot_number: carrier.dotNumber,
+      rating: Number(carrier.rating).toFixed(1)
     };
 
-    return NextResponse.json(response);
+    return NextResponse.json(response, { status: 200 });
   } catch (error) {
     console.error('Error updating carrier:', error);
     
+    // Detailed error handling
     if (error instanceof z.ZodError) {
       return NextResponse.json({ 
         error: 'Validation failed', 
@@ -75,13 +101,21 @@ export async function PUT(request: Request, { params }: { params: { id: string }
       }, { status: 400 });
     }
 
-    return NextResponse.json({ error: 'Failed to update carrier' }, { status: 500 });
+    return NextResponse.json({ 
+      error: 'Failed to update carrier',
+      errorDetails: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 });
   }
 }
 
 export async function DELETE(request: Request, { params }: { params: { id: string } }) {
   try {
-    const id = parseInt(params.id);
+    const id = parseInt(params.id, 10);
+    
+    if (isNaN(id)) {
+      return NextResponse.json({ error: 'Invalid carrier ID' }, { status: 400 });
+    }
+    
     await prisma.carrier.delete({
       where: { id }
     });
