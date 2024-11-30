@@ -33,14 +33,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Deploy Database Migrations
-        run: npm run prisma:migrate:deploy
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-
-      - name: Seed Development Database
-        run: npm run prisma:seed:dev
-
       - name: Run type check
         run: npm run type-check
 
