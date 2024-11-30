@@ -476,7 +476,11 @@ By implementing these systems, we aim to streamline our development processes, r
 
 ### 🚧 In Progress
 
-1. **Automate Migrations Against Dev Database in Digital Ocean**
+1.  **Refactor cypres tests to use live API**
+- Currently cypress tests use mocked API responses
+- We want these to be integration tests so we need to update .github/workflows/dev-ci-cd.yml to use a docker compose based flow for cypress similar to what it does for the jest test. it's possible all tests run in the same docker compose network. We need to plan out the best approach, update the code and then update all the documentation to reflect to the new approach.
+
+1.5 **Automate Migrations Against Dev Database in Digital Ocean**
    - Create a deployment workflow (`deploy-dev.yml`) for the dev environment.
      - Triggered on pushes to the `develop` branch or changes to the Prisma schema.
      - Runs migrations against the dev database when Prisma schema changes.
