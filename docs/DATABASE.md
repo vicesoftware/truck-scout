@@ -468,29 +468,51 @@ By implementing these systems, we aim to streamline our development processes, r
      - Mirrors CI environment configuration
      - Validates changes before remote testing
 
+
 ### 🚧 In Progress
 
-1. **Automate Migrations Against Dev Database in Digital Ocean**
+1. **Verify GitHub Actions CI Pipeline**
+   - Confirm existing GitHub Actions workflow functionality
+     - Current workflow includes:
+       * Dependency installation and caching
+       * Database migration deployment
+       * Development database seeding
+       * Type checking and linting
+       * Application build
+       * Jest API integration tests
+       * Cypress end-to-end tests
+     - Validate workflow triggers on:
+       * Pushes to all branches
+       * Pull requests to `develop` branch
+     - Verify job dependencies and execution order
+     - Test workflow performance and caching mechanisms
+     - Ensure comprehensive test coverage across different environments
+   - Potential improvements to investigate:
+     * Performance optimization
+     * Additional test scenarios
+     * Enhanced reporting and notifications
+
+2. **Automate Migrations Against Dev Database in Digital Ocean**
    - Create a deployment workflow (`deploy-dev.yml`) for the dev environment.
      - Triggered on pushes to the `develop` branch or changes to the Prisma schema.
      - Runs migrations against the dev database when Prisma schema changes.
    - Secure credential management using GitHub Secrets (`DEV_DATABASE_URL`).
    - Document the deployment workflow and procedures.
 
-2. **Enhance Testing Workflow**
+3. **Enhance Testing Workflow**
    - Isolate test environment by using dedicated test databases.
      - Configure test-specific environment variables.
      - Reset test databases between test runs using `prisma:db:reset`.
    - Parallelize tests in the CI pipeline where possible.
    - Optimize testing scripts for efficiency.
 
-3. **Improve Migrations and Rollbacks**
+4. **Improve Migrations and Rollbacks**
    - Test migrations locally before deployment to detect issues early.
    - Implement robust rollback procedures in case of migration failures.
      - Automate rollback testing in the CI pipeline.
      - Document rollback processes and strategies.
 
-4. **Update Documentation and Collaboration**
+5. **Update Documentation and Collaboration**
    - Update `docs/DATABASE.md` to reflect new workflows and procedures.
      - Provide clear instructions on new migration and testing processes.
      - Include details about CI/CD pipeline changes.
@@ -571,4 +593,5 @@ DATABASE_URL="postgresql://user:password@localhost:5432/dev_db"
 
 # Digital Ocean environments
 DATABASE_URL="postgresql://doadmin:${POSTGRES_PASSWORD}@${DB_HOST}:${DB_PORT}/defaultdb?sslmode=require"
+
 
