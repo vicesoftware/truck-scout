@@ -8,6 +8,7 @@ This document outlines our database migration strategy and implementation detail
 - [CI/CD Workflow](#cicd-workflow)
 - [Local Development and Testing](#local-development-and-testing)
   - [Quick Start](#quick-start)
+    - [Required Setup Steps](#required-setup-steps)
     - [Key Local Testing Commands](#key-local-testing-commands)
   - [Testing Workflow](#testing-workflow)
   - [Troubleshooting Prisma Connection Issues](#troubleshooting-prisma-connection-issues)
@@ -226,6 +227,35 @@ We aim to achieve the following in our CI/CD workflow:
 ### Quick Start
 
 For detailed instructions on local database management, testing, and troubleshooting, refer to our [Local Database Testing Guide](DATABASE_LOCAL_TESTING.md).
+
+#### Required Setup Steps
+
+Before starting local development, you must complete these steps in order:
+
+1. **Generate Prisma Client**
+   ```bash
+   npm run prisma:generate
+   ```
+   ⚠️ **IMPORTANT**: This step is required whenever:
+   - You first clone the repository
+   - After switching branches that modify the Prisma schema
+   - After making changes to the Prisma schema
+   - After pulling changes that modify the Prisma schema
+   
+   If you skip this step, you'll encounter errors like:
+   ```
+   Error: @prisma/client did not initialize yet. Please run "prisma generate" and try to import it again.
+   ```
+
+2. **Run Migrations**
+   ```bash
+   npm run prisma:migrate:deploy
+   ```
+
+3. **Start the Development Server**
+   ```bash
+   npm run dev
+   ```
 
 #### Key Local Testing Commands
 
@@ -536,5 +566,3 @@ DATABASE_URL="postgresql://user:password@localhost:5432/dev_db"
 
 # Digital Ocean environments
 DATABASE_URL="postgresql://doadmin:${POSTGRES_PASSWORD}@${DB_HOST}:${DB_PORT}/defaultdb?sslmode=require"
-
-
