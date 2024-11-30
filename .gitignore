@@ -46,3 +46,11 @@ aider.conf.yml
 
 # temp download directory
 cypress/downloads/carriers_export.csv
+
+# Prisma generated files
+**/generated/
+**/prisma/generated/
+node_modules/.prisma/
+@prisma/
+.prisma/
+prisma/generated/

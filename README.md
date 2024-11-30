@@ -3,7 +3,9 @@
 
 - [Overview](#overview)
   - [Architecture Documentation](#architecture-documentation)
+  - [Database Documentation](#database-documentation)
   - [Deployment Documentation](#deployment-documentation)
+  - [Development Approach](#development-approach)
 - [Getting Started](#getting-started)
 - [Database Setup](#database-setup)
 - [Running the Application](#running-the-application)
@@ -35,8 +37,7 @@ Truck Scout TMS is a [Next.js](https://nextjs.org/) project with PostgreSQL. It 
 
 > 🤖 **Note:** This project is optomized for [AI-Assisted Development](#ai-assisted-development) so take a look at that section for more information before getting too far into your coding.
 
-> 🤖 **Note:** The [Architecture Documentation](Architecture-Documentation) and [Deployment Documentation](Deployment-Documentation) below are kept in separate files to allow it to be added to the context of AI-assisted development prompts like Aider or Cursor composer. This allows the AI to understand the project's architecture and deployment architecture and make better recommendations.
-
+> 🤖 **Note:** The [Architecture Documentation](docs/ARCHITECTURE.md), [Database Documentation](docs/DATABASE.md), and [Deployment Documentation](docs/DEPLOYMENT.md) below are kept in separate files to allow it to be added to the context of AI-assisted development prompts like Aider or Cursor composer. This allows the AI to understand the project's architecture, database schema, and deployment architecture and make better recommendations.
 
 ### Architecture Documentation
 
@@ -47,8 +48,21 @@ For detailed information about the project's architecture, including:
 - Data Flow
 - Best Practices
 
-Please refer to the [ARCHITECTURE.md](ARCHITECTURE.md) file.
+Please refer to the [ARCHITECTURE.md](docs/ARCHITECTURE.md) file.
 > 🤖 **Note:** Add this to the context of AI-assisted development prompts like Aider or Cursor composer to allow the AI to understand the project architecture and make better recommendations when adding new features or making changes to the codebase.
+
+### Database Documentation
+
+For detailed information about the project's database configuration, including:
+- Schema Management
+- Migration Strategy
+- Data Seeding
+- Rollback Procedures
+- Testing Framework
+- CI/CD Integration
+
+Please refer to the [DATABASE.md](docs/DATABASE.md) file.
+> 🤖 **Note:** Add this to the context of AI-assisted development prompts like Aider or Cursor composer to allow the AI to understand the project's database architecture and make better recommendations when making changes to the database schema or working with migrations.
 
 ### Deployment Documentation
 
@@ -59,8 +73,16 @@ For detailed information about the project's deployment configuration, including
 - Database Configuration
 - Monitoring and Troubleshooting
 
-Please refer to the [DEPLOYMENT.md](DEPLOYMENT.md) file.
+Please refer to the [DEPLOYMENT.md](docs/DEPLOYMENT.md) file.
 > 🤖 **Note:** Add this to the context of AI-assisted development prompts like Aider or Cursor composer to allow the AI to understand the project's deployment architecture and make better recommendations when making changes to deployment configuration.
+
+### Development Approach
+
+We are pioneering an innovative software development methodology called **Documentation Driven Development** (DDD), which leverages AI as a pair programmer. This approach draws inspiration from Extreme Programming (XP) principles and transforms documentation into functional software.
+
+For a comprehensive overview of our development approach, including its principles, benefits, and workflow, please refer to the [DOMAIN_DRIVEN_DEVELOPMENT_APPROACH.md](docs/DOMAIN_DRIVEN_DEVELOPMENT_APPROACH.md) document.
+
+> 🤖 **Experimental Approach:** This methodology is actively being tested and refined in this repository. We welcome feedback and contributions to evolve this innovative development process.
 
 ## Getting Started
 
@@ -72,7 +94,7 @@ Please refer to the [DEPLOYMENT.md](DEPLOYMENT.md) file.
 2. Set up environment variables:
    Create a `.env` file in the project root with the following content:
    ```
-   DATABASE_URL=postgres://tms_user:secure_password_here@localhost:5432/tms_db
+   DATABASE_URL=postgres://tms_test_user:test_password@localhost:5432/tms_test_db
    ```
    Replace the values with your desired settings. Note that the database credentials should match those defined in your `docker-compose.yml` file.
 
@@ -113,7 +135,6 @@ Please refer to the [DEPLOYMENT.md](DEPLOYMENT.md) file.
      - Username: (the value of POSTGRES_USER from docker-compose.yml)
      - Password: (the value of POSTGRES_PASSWORD from docker-compose.yml)
 
-
 ## Running the Application
 
 1. Start the development server:
@@ -124,6 +145,16 @@ Please refer to the [DEPLOYMENT.md](DEPLOYMENT.md) file.
 2. Open [http://localhost:3000](http://localhost:3000) in your browser to see the main application.
 
 ## Running Tests
+
+For detailed testing best practices and step-by-step instructions on running tests, please refer to the following documents:
+
+Core Principles:
+- [TESTING_BEST_PRACTICES.md](docs/TESTING_BEST_PRACTICES.md)
+
+Architecture Layer Specific Principles:
+- [API_TESTING_BEST_PRACTICES.md](docs/API_TESTING_BEST_PRACTICES.md)
+
+> 🤖 **Note:** We've centralized the testing documentation to enhance AI development workflows and provide a comprehensive guide for developers. This approach allows AI agents and developers to quickly understand our testing methodology and reproduce our testing environment while keeping token counts low.
 
 ### Docker Environment (Recommended for CI/CD)
 ```bash
@@ -168,7 +199,7 @@ npm run test:db:down
 
 The test environment uses `.env.test.local` for configuration. Make sure this file contains:
 ```env
-DATABASE_URL=postgresql://tms_test_user:test_password@localhost:5433/tms_test_db
+DATABASE_URL=postgresql://tms_test_user:test_password@localhost:5432/tms_test_db
 NEXT_PUBLIC_API_URL=http://localhost:3000
 TEST_ENV=local
 ```

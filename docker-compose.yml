@@ -4,9 +4,9 @@ services:
   postgres:
     image: postgres:15
     environment:
-      POSTGRES_DB: tms_db
-      POSTGRES_USER: tms_user
-      POSTGRES_PASSWORD: secure_password_here
+      POSTGRES_DB: tms_test_db
+      POSTGRES_USER: tms_test_user
+      POSTGRES_PASSWORD: test_password
     volumes:
       - ./pgdata:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql

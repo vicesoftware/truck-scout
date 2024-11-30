@@ -1,18 +1,18 @@
 #!/bin/bash
 
-echo "Stopping Docker containers..."
-docker-compose down
+# Exit on any error
+set -e
 
-echo "Removing existing volume..."
-docker volume rm ship-wise-tms_postgres_data || true
+# Bring down existing test database
+npm run test:db:down
 
-echo "Deleting contents of pgdata directory..."
-sudo rm -rf ./pgdata/*
+# Remove any existing volumes to ensure clean slate
+docker volume rm truck-scout_postgres_data || true
 
-echo "Rebuilding and starting containers..."
-docker-compose up -d --build
+# Bring up the test database
+npm run test:db:up
 
-echo "Waiting for database to be ready..."
-sleep 20
+# Optional: Add a small delay to ensure database is fully initialized
+sleep 5
 
 echo "Database reseeded successfully!"

@@ -1,2 +1,10 @@
 docker-compose.yml
 docker-compose.*.yml
+
+# Prisma generated files
+**/generated/
+**/prisma/generated/
+node_modules/.prisma/
+@prisma/
+.prisma/
+prisma/generated/

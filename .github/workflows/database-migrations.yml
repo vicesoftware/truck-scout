@@ -1,0 +1,82 @@
+name: Database Migrations
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+    paths:
+      - 'prisma/**'
+      - '.github/workflows/database-migrations.yml'
+
+jobs:
+  validate-and-deploy:
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_DB: testdb
+          POSTGRES_PASSWORD: testpassword
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Use Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Generate Prisma Client
+      run: npx prisma generate
+
+    - name: Validate Prisma Schema
+      run: npx prisma validate
+
+    - name: Create Migration Dry Run
+      env:
+        DATABASE_URL: postgresql://postgres:testpassword@localhost:5432/testdb
+      run: |
+        npx prisma migrate dev --create-only
+
+    - name: Check Migration Compatibility
+      env:
+        DATABASE_URL: postgresql://postgres:testpassword@localhost:5432/testdb
+      run: |
+        npx prisma migrate diff \
+          --from-empty \
+          --to-schema-datamodel prisma/schema.prisma \
+          --script
+
+    - name: Deploy Migrations to Production
+      env:
+        DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
+      run: |
+        # Reset database (use with caution in production)
+        npx prisma migrate reset --force
+        
+        # Apply migrations
+        npx prisma migrate deploy
+        
+        # Generate Prisma client
+        npx prisma generate
+        
+        # Seed database
+        npx prisma db seed
+
+    - name: Log Migration Status
+      env:
+        DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
+      run: npx prisma migrate status

@@ -8,15 +8,15 @@ services:
       POSTGRES_USER: tms_test_user
       POSTGRES_PASSWORD: test_password
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./init.sql:/docker-entrypoint-initdb.d
     ports:
-      - "5433:5432"
+      - "5432:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U tms_test_user -d tms_test_db"]
       interval: 5s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
 
   nextjs:
     build:
@@ -30,13 +30,18 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    command: npm run dev
+    command: >
+      sh -c "
+        npx prisma generate &&
+        npm run dev
+      "
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/api/healthcheck"]
       interval: 5s
       timeout: 5s
       retries: 5
       start_period: 20s
+    restart: unless-stopped
 
   test:
     build:
@@ -47,15 +52,26 @@ services:
       API_URL: http://nextjs:3000
       DATABASE_URL: postgresql://tms_test_user:test_password@postgres:5432/tms_test_db
       TEST_MODE: ${TEST_MODE:-watch}
+      TEST_ENV: ci
       JEST_WORKERS: ${JEST_WORKERS:-50%}
       NODE_OPTIONS: "--max-old-space-size=4096"
     volumes:
+      - ./prisma:/app/prisma
       - ./src:/app/src
       - ./test:/app/test
+      - ./scripts:/app/scripts
     depends_on:
+      postgres:
+        condition: service_healthy
       nextjs:
         condition: service_healthy
-    command: npm run test:api:${TEST_MODE:-watch}
+    command: >
+      sh -c "
+        sleep 5 && \
+        ENVIRONMENT=test DATABASE_URL=postgresql://tms_test_user:test_password@postgres:5432/tms_test_db \
+        sh scripts/deploy-migrations.sh && \
+        npm run test:api:${TEST_MODE:-watch}
+      "
 
 volumes:
   postgres_data:

@@ -1,12 +1,10 @@
-# syntax=docker/dockerfile:1
-
 FROM node:20-alpine AS base
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --ignore-scripts
-COPY . .
-RUN npm run build
+    WORKDIR /app
+    ARG TEST_MODE=watch
+    ENV TEST_MODE=${TEST_MODE}
+    COPY package*.json ./
+    RUN npm ci
 
 FROM base AS test-runner
-ENV NODE_ENV=test
-CMD ["npm", "run", "test:api:local"]
+    COPY . .
+    CMD ["npm", "run", "test:api:${TEST_MODE}"]

@@ -1,0 +1,23 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Carrier {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(255)
+  mcNumber  String   @unique @map("mc_number")
+  dotNumber String?  @unique @map("dot_number")
+  phone     String?
+  status    String?  @default("Pending")
+  rating    Float    @default(0.0)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@unique([name, phone])
+  @@map("carriers")
+}

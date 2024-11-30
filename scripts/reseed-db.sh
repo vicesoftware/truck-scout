@@ -1,15 +1,14 @@
 #!/bin/bash
 
-echo "Stopping Docker containers..."
-docker-compose down -volumes
+set -e
 
-echo "Deleting contents of pgdata directory..."
-sudo rm -rf ./pgdata/*
+# Ensure we're in the project root
+cd "$(dirname "$0")/.."
 
-echo "Rebuilding and starting containers..."
-docker-compose up -d --build
+echo "Resetting database using Prisma..."
+npm run prisma:db:reset
 
-echo "Waiting for database to be ready..."
-sleep 8
+echo "Seeding development database..."
+npm run prisma:seed:dev
 
 echo "Database reseeded successfully!"
