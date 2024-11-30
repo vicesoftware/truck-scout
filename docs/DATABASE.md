@@ -370,6 +370,7 @@ Key components of the target system include:
 
 By implementing these systems, we aim to streamline our development processes, reduce potential errors, and improve overall efficiency.
 
+
 ## Implementation Status
 
 ### ✅ Completed
@@ -423,23 +424,25 @@ By implementing these systems, we aim to streamline our development processes, r
    - Implemented basic rollback mechanism script.
    - Created deployment script for Prisma migrations.
 
-### 🚧 In Progress
-
-1. **Environment Configuration and Troubleshooting Improvements** ✅
+7. **Environment Configuration and Troubleshooting Improvements**
    - Added comprehensive troubleshooting guide for Prisma connection issues
    - Documented environment variable precedence and resolution
    - Added port configuration verification steps
    - Created clear steps for resolving common connection issues
+   - Highlighted the critical step of Prisma client generation
+   - Documented potential initialization errors and their resolution
 
-2. **CI Integration Tests Using Docker Compose** ✅
+8. **CI Integration Tests Using Docker Compose**
    - Implemented Docker Compose configuration for API integration tests
-     - Configured docker-compose.test.yml with proper service dependencies
+     - Configured `docker-compose.test.yml` with proper service dependencies
      - Added database health checks for test reliability
+     - Ensured Prisma client generation occurs before Next.js server startup
    - Configured CI workflow to run both types of integration tests:
      - API tests via jest-tests job using Docker Compose
      - E2E tests via cypress-tests job
    - Environment variables properly configured for CI environment
    - Services torn down properly after test completion
+   - Developed local CI pipeline testing workflow with clear, reproducible steps
    - **Local CI Pipeline Testing Workflow**:
      1. Build test image:
         ```bash
@@ -465,27 +468,29 @@ By implementing these systems, we aim to streamline our development processes, r
      - Mirrors CI environment configuration
      - Validates changes before remote testing
 
-3. **Automate Migrations Against Dev Database in Digital Ocean**
+### 🚧 In Progress
+
+1. **Automate Migrations Against Dev Database in Digital Ocean**
    - Create a deployment workflow (`deploy-dev.yml`) for the dev environment.
      - Triggered on pushes to the `develop` branch or changes to the Prisma schema.
      - Runs migrations against the dev database when Prisma schema changes.
    - Secure credential management using GitHub Secrets (`DEV_DATABASE_URL`).
    - Document the deployment workflow and procedures.
 
-4. **Enhance Testing Workflow**
+2. **Enhance Testing Workflow**
    - Isolate test environment by using dedicated test databases.
      - Configure test-specific environment variables.
      - Reset test databases between test runs using `prisma:db:reset`.
    - Parallelize tests in the CI pipeline where possible.
    - Optimize testing scripts for efficiency.
 
-5. **Improve Migrations and Rollbacks**
+3. **Improve Migrations and Rollbacks**
    - Test migrations locally before deployment to detect issues early.
    - Implement robust rollback procedures in case of migration failures.
      - Automate rollback testing in the CI pipeline.
      - Document rollback processes and strategies.
 
-6. **Update Documentation and Collaboration**
+4. **Update Documentation and Collaboration**
    - Update `docs/DATABASE.md` to reflect new workflows and procedures.
      - Provide clear instructions on new migration and testing processes.
      - Include details about CI/CD pipeline changes.
@@ -566,3 +571,4 @@ DATABASE_URL="postgresql://user:password@localhost:5432/dev_db"
 
 # Digital Ocean environments
 DATABASE_URL="postgresql://doadmin:${POSTGRES_PASSWORD}@${DB_HOST}:${DB_PORT}/defaultdb?sslmode=require"
+
