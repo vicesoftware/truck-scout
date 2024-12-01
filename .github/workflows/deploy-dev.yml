@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      DATABASE_URL: ${{ secrets.DEV_DATABASE_URL }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
     steps:
       - name: Checkout repository
@@ -33,12 +33,8 @@ jobs:
         run: |
           echo "Resetting database, applying migrations, and seeding data..."
           npx prisma migrate reset --force
-        env:
-          DATABASE_URL: ${{ secrets.DEV_DATABASE_URL }}
 
       - name: Verify Migration Status
         run: |
           echo "Verifying migration status..."
           npx prisma migrate status
-        env:
-          DATABASE_URL: ${{ secrets.DEV_DATABASE_URL }}
