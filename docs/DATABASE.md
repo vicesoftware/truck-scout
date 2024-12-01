@@ -476,17 +476,34 @@ By implementing these systems, we aim to streamline our development processes, r
 
 ### 🚧 In Progress
 
-1.  **Refactor cypres tests to use live API**
+1. **Automated Migrations Against Dev Database**
+   - Created deployment workflow (`deploy-dev.yml`) for the dev environment
+     - Triggers on pushes to `develop` branch and Prisma schema changes
+     - Uses database reset approach to ensure clean state
+     - Uses GitHub Secrets for secure credential management
+   - Testing deployment workflow:
+     - ✅ Tested database reset locally
+     - ✅ Verified migrations apply successfully
+     - 🚧 Setting up GitHub Actions workflow:
+       1. Add DEV_DATABASE_URL secret:
+          - Go to repository Settings > Secrets and variables > Actions
+          - Click "New repository secret"
+          - Name: DEV_DATABASE_URL
+          - Value: [Get the connection string from your team lead]
+          - Click "Add secret"
+       2. Test workflow trigger:
+          - Push changes to develop branch
+          - Monitor workflow in Actions tab
+       3. Verify:
+          - Check workflow execution in GitHub Actions
+          - Verify database state after migration
+          - Check error handling and logs
+     - 🚧 Need to verify proper error handling
+     - 🚧 Need to test trigger conditions
+
+2. **Refactor cypres tests to use live API**
 - Currently cypress tests use mocked API responses
 - We want these to be integration tests so we need to update .github/workflows/dev-ci-cd.yml to use a docker compose based flow for cypress similar to what it does for the jest test. it's possible all tests run in the same docker compose network. We need to plan out the best approach, update the code and then update all the documentation to reflect to the new approach.
-
-1.5 **Automate Migrations Against Dev Database in Digital Ocean**
-   - Create a deployment workflow (`deploy-dev.yml`) for the dev environment.
-     - Triggered on pushes to the `develop` branch or changes to the Prisma schema.
-     - Runs migrations against the dev database when Prisma schema changes.
-   - Secure credential management using GitHub Secrets (`DEV_DATABASE_URL`).
-   - Document the deployment workflow and procedures.
-
 2. **Enhance Testing Workflow**
    - Isolate test environment by using dedicated test databases.
      - Configure test-specific environment variables.
@@ -581,6 +598,3 @@ DATABASE_URL="postgresql://user:password@localhost:5432/dev_db"
 
 # Digital Ocean environments
 DATABASE_URL="postgresql://doadmin:${POSTGRES_PASSWORD}@${DB_HOST}:${DB_PORT}/defaultdb?sslmode=require"
-
-
-
